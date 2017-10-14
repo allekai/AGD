@@ -1,0 +1,255 @@
+\section{Association Rules - Erweiterungen und Anwendungen}
+Im Folgenden werden ein paar der Weiterentwicklungen von Apriori besprochen,
+die bereits kurz nach dessen Veröffentlichung erschienen sind. Sie nehmen sich
+verschiedenen Schwächen von Apriori an und verbessern diese signifikant.
+
+\subsection{Direct Hashing and Pruning}
+Es konnte gezeigt werden, dass Apriori vor allem für kleine \(k\) einen
+hohen Rechenaufwand benötigt, da in diesem Schritt viele (unnötige) Candidate
+Itemsets erzeugt werden. \textbf{DHP} ermöglich es, diesen \textit{bottleneck}
+zu umgehen, indem zum einen für kleine \(k\) die Candidate Itemsets verringert
+werden, und zum anderen in den weiteren Schritten die Datenbank verkleinert wird.
+
+\subsubsection{Candidate Itemset Reduktion}
+Oft ist es der Fall, dass man viele \textit{large 1-itemsets} hat, also \(|L_1|\)
+sehr groß ist. Für die Menge der daraus resultierenden Candidate Itemsets ergibt sich
+\(|C_2| = {{|L_1|} \choose 2}\). Es wäre also gut, wenn man schon in frühen Iterationen
+die Größe von \(C_2\) deutlich verringern könnte. Dies ist in der Tat möglich,
+indem man bereits beim Support Counting im \(k\)-ten Schritt Informationen
+über die möglichen \textit{(k+1)-Candidate Itemsets} sammelt. Hierfür werden
+alle möglichen \textit{(k+1)}-Teilmengen einer Transaktion \(t\) in eine 
+Hashtabelle \(H_{k+1}\) gehasht, wobei in jedem Bucket die Anzahl der darauf 
+gehashten Teilmengen
+gespeichert wird. Bei der Generierung von \(C_{k+1}\) wird nun mit Hilfe der zuvor 
+erstellten Hashtabelle \(H_{k+1}\) grob geprüft, ob der Support für ein \(c\in C_{k+1}\)
+überhaupt gegeben ist. Auf diese Weise können bereits viele Candidate Itemsets
+ausgeschlossen werden, bevor für diese der Support anhand der Datenbank gezählt
+werden muss.
+
+Laut Vorlesung sollte unser Hash-Filter derart gewählt werden, dass unser Arbeitsspeicher
+möglichst voll ausgenutzt wird, da er unsere Hauptlimitierung darstellt. Für die
+übrigen Vergleiche mit den Transaktionen muss nämlich sowieso auf die Datenbank
+zugegriffen werden.
+
+\subsubsection{Datenbankreduktion}
+Eine weitere Eigenschaft von DHP ist, dass er schrittweise auch die Tranktionen
+entfernt, die nicht mehr groß genug sind, um ein \textit{(large k+1)-Itemset}
+im Schritt \(k+1\) zu erzeugen, und unnötige Items aus den Transaktionen entfernt.
+
+Die Reduktion der Items basiert auf der Erkenntnis, dass jede Teilmenge einer 
+\textit{large Itemsets} ebenfalls \textit{large} ist. Jedes \textit{item} eines
+\textit{large (k+1)-Itemsets} ist genau \(k\)-mal in den \((k+1)\) \textit{k}-Teilmengen
+enthalten. Umfasst eine Transaktion einige \textit{large (k+1)-itemsets}, dann ist jedes
+Item der \textit{(k+1)-Itemsets} mindestens \(k\)-mal im Candidate Itemset \(C_k\)
+vorhanden. Wenn ein Item der Transaktion \(t\) nicht \(k\)-mal in den in \(t\)-enthaltenen
+Candidate \(k\)-Itemsets vorkommt, kann es gelöscht werden. Auf diese Weise
+verringert sich die Transaktionslänge \citep{Petersohn05}.
+
+\subsubsection{DHP Algorithmus}
+DHP geht zurück auf \citet{Park95}. Der dort vorgestellte Algorithmus besteht aus
+drei Teilen.
+
+Im ersten Teil werden die \textit{Candidate 1-Itemsets} in einen Hashtree
+gehasht, wobei gleichzeitig der Support für die einzelnen Items gezählt wird,
+und transaktionsweise alle \textit{2-item subsets} in \(H_2\) gehasht werden. Danach
+wird \(L_1\) anhand des gezählten Supports bestimmt.\footnote{Soweit eigentlich
+alles fast so wie bei Apriori.}
+
+Im zweiten Teil wird ber der Generierung von \(C_2\) auf \(H_2\) zur Vermeidung
+unnötiger \textit{Candidate 2-Itemsets} zurückgegriffen. Hat man seine neuen 
+Kandidaten erstellt, so wird transaktionsweise deren Support gezählt, wobei schon
+hier diejenigen Items geprunt werden, die nicht in wenigstens \(k\) der Kandidaten
+vorkommen (also auch nicht für spätere \textit{large Itemsets} relevant sind). Sollte
+die aktuell betrachtete Transaktion nach diesem ersten Pruning noch mehr als \(k\)
+Items besitzen, so werden alle \textit{(k+1)-Teilmengen} in \(H_{k+1}\) gehasht,
+sofern alle \textit{k-Teilmengen} der \textit{(k+1)-Teilmengen} den nötigen Support
+mitbringen, also \(H_k[h_k(y)] \geq s\) für alle \textit{k-Teilmengen y} einer
+\textit{(k+1)-Teilmenge} gilt. Damit haben wir auch schon die Hashtabelle für die
+Candidate Itemset Generierung der nächsten Iteration erstellt. Wird bei der
+Erstellung der Hashtabelle festgestellt, dass ein Item in keinem der 
+\textit{(k+1)-Itemsets} enthalten ist, kann es geprunt werden.
+
+Der dritte Teil funktioniert im Prinzip wie der zweite. Da jedoch hier bereits
+nur noch mit kleinen \(C_k\) und \(L_k\) gearbeitet wird, ist ein weiteres Filtern
+unnötig. Deswegen wird hier die Arbeit mit einer Hashtabelle weggelassen. Man geht
+dann in Phase 3 über, wenn es in \(H_k\) nicht mehr genügend Buckets gibt, für die
+\(H_k[x] \geq s\) gilt.
+
+Für den genauen Algorithmus und die Auswertung der Ergebnisse, die mit DHP erzielt
+werden konnten sei auf das zugrunde liegende Paper verwiesen.
+
+\subsection{Sampling}
+Ein Nachteil vieler Mining Algorithmen für Association Rules ist die Menge an
+Datenbank Zugriffen, die bei der Ausführung entstehen. Algorithmen, die auf 
+Apriori beruhen, arbeiten \textit{level-weise}, es werden also für jede Größe
+an Frequent Itemsets erst deren Kandidaten erzeugt, die dann mit der Datenbank
+geprüft werden. Gibt es also Candidate Itemsets der Größe \textit{(k+1)}, so 
+sind \textit{(K+1)} "'\textit{Database Passes}"' notwendig.
+
+Es wäre effizienter, wenn man die Anzahl der Database Passes reduzieren könnte.
+Eine Möglichkeit hierfür ist es, eine viel kleinere Teilmenge (\textbf{Sample})
+der Datenbank zu betrachten und anhand des Samples Association Rules für die
+ganze Datenbank zu generieren. Tatsächlich ist dies sogar so gut möglich, dass
+die wirklich vorhandenen Frequent Itemsets nicht nur approximiert, sondern genau
+bestimmt werden können, und das in nicht mehr als \textit{worst case} 2 Database
+Passes.
+Der Vorteil beim Sampling ist, dass dieses in den Arbeitsspeicher passt, sodass
+eine schnelle Abarbeitung möglich ist.
+
+\subsubsection{Negative Border}
+Um unsere Samples auszuwerten, brauchen wir zunächst das Konzept der \textbf{Negative
+Border}. Nehmen wir an, wir haben eine Menge an Items \(R = \{I_1,\ \dots\,\ I_m\}\),
+mit \(I_i \in \{0,\ 1\}\). Hierbei bedeutet \(I_i = 0\ (1)\), dass das Item \(I_i\)
+in einer Transaktion nicht enthalten (bzw. enthalten) ist. Diese Transaktionen seien
+durch eine Relation \(r\) dargestellt, in der jede Transaktion in einer Zeile steht.
+Dann sei \(S\subseteq
+\mathcal{P}(R)\) eine Menge von Teilmengen, die hinsichtlich der Inklusion 
+abgeschlossen ist.\footnote{Damit ist gemeint, dass alle Teilmengen der in \(S\)
+enthaltenen Teilmengen ebenfalls in \(S\) enthalten sind.}
+Die Negative Border \(\mathcal{B}d^{-}(S)\) beinhaltet nun alle \textbf{minimalen} Itemsets
+\(X\subseteq R\), die nicht in \(S\) liegen.
+
+Für die Menge aller Frequent Itemsets \(\mathcal{F}(r,\ minsup)\) gilt insbesondere
+die Abgeschlossenheit bezüglich der Inklusion. Damit enthält \(\mathcal{B}d^{-}
+(\mathcal{F}(r,\ minsup))\) alle minimalen Itemsets, die nicht mehr frequent sind.
+Für ein anschauliches Beispiel sei auf \citet{Toi96} verwiesen.
+
+Gegeben einem Sample \(s\) unserer Datenbank. Wir bestimmen anhand dieses Samples dessen
+Frequent Itemsets \(S:=\mathcal{F}(s,\ lowsup)\) mit Mindestsupport \textit{lowsup}.
+Dieser Wert sollte kleiner sein als unser eigentlich gesuchter \textit{minsup}, damit
+die im Sample gefundenen Frequent Itemsets mit großer Wahrscheinlichkeit die
+eigentlichen Frequent Itemsets unserer Datenbank umfassen. Ist \(S\) bestimmt,
+müssen die gefundenen Frequent Itemsets anhand der Datenbank verifiziert werden.
+Hier kommt unsere Negative Border ins Spiel. Für die Verifizierung berechnen wir
+\[\mathcal{F}:=\ \{X\in S\cup \mathcal{B}d^{-}(S)\ |\ sup(X,\ r) \geq\ minsup\}.\]
+Sind alle gefundenen Frequent Itemsets in \(S\) enthalten, also \(\mathcal{F}(r,\ 
+minsup) \in S\), dann gibt es kein Problem und mit unserem Sample haben wir alle
+Frequent Itemsets gefunden.
+
+Es kann jedoch auch der Fall auftreten, dass es ein Frequent Itemset \(Y\) gibt,
+dass in \(\mathcal{B}d^{-}(S)\) liegt. Ein solches Itemset nennen wir \textbf{miss}.
+An und für sich sind misses kein Problem, da sie ja in obiger Betrachtung berücksichtigt
+wurden. Das Problem entsteht dadurch, dass es Obermengen von \(Y\) geben könnte, die 
+ebenfalls frequent sind. Diese sind jedoch nicht mehr in \(S\cup \mathcal{B}d^{-}(S)\)
+enthalten, wodurch sie überhaupt nicht entdeckt werden. Diese nicht entdeckten 
+Frequent Itemsets nennen wir \textbf{failures}. Stellt man fest, dass man einen
+miss hat, geht man wie folgt vor: Ausgehend von \(S\) wird dieses solange um seine
+Negative Border erweitert, bis \(S\) nicht mehr weiter wächst. Mit diesem neuen \(S\)
+sind sicherlich alle Frequent Itemsets der eigentlichen Datenbank abgedeckt; es sind
+potentiell jedoch auch Itemsets in \(S\) enthalten, die eigentlich keine Frequent
+Itemsets sind. Dies ist dem geringeren Schwellenwert geschuldet. Um diese nun zu 
+entfernen berechnen wir 
+\[\mathcal{F}:=\ \{X\in S\ |\ sup(X,\ r)\geq minsup\}.\]
+Insgesamt wurde die Datenbank also zweimal durchlaufen; dies ist jedoch nur im
+unwahrscheinlichen worst case der Fall. Meistens reicht bereits bei einer vernünftigen
+Wahl von Samplesize und \textit{lowsup} ein einziger Durchlauf aus. In \citet{Toi96}
+sind die Auswirkungen von verschiedenen Samplesizes und Schwellenwerten angegeben.
+
+\subsection{Optimistische Verfeinerung}
+Apriori ist wie bereits festgestellt deswegen langsam, weil alle möglichen Frequent
+Itemsets ihrer Größe nach sequenziell erzeugt werden. Dies bedeutet exponentielles
+Wachstum.
+
+Eine Verbesserung kann erreicht werden, indem einfach Schritte ausgelassen werden.
+So können aus den \textit{large 1-Itemsets} direkt die Kandidaten für \(C_3\) oder
+\(C_4\) erzeugt werden. Durch diese größere Schrittweite kann es passieren, dass man
+über die Negative Border hinaus Kandidaten erzeugt. Stellt man eine solche Überschreitung
+fest, so nutzt man aus, dass Apriori auch für das Komplement nutzbar ist, und geht
+"'rückwarts"' levelweise wieder zurück, bis man wieder "'unter"' der Negative Border ist.
+
+Durch ein solches Vorgehen ist es möglich, approximativ lineare Laufzeiten zu erreichen, 
+was eine deutliche Verbesserung gegenüber der exponentiellen Anzahl an generierten Kandidaten
+von Apriori ist.
+
+\subsection{Frequent Pattern Trees}
+Die bisher vorgestellten Verfahren folgen dem so genannte \textit{generate and test
+paradigma}. Es wurden zunächst Kandidaten für large Itemsets erzeugt, die dann 
+mit der Datenbank getestet wurden. Da dies jedoch schon aufgrund der kombinatorischen
+Natur der Vorgehen selbst für mittelgroße Datenmengen bei geringen Thresholds für
+großen Aufwand sorgt, kann es leicht passieren, dass der Arbeitsspeicher nicht
+mehr für die betrachteten Objekte ausreicht. Deswegen wäre eine kompaktere Darstellung
+wünschenswert. In der Tat ist dies mit \textbf{Frequent Patter Trees} möglich.
+Aus den \textit{FP-Trees} lassen sich dann die Frequent Itemsets direkt produzieren,
+ohne erst Kandidaten erzeugen zu müssen.
+
+\subsubsection{FP-Tree Erzeugung}
+Das Erzeugen eines FP-Trees ist relativ günstig, da man gerade einmal \textbf{zwei}
+Datenbank-Scans benötigt. In einem ersten Scan wird wie bei Appriori die
+\textit{Häufigkeit der individuellen Items} gezählt. Im zweiten Durchlauf wird dann
+die Baumstruktur erstellt. Hierfür werden die Items in einer Transaktion entsprechend
+der gezählten Häufigkeit sortiert. Hierbei muss sichergestellt werden, dass es in
+allen Transaktionen die gleiche Sortierung gibt (also im Falle von gleichen Häufigkeiten
+kommt ein weiteres Merkmal zur Sortierung ins Spiel, z.B. die Lexikographische Ordnung).
+Hierbei können dann bereits die Items aussortiert werden, die nicht einem gewissen
+Minimumsupport genügen. Nach dem Sortieren und Prunen einer Transaktion wird diese
+dann in den Baum eingefügt.\footnote{Beachte: Die Wurzel eines FP-Trees bleibt leer!
+Das erste Item der ersten Transaktione geht also schon als Child der Wurzel in den Baum ein!}
+Beim Einfügen werden in den Knoten des Baumes die Anzahl der Transaktionen, die
+diese "'durchlaufen"' gespeichert, d.h. fangen zwei sortierte Transaktionen mit den
+selben ersten drei Items an, so werden diese die selben Knoten beim Einfügen durchlaufen,
+wobei die entsprechenden Counter in den Knoten inkrementiert werden. Auf diese Weise
+können Transaktionen mit gleichen Präfixen effizient komprimiert werden.
+Hat man alle Transaktionen auf diese Weise verarbeitet,
+so darf man auf eine hohe Kompression um die Wurzel des Baumes herum hoffen.
+Jedes Item aus dem FP-Tree zeigt auch auf \textbf{ein} weiteres Item mit gleichem
+Namen, sofern noch ein solches vorhanden ist, das nicht schon mit einem anderen
+gleichnamigen Item verbunden ist. Dies erleichtert später die Traversierung. Es
+entsteht als eine Art Item-Sequenz (das wichtige ist, dass es einen Anfang gibt).
+
+Die zweite Komponente unseres FP-Trees ist eine \textbf{Header-Table}. Diese
+Tabelle enthält alle individuellen Items, die dem Minimumsupport entsprechen, sortiert
+nach absteigender Häufigkeit. Jedes Element dieser Header-Table zeigt auf das gleichnamige
+Item im FP-Tree, welches den Anfang der entsprechenden Item-Sequenz bildet. Man kann
+nun also leicht über die Header-Tabelle auf die Item-Sequenzen im Baum zugreifen.
+
+\subsubsection{Frequent Pattern Mining}
+Eine wichtige Beobachtung im Rahmen von FP-Trees ist, dass \textit{für jedes Item
+\(a_i\) alle möglichen Frequent Patterns gefunden werden können, wenn man der
+Item Sequenz, die mit \(a_i\) in der Header-Table beginnt, folgt und
+die Pfade zu diesen \(a_i\) betrachtet.} Diese Eigenschaft
+wird auch \textbf{node-link property} genannt. Sie erlaubt es, dass mit nur
+einer Traversierung des FP-Trees alle möglichen Frequent Patterns, die \(a_i\) enthalten,
+gefunden werden können.
+
+Betrachte ein \(a_i\) und den dazugehörigen Pfad zu diesem Item. Dann gilt
+für die \textit{counts} der Items im Präfix-Pfad zu \(a_i\), dass diese den selben
+Wert haben, wie \(a_i.count\). Haben mehrere Pfade eine Überschneidung am  Anfang,
+so ist der count der Items in der Schnittmenge die Summe der counts der jeweiligen Pfade.
+Mit anderen Worten: Die counts der Items im durch \(a_i\) bedingten Baumes ergeben 
+sich dadurch, dass die Blätter die counts der entsprechenden \(a_i\) erhalten und sich
+diese in ihren Elternknoten aufsummieren.
+
+Zusammenfassend können also Frequent Patterns wie folgt gefunden werden.
+\begin{enumerate}
+  \item Erstelle den FP-Tree aus der Ursprungsdatenbank.
+  \item Betrachte das am seltensten vorkommende Item in der Header-Table.
+  Dieses sei mit \(a_i\) bezeichnet.
+  \item Betrachte den Subtree, der als Pfade die Pfade zu den \(a_i\) besitzt.
+  \item Füge in den Eltern der \(a_i\) die count-Werte der \(a_i\) ein und 
+  summiere diese nach oben hin auf. Entferne die \(a_i\) aus dem Subtree.
+  Dieser Subtree wird auch als \textit{Conditional FP-Tree of \(a_i\)} bezeichnet.
+  \item Prüfe nun, ob es Items in diesem Subtree gibt, deren count noch den
+  Minimumsupport erfüllt. Diese Items können zusammen mit \(a_i\) noch zu einem
+  größeren Frequent Pattern anwachsen. Angenommen es gäbe ein Item \(a_k\),
+  welches im Subtree den Minimumsupport erfüllt. Erstelle nun den Conditional
+  FP-Tree of \(a_k a_i\) aus dem Conditional FP-Tree of \(a_i\). Es findet also ein
+  rekursiver Aufruf statt. Beachte, dass sich diese Rekursion verzweigt stattfinden kann,
+  d.h. man muss erst alle Rekursionsteilpfade fertig berechnen, bevor man den ganzen
+  Rekursionspfad abschließen kann.
+  \item Gibt es keine Items mehr, die im Conditional FP-Tree noch den Minimumssupport
+  erfüllen, so breche diesen Rekusionszweig ab. Gibt es keine Rekursionsmöglichkeiten für
+  \(a_i\) mehr, so wiederhole Schritt 3--6 für das nächste Item der Header Table.
+  Für dieses muss man
+  keine Rücksicht mehr auf die \(a_i\) nehmen, da man ja im vorherigen Schritt bereits alle 
+  Frequent Patterns erzeugt hat, die \(a_i\) enthalten.
+\end{enumerate}
+
+Stellt man fest, dass man einen Conditional FP-Tree of \(a_i\) erhält, der nur aus einem 
+einzigen Pfad
+besteht (alle Items in diesem Single Path haben den selben count), so lässt sich dieser leicht
+minen: Man muss lediglich alle Itemkombinationen dieses Pfades nehmen und diese mit 
+\(a_i\) konkatenieren (\(a_i\) steht am Ende). 
+
+Die Grundidee stammt aus \citet{Han00}; aus dieser Arbeit stammen auch die Beispiele
+aus der Vorlesung. Für ein weiteres anschauliches Beispiel sei auf Kapitel 6.3 von \citet{Witten11}
+verwiesen.

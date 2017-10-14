@@ -1,0 +1,90 @@
+\BOOKMARK [1][-]{section.1}{Statistische Grundlagen}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Beschaffenheit von Daten}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Einfache deskriptive Statistik}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Qualifizierung der Tendenz insgesamt}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{Quantifizierung der Streuung der Daten}{section.1}% 5
+\BOOKMARK [2][-]{subsection.1.5}{Boxplots}{section.1}% 6
+\BOOKMARK [2][-]{subsection.1.6}{Histogramme}{section.1}% 7
+\BOOKMARK [2][-]{subsection.1.7}{Entropie}{section.1}% 8
+\BOOKMARK [2][-]{subsection.1.8}{Wahrscheinlichkeitstheorie}{section.1}% 9
+\BOOKMARK [2][-]{subsection.1.9}{Statistische Tests}{section.1}% 10
+\BOOKMARK [3][-]{subsubsection.1.9.1}{Chi-Quadrat Unabh\344ngigkeitstest}{subsection.1.9}% 11
+\BOOKMARK [3][-]{subsubsection.1.9.2}{Kolmogorov-Smirnov-Test}{subsection.1.9}% 12
+\BOOKMARK [3][-]{subsubsection.1.9.3}{Wilcoxon-Mann-Whitney Test}{subsection.1.9}% 13
+\BOOKMARK [3][-]{subsubsection.1.9.4}{Bernoulli-Experiment}{subsection.1.9}% 14
+\BOOKMARK [2][-]{subsection.1.10}{Datenreduktion}{section.1}% 15
+\BOOKMARK [3][-]{subsubsection.1.10.1}{Numerosity Reduction}{subsection.1.10}% 16
+\BOOKMARK [3][-]{subsubsection.1.10.2}{Dimensionality Reduction}{subsection.1.10}% 17
+\BOOKMARK [3][-]{subsubsection.1.10.3}{Diskretisierung}{subsection.1.10}% 18
+\BOOKMARK [1][-]{section.2}{Informatik Grundlagen}{}% 19
+\BOOKMARK [2][-]{subsection.2.1}{Indizierung allgemein}{section.2}% 20
+\BOOKMARK [2][-]{subsection.2.2}{R\344umliche Indexstrukturen}{section.2}% 21
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Normalisierung}{subsection.2.2}% 22
+\BOOKMARK [3][-]{subsubsection.2.2.2}{k-dimensionale B\344ume}{subsection.2.2}% 23
+\BOOKMARK [3][-]{subsubsection.2.2.3}{Objekte mit r\344umlicher Ausdehnung}{subsection.2.2}% 24
+\BOOKMARK [3][-]{subsubsection.2.2.4}{Optimierung kd-B\344ume}{subsection.2.2}% 25
+\BOOKMARK [3][-]{subsubsection.2.2.5}{R-Baum}{subsection.2.2}% 26
+\BOOKMARK [2][-]{subsection.2.3}{Instanzbasiertes Lernen}{section.2}% 27
+\BOOKMARK [1][-]{section.3}{Klassifikation mit Entscheidungsb\344umen}{}% 28
+\BOOKMARK [2][-]{subsection.3.1}{Attribute vs. Features}{section.3}% 29
+\BOOKMARK [2][-]{subsection.3.2}{Bin\344re Entscheidungsb\344ume}{section.3}% 30
+\BOOKMARK [2][-]{subsection.3.3}{Kosten beim Lernen}{section.3}% 31
+\BOOKMARK [2][-]{subsection.3.4}{NULL-Werte}{section.3}% 32
+\BOOKMARK [1][-]{section.4}{Evaluation von Datenanalyseverfahren}{}% 33
+\BOOKMARK [2][-]{subsection.4.1}{Training und Testing}{section.4}% 34
+\BOOKMARK [2][-]{subsection.4.2}{Wahrscheinlichkeiten als Vorhersageergebnis}{section.4}% 35
+\BOOKMARK [2][-]{subsection.4.3}{Fehlerarten und entsprechende Ma\337e}{section.4}% 36
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Bias vs. Varianz}{subsection.4.3}% 37
+\BOOKMARK [3][-]{subsubsection.4.3.2}{Fehlerarten und Erfolgsquote}{subsection.4.3}% 38
+\BOOKMARK [2][-]{subsection.4.4}{Lift Charts}{section.4}% 39
+\BOOKMARK [2][-]{subsection.4.5}{ROC Kurven}{section.4}% 40
+\BOOKMARK [2][-]{subsection.4.6}{Minimum Description Language}{section.4}% 41
+\BOOKMARK [3][-]{subsubsection.4.6.1}{Minimum Message Length}{subsection.4.6}% 42
+\BOOKMARK [1][-]{section.5}{Association Rules}{}% 43
+\BOOKMARK [2][-]{subsection.5.1}{Apriori}{section.5}% 44
+\BOOKMARK [2][-]{subsection.5.2}{Multidimensional Association Rules}{section.5}% 45
+\BOOKMARK [2][-]{subsection.5.3}{Multi-Level Association Rules}{section.5}% 46
+\BOOKMARK [1][-]{section.6}{Association Rules - Erweiterungen und Anwendungen}{}% 47
+\BOOKMARK [2][-]{subsection.6.1}{Direct Hashing and Pruning}{section.6}% 48
+\BOOKMARK [3][-]{subsubsection.6.1.1}{Candidate Itemset Reduktion}{subsection.6.1}% 49
+\BOOKMARK [3][-]{subsubsection.6.1.2}{Datenbankreduktion}{subsection.6.1}% 50
+\BOOKMARK [3][-]{subsubsection.6.1.3}{DHP Algorithmus}{subsection.6.1}% 51
+\BOOKMARK [2][-]{subsection.6.2}{Sampling}{section.6}% 52
+\BOOKMARK [3][-]{subsubsection.6.2.1}{Negative Border}{subsection.6.2}% 53
+\BOOKMARK [2][-]{subsection.6.3}{Optimistische Verfeinerung}{section.6}% 54
+\BOOKMARK [2][-]{subsection.6.4}{Frequent Pattern Trees}{section.6}% 55
+\BOOKMARK [3][-]{subsubsection.6.4.1}{FP-Tree Erzeugung}{subsection.6.4}% 56
+\BOOKMARK [3][-]{subsubsection.6.4.2}{Frequent Pattern Mining}{subsection.6.4}% 57
+\BOOKMARK [1][-]{section.7}{Pattern Mining unter Constraints}{}% 58
+\BOOKMARK [2][-]{subsection.7.1}{Constrained Association Rules}{section.7}% 59
+\BOOKMARK [3][-]{subsubsection.7.1.1}{Meta-Rule Guided Mining}{subsection.7.1}% 60
+\BOOKMARK [3][-]{subsubsection.7.1.2}{1-var und 2-var Constraints}{subsection.7.1}% 61
+\BOOKMARK [3][-]{subsubsection.7.1.3}{Eigenschaften von Constraints}{subsection.7.1}% 62
+\BOOKMARK [2][-]{subsection.7.2}{Constrained Frequent Sequence Mining}{section.7}% 63
+\BOOKMARK [1][-]{section.8}{Clustering}{}% 64
+\BOOKMARK [2][-]{subsection.8.1}{Partitionierendes Clustering}{section.8}% 65
+\BOOKMARK [3][-]{subsubsection.8.1.1}{k-Means}{subsection.8.1}% 66
+\BOOKMARK [3][-]{subsubsection.8.1.2}{k-Means in der Variante CLARANS}{subsection.8.1}% 67
+\BOOKMARK [3][-]{subsubsection.8.1.3}{BIRCH}{subsection.8.1}% 68
+\BOOKMARK [2][-]{subsection.8.2}{Hierarchisches Clustering}{section.8}% 69
+\BOOKMARK [2][-]{subsection.8.3}{Probleme mit hochdimensionalen R\344umen}{section.8}% 70
+\BOOKMARK [2][-]{subsection.8.4}{Clustering mit kategorischen Daten}{section.8}% 71
+\BOOKMARK [2][-]{subsection.8.5}{Dichte-basiertes Clustering}{section.8}% 72
+\BOOKMARK [3][-]{subsubsection.8.5.1}{DBSCAN}{subsection.8.5}% 73
+\BOOKMARK [3][-]{subsubsection.8.5.2}{OPTICS}{subsection.8.5}% 74
+\BOOKMARK [2][-]{subsection.8.6}{Probabilistisches Clustering}{section.8}% 75
+\BOOKMARK [3][-]{subsubsection.8.6.1}{Expectation Maximization}{subsection.8.6}% 76
+\BOOKMARK [3][-]{subsubsection.8.6.2}{Erweiterungen von Mixture Models}{subsection.8.6}% 77
+\BOOKMARK [1][-]{section.9}{Statistische Modellierung}{}% 78
+\BOOKMARK [2][-]{subsection.9.1}{Naive Bayes}{section.9}% 79
+\BOOKMARK [2][-]{subsection.9.2}{Bayesian Networks}{section.9}% 80
+\BOOKMARK [2][-]{subsection.9.3}{Anwendung Bayesian Networks: Duplikaterkennung}{section.9}% 81
+\BOOKMARK [1][-]{section.10}{Lineare Modelle und SVMs}{}% 82
+\BOOKMARK [2][-]{subsection.10.1}{Logistic Regression}{section.10}% 83
+\BOOKMARK [2][-]{subsection.10.2}{Support Vector Machines}{section.10}% 84
+\BOOKMARK [2][-]{subsection.10.3}{Support Vector Regression}{section.10}% 85
+\BOOKMARK [1][-]{section.11}{Ensembles}{}% 86
+\BOOKMARK [2][-]{subsection.11.1}{Bagging}{section.11}% 87
+\BOOKMARK [2][-]{subsection.11.2}{Boosting}{section.11}% 88
+\BOOKMARK [2][-]{subsection.11.3}{Stacking}{section.11}% 89
+\BOOKMARK [2][-]{subsection.11.4}{Interpretation von Ensembles}{section.11}% 90

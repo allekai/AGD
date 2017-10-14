@@ -1,0 +1,157 @@
+\section{Lineare Modelle und SVMs}
+Die Lineare Regression kennen wir ja noch aus Statistik 2.
+Gegeben einen Datenbestand mit numerischen Attributwerten.
+Wir wollen nun Gewichte finden, sodass sich ein bestimmtes Attribut
+als gewichtete lineare Summe der anderen Attribute beschreiben lässt.
+Dies wollen wir für alle unsere Attribute tun.
+
+Bei der Gerade, die wir dabei erhalten, wird die Steigung durch
+die Gewichte bestimmt und der Bias (y-Achsenabschnitt) bestimmt
+den Offset.  
+
+Wir wollen nun mit unseren Gewichten möglichst die Abweichungen
+unserer Vorhersage von den tatsächlichen Daten minimieren, also
+\[ \min \sum_{i=1}^{n}\left( x^{(i)} - 
+\sum_{j=0}^k w_j * a_j^{(i)}\right)^2 .\]
+Dabei sei \(x^{(i)}\) das i-te Objekt.
+
+Im Folgenden wollen wir uns mit Regression im Kontext von
+Klassifikation beschäftigen: Ist es möglich, eine Gerade zu finden,
+die 2 Klassen von Daten voneinander trennt?
+
+\subsection{Logistic Regression}
+Diese Regressionsart funktioniert gut bei binärer Klassifikation.
+Das Problem bei binärer Klassifikation mit linearer Regression ist,
+dass die Gerade eigentlich auf dem Intervall \([0,1]\) angeben sollte,
+für welchen Werte auf der x-Achse welche Wahrscheinlichkeit für
+die jeweilige Klasse angenommen wird. Die Gerade ist jedoch nicht auf
+dem Intervall \([0,1]\) beschränkt und ab einem bestimmten Wert
+für \(x\) liefert uns die Gerade keine Wahrscheinlichkeiten mehr.
+Sinnvoller wäre hier eine Art S-Kurve, die jeweils gegen 0 und 1 konvergiert.
+Die so genannte logistische Funktion hat diesen Verlauf:
+\[P[Klasse\ |\ x]= \frac{1}{1+e^{-w_0 - w_1 x_1 - \dots - w_k x_k}}\]
+Hierbei ist \(k\) die Zahl der Attribute.
+
+Diese Funktion hat im Wesentlichen 2 Parameter, nämlich die Stauchung
+und der Abschnitt auf der x-Achse. Diese lassen sich nicht notwendiger
+Weise direkt auf die Gewichte aufteilen, sie hängen komplexer von 
+den Parametern ab. Aber lassen wir das auf sich beruhen.
+
+Durch einfache Umformungen kann man die logistische Funktion in eine
+Form bringen, in der  die gewichtete Linearkombination auf einer Seite
+alleine steht, also 
+\[w_o + w_1 x_1 + \dots = \log \left(
+\frac{P[Klasse\ |\ x]}{1 - P[Klasse\ |\ x]}\right).\]
+Das nennt man die Logit Transformation. Hierauf lässt sich wieder die
+normale Lineare Regression anwenden. Der Fehler lässt sich ähnlich
+dem Bernoulli-Experiment mittels
+\[\sum_i^n (1-x^{(i)})\log(1-P[K|x^{(i)}) + 
+x^{(i)}\log(P[K|x^{(i)}])\]
+ermitteln. Hierauf lässt sich ein iteratives Verfahren anwenden, dass die Gewichte
+in die richtige Richtung verschiebt. Diese Formel soll maximiert werden.
+Es lässt sich auch stattdessen die robustere log-Variante berechnen. 
+Generell funktioniert das Verfahren nur dann wirklich gut, wenn die 
+Daten sich auch halbwegs gut sepparieren lassen.
+
+Da der Teil mit den Perzeptoren in der Vorlesung ausgelassen wurde, geht 
+es mit den SVMs weiter.
+
+\subsection{Support Vector Machines}
+In den meisten Fällen ist es nicht so, dass sich Daten einfach durch
+eine Gerade voneinander trennen lassen, z.B. da sie teilweise vermischt 
+sind. Wir bräuchten also statdessen ein Polynom, dass unsere Grenze 
+beschreibt. Dieses ist im Allgemeinen nicht leicht zu berechnen und hat
+eine komplexe Struktur. Die Idee ist es nun, die Daten in einen Raum
+mit höherer Dimension zu projizieren, sodass sich dort leichter
+eine trennende Ebene finden lässt (z.B. \([a_1,a_2]\) wird zu
+\([a_1^3,a_1^2 a_2, a_1 a_2^2, a_2^3]\), also von 2D zu 4D).
+
+Aber zunächst nocheinmal eine grundlegende Definition:
+Gegeben zwei separierbaren Datenmengen. Die \textbf{Maximum
+Margin Hyperplane} zwischen diesen beiden Mengen ist die Ebene, die
+die Daten bei größt möglichem Abstand jeweils voneinander trennt, die 
+also "'am mittigsten"' zwischen den beiden Menge verläuft. Diese lässt
+sich relativ leicht finden für separierbare Daten: Man berechnet für beide
+Menge die konvexe Hülle, findet die kürzeste Strecke zwischen den
+beiden und die Mittelsenkrechte dieser Strecke wäre unsere Maximum
+Margin Hyperplane (hier im einfachen Fall von 2 Dimensionen). Man sieht,
+dass eine solche Gerade (bzw. Ebene) nur von ein paar wenigen Punkten
+bestimmt wird, nämlichen den jeweils nächsten Datenpunkten.
+Diese heißen \textbf{Support Vectors}. Es können pro Datenmenge
+durchaus mehrere Support Vectors existieren, ihre Anzahl ist im 
+Allgemeinen trotzdem recht klein. Dadurch, dass die Hyperplane nur von
+wenigen Vektoren abhängt, ist dieses Verfahren recht robust, da 
+ein Hinzufügen von neuen Datenobjekten nur selten eine Anpassung
+der Hyperplane nach sich zieht. Die Maximum Margin Hyperplane lässt
+sich auch in Abhängigkeit der Support Vectoren darstellen:
+\[x = b + \sum _{i \in SV} \alpha_i y_i <a(i),a>\]
+Hierbei ist \(b\) eine Konstante, \(i\) ist aus der Menge der Indizes 
+der Support Vectors, \(\alpha_i\) sein ein Gewicht, \(y_i\) ist die 
+Klasse des i-ten Objektes, \(a(i)\) ist der Vektor des i-ten Support 
+Vectors und \(a\) ist der zu klassifizierende Vektor. Normalerweise
+würde man die Hyperplane als eine Linearkombination darstellen, jetzt
+ist aber der Bezug zu den Support Vectors gegeben. Wer sich fragt,
+wie man auf die obige Darstellung kommt... Magie und Dualisierung.
+
+Unser Ziel ist es nun, die Maximum Margin Hyperplane in den verschiedenen
+Dimensionen zu finden und diese durch Rücktransformation in unserem
+Ursprünglichen Datenraum als Trennlinie für unsere Daten zu nutzen.
+So schön die Idee auch ist, das Problem stellt der Rechenaufwand dar:
+Dieser wächst nämlich kubisch in der Anzahl der zu berechnenden 
+Gewichte, was zu einem großen Teil durch die Berechnung von 
+Skalarprodukten kommt.
+
+Dieses Problem lässt sich jedoch umgehen: Mit den so genannten
+\textbf{Kernel-Functions} lässt sich die Performance von SVMs
+sigifikant verbessern, bzw. überhaupt erst ermöglichen. Wählt man
+für seine Berechnungen obige alternative Darstellung von Hyperplanes,
+so hat man durch das Skalarprodukt einen enormen Rechenaufwand 
+aufgrund der hohen Dimensionalität nach Transformation seiner Daten.
+Die Kernel-Functions sind im Prinzip eine spezielle Vorschrift für die
+Transformation unseres Datenraumes, die es uns erlaubt, Skalarprodukte
+für den höherdimensionalen Raum im ursprünglichen Raum zu berechnen.
+
+In unserer beispielhaften Transformation oben haben wir unseren
+2D-Raum in einen 4D-Raum verändernt, wobei jede Dimension nun
+ein Produkt aus 3 Faktoren war. Betrachten wir:
+\[x = b + \sum _{i \in SV} \alpha_i y_i (<a(i),a>)^n\]
+Das hat, ausmultipliziert für \(n=3\), die selbe Struktur wie 
+unsere Transformation,
+also eine Linearkombination aus Produkten mit 3 Faktoren (und ein
+paar Gewichten, die jedoch nur die Skalierung ändern und deswegen
+im Prinzip egal sind). 
+Generall ist jede Funktion eine Kernel Function, wenn sie sich als
+\[K(x,y) = <\phi(x), \phi(y)>\]
+darstellen lässt, wobei \(\phi\) eine Abbildung in einen höherdimensionalen
+Raum darstellt. Dieses Beispiel einer Kernel Function heißt Polynomieller
+Kernel, es gibt auch weitere, z.B. Radial, Sigmoid, etc.
+
+\subsection{Support Vector Regression}
+Bisher haben wir uns nur auf kategorische Klassifikation beschränkt.
+Jetzt wollen wir uns auch der numerischen Vorhersage widmen. Diese
+läuft ähnlich ab, wie die normale Lineare Regression. Wir wollen eine
+Gerade finden, die den Datenbestand möglichst gut approximiert und dabei
+die Fehler minimiert. Dies wollen wir jetzt mithilfe von Support Vectors tun.
+
+Eine Darstellung mit Support Vectors ist kompakt und lässt sich mittels
+einer Kernel-Function auch auf nicht-lineare Probleme anwenden.
+Die Idee ist es, einen Schlauch mit Durchmesser \(2\epsilon\) um
+unsere Gerade zu legen, in der Fehler \textbf{ignoriert} werden.
+Die außerhalb liegenden Punkte bestimmten nun den Fehler unserer Gerade
+und werden versucht zu minimieren. Außerdem wird eine möglichst flache 
+Gerade gesucht. Die Flachheit einer Geraden steht im Zusammenhang mit
+dem Mittelwert der Daten. Je flacher die Gerade, desto näher liegt der
+vorhergesagte Wert später am Mittelwert. Die Flachheit der Geraden 
+wird insbesondere von \(\epsilon\) bestimmt: Ein zu großer Wert
+führt zu einem Schlauch, in den alle Datenobjekte passen; unsere Gerade
+degeneriert zu einer Horizontalen und unsere Regression gibt immer
+exakt den Mittelwert aus. Ein zu kleiner Wert führt dazu, dass es mehr
+Objekte gibt, die bei der Fehlerberechnung eine Rolle spielen. Dies kann
+leicht ein Overfitting verursachen. Generell ist der Vorteil eines
+Schlauches, in dem Fehler ignoriert werden, die geringere Gefahr eines
+Overfittings. Die Gerade wird durch die jenigen Punkte bestimmt, die
+in die Fehlerberechnung miteinfließen, d.h. Support Vectors sind alle
+Punkte, die genau auf dem Schlauch oder außerhalb lieben.
+Damit lässt sich die Gerade als
+\[x = b + \sum _{i \in SV} \alpha_i <a(i),a>\]\
+darstellen.

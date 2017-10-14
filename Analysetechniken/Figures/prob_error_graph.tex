@@ -1,0 +1,34 @@
+\begin{figure}[ht]
+	\centering
+	\begin{tikzpicture}
+		\draw [->] (0,0) -- (10,0);
+		\draw [->] (0,0) -- (0,10);
+		\draw [dotted] (0,10) -- (10,10);
+		\node [below] at (5,-0.5) {\(p[+]\)};
+		\node [left] at (-0.5,5) {\(\epsilon\)};
+		\node [below left] at (0,0) {\(0\)};
+		\node [left] at (0,10) {1};
+		\node [below] at (10,0) {1};
+		\node [right] at (6,9) {Always wrong};
+		\node [right] at (6,1) {Always right};
+		\node [below] at (2,7) {Always pick +};
+		\node [right] at (8,7) {Always pick -};
+		\draw [arrows = {-Stealth[]}] (6,1) -- (5,0); 
+		\draw [arrows = {-Stealth[]}] (6,9) -- (5,10);
+		\draw [blue, arrows = {-Stealth[]}] (8,7) -- (7,7);
+		\draw [red, arrows = {-Stealth[]}] (2,7) -- (2,8);
+		\draw [dashed, blue] (0,0) -- (10,10);
+		\draw [dashed, red] (0,10) -- (10,0);
+		\draw [thick] (0,2) -- (10,5);
+		\node [right] at (10,5) {A};
+		\draw [<->] (-0.2, 0.3) -- (-0.2,1.7);
+		\node [] at (-0.5,1) {\(f_p\)};
+		\draw [<->] (10.2,0.3) -- (10.2,4.7);
+		\node [] at (10.5,2.5) {\(f_n\)};
+	\end{tikzpicture}
+	\caption{Eine alternative Darstellung von erwartetem Fehler 
+	\(\epsilon\) im Verhältnis zur
+	Wahrscheinlichkeit \(p[+]\), dass ein zufälliges Objekt zur Klasse \([+]\) 
+	gehört.}
+	\label{fig:alt}
+\end{figure}

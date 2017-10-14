@@ -1,0 +1,135 @@
+\section{Ensembles}
+Ensembles sind Modelle, die bekannte Classifier miteinander
+kombinieren. Damit soll ein Overfitting vermieden werden
+und die Vorhersagen sollen durch leichte Variationen verbessert werden.
+
+\subsection{Bagging}
+Bagging basiert darauf, dass man Randomisierung benutzt,
+um die erstellten Modelle unseres Lern-Algorithmus (z.B. 
+zur Erstellung eines Entscheidungsbaumes) leicht zu variieren,
+um damit "'lokale Schwächen"' der einzelnen Modelle auszugleichen.
+So kann Overfitting leicht verhindert werden.
+
+Die einfachste Variante der Randomisierung ist eine Art von Sampling.
+Gegeben unseren Trainingsdatenbestand. Aus diesem ziehen wir nun eine
+bestimmte Anzahl an neuen Datenbeständen \textbf{mit} Zurücklegen.
+Dadurch können einzelne Elemente auch mehrfach oder andere auch gar
+nicht vorkommen. Wir erwarten nun, dass die Modelle, die jeweils auf einem
+anderen Datenbestand erstellt werden, leicht unterschiedlichen sind. Am besten
+wählen wir hier einen Lern-Algorithmus, der nicht stabil ist, also auch schon für
+relativ kleine Veränderungen im Datenbestand unterschiedliche Modelle liefert.
+
+Das Ergebnis unseres Ensembles ist dann per Voting im kategorischen
+oder als Durchschnitt der Ergebnisse der einzelnen Classifier
+im numerischen Fall zu bestimmen. Bagging ist auch eine gute Möglichkeit,
+die Güte von Wahrscheinlichkeitsvorhersagen im Kontext von Entscheidungsbäumen
+zu verbessern. Das naive Bestimmen der relativen Häufigkeiten ist nicht
+unbedingt statistisch signifikant. Aber durch die unterschiedlichen Ergebnisse
+im Ensemble gleichen sich die Fehler der einzelnen Bäume aus, wodurch die
+Wahrscheinlichkeiten wieder brauchbar werden.
+
+Wenn wir nicht nur die Wahrscheinlichkeiten wollen, sondern uns eher
+die Kosten interessieren, dann können wir wie bereits in früheren Abschnitten
+die Conditional Risk Function
+\[ R(i\ |\ x) = \sum_j P[j\ |\ x] * Cost(i,j)\]
+benutzen. Hierbei ist \(i\) die vorhergesagte Klasse und \(j\) die tatsächliche
+Klasse. Betrachten wir unseren Trainingsdatenbestand: Es ist nun egal,
+ob wir die echte Klassenzugehörigkeit explizit gegeben haben, was wir brauchen
+ist die Wahrscheinlichkeit für jedes Objekt zu einer bestimmten Klasse zu gehören.
+Dann lässt sich damit das Conditional Risk berechnen und wir wählen als "'echte"'
+Klasse nun diejenige, die die geringsten Kosten verursacht. Diesen Vorgang nennt
+man \textbf{Relabeling}. Indem wir jetzt die Kosten "'implizit"' in den 
+Trainingsdaten versteckt haben, können wir einen beliebigen Classifier nehmen
+und ihn auf unseren Daten lernen lassen mit dem Ergebnis, dass dieser durch das
+Relabeling automatisch die Kosten berücksichtigt. Bei Bagging nennt man dies
+auch \textbf{MetaCost}.
+
+Wie bereits erwähnt gibt es verschiedene Arten der Randomisierung. Neben
+Sampling gibt es solche, die sich mehr auf die lernenden Verfahren beziehen,
+z.B. bei Entscheidungsbäumen wird nun zufällig aus den N-besten Splits einer
+gewählt, oder bei NN-Classifiern wird die Distanzberechnung nur in bestimmten,
+unterschiedlichen zufälligen Teilräumen (also nach Anwendung von PCA oder SVD) 
+ausgeführt.
+
+Bagging kann auch Wahrscheinlichkeiten als Vorhersage generieren: Geben die
+einzelnen Classifier bereits Wahrscheinlichkeiten aus, so kann man einfach den 
+Mittelwert nehmen. Werden absolute Klassenvorhersagen getroffen, so kann 
+das Ensemble einfach die relativen Häufigkeiten ausgeben.
+
+\subsection{Boosting}
+Boosting ist eine andere Variante von Ensembles, die darauf abzielt, den Fokus
+der Classifier auf Datenobjekte zu lenken, die oft falsch vorhergesagt werden.
+Während bei Bagging die Modellgenerierung unabhängig voneinander abläuft,
+bauen die Modelle beim Boosting aufeinander auf.
+
+Zunächst werden allen Datenobjekten gleiche Gewichte zugewiesen. Dann berechnet
+lernt man seinen Classifier auf den Daten und berechnet den Fehler. Ist der Fehler
+0 oder größer gleich \(0.5\), dann wird das Modell verworfen. Ein perfekter Classifier
+wird verworfen, da unsere Berechnungen später sonst nicht mehr funktionieren.
+Ein Fehler \(\geq 0.5\) zeigt an, dass unser Classifier nicht besser ist,
+als naives Raten. Wenn wir also einen zulässigen Fehlerwert haben,
+wir das Gewicht jedes korrekt klassifizierten Datenobjektes verringert,
+indem es mit \(\frac{e}{1-e}\) multipliziert wird, wobei \(e\) der Fehler ist.
+Dadurch wird bei geringen Fehlerraten das Gewicht der richtig klassifizierten 
+Objekte sehr klein. Ein Normalisierung aller Instanzgewichte führt zu einer
+entsprechend größeren Gewichtung der falsch geschätzten Instanzen. Mit diesen
+Gewichten wir nun ein neues Modell gelernt.
+
+Aber wie kann man nun die Gewichtung in den Lern-Algorithmus "'drücken"'?
+Prinzipiell ist das mit jedem Classifier ganz einfach möglich: Man wendet 
+Resampling wie bei Bagging an, wobei nun die Gewichte den Wahrscheinlichkeiten
+entsprechen, mit denen ein Objekt gezogen wird. Dadurch sind die Objekte mit 
+höherem Gewicht im Datenbestand überrepräsentiert und unser Lern-Algorithmus
+fokusiert sich auf diese besonders stark. 
+
+Hat man alle seine Classifier beisammen, so kann man auch noch eine 
+Gewichtung der Vorhersagen der einzelnen Classifier vornehmen. Hierfür
+wird ihre Confidence \(conf = -\log \frac{e}{1-e}\) berechnet, die nun
+als Gewicht für die Vorhersage dient. Boosting gibt als Ergebnis dann die Klasse
+zurück, deren Gewicht am größten ist. Hier gilt, dass für kleine Fehlerraten der 
+Logarithmus schnell groß wird, wodurch gute Classifier ihrer Vorhersage viel
+Gewicht verleihen können.
+
+Es gibt auch eine Variante von Boosting, die mit einem Greedy-Prinzip versucht,
+nur dann neue Classifier zum Ensemble hinzuzufügen, wenn deren Fehler geringer
+ist, als der des Vorgängers. Hier ist jedoch zum einen die Komplexität der Modelle
+zu bemängeln und zum anderen führt ein solches Verfahren schnell zu Overfitting.
+
+\subsection{Stacking}
+Der Unterschied zwischen Stacking und den anderen beiden Ensembles ist,
+dass man sich bei Stacking nicht nur auf eine einzige Art von Classifier festlegt,
+sondern die Möglichkeit hat, mehrere miteinander zu kombinieren.
+Dies funktioniert folgendermaßen: Auf \textbf{Level 0} nimmt man beliebige
+herkömmliche Classifier (z.B. Naive Bayes, Decision Tree, Instanz-basierten Lerner)
+und auf \textbf{Level 1} benutzt man ein \textbf{Meta-Modell}, welches aus
+den Ergebnissen aus Level 0 eine Aussage ableitet. Im Prinzip muss das Meta-Modell
+noch nichtmal großartig komplex sein; die meiste Arbeit wurde bereits auf 
+Level 0 erledigt. Man muss jedoch aufpassen, dass die Aussagen der Classifier 
+richtig gewichtet werden. 
+
+Die Gefahr beim Stacking ist, dass, wenn man den ganzen Datenbestand für
+das Training der Level 0 Lernern nutzt, man unterschiedlich gute Classifier erhält.
+Fängt man dann an, seinen Level 1 Lernen auf die bereits verwendeten Daten
+anzusetzen, so wird dieser feststellen, dass manche Classifier bessere Vorhersagen
+auf dem gegebenen Datenbestand liefern, als andere. Daraus könnte sich für
+das Meta-Modell leicht die Regel ableiten lassen, dass es nur den besseren 
+Classifiern vertraut und die Inputs der anderen verwirft. 
+
+Deswegen ist es nötig, mit den gegebenen Daten klug umzugehen. Eine einfache
+Möglichkeit ist es, Holdout Daten zu verwenden, um dann am Ende unser Meta-Modell
+auf "'frischen"' Daten zu trainieren. Eine andere Möglichkeit wäre die 
+Anwendung von cross-validation, wodurch dann auch der volle Datenbestand
+für das Lernen des Meta-Modells zur Verfügung steht.
+
+\subsection{Interpretation von Ensembles}
+Noch ein letzter kurzer Einlass über die Interpretation von Ensembles.
+Im Allgemeinen sind Ensembles aufgrund ihrer Struktur und insbesondere bei
+Stacking aufgrund ihrer Diversität schwer zu durchblicken. Für den User
+ist das Ensemble also sowas wie eine Black-Box, die er nicht verstehen kann.
+Man kann dies in gewisser Weise umgehen, indem man das Prinzip von 
+Relabeling nutzt: Wir werden unser Ensemble auf unseren Datenbestand an
+und relabeln die Daten mit den Verhersagen des Ensembles. Auf den gerelabelten
+Daten wenden wir dann einen einfach Lern-Algorithmus an, z.B. einen
+Entscheidungsbaum, der dann implizit das Ensemble "'verinnerlicht"' hat. Nun
+hängen die Entscheidungen nur noch von einem Classifier ab und die
+Klassifikation / Vorhersage wird transparenter.

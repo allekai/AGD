@@ -1,0 +1,326 @@
+\section{Pattern Mining unter Constraints}
+\subsection{Constrained Association Rules}
+Die bisher vorgestellten Verfahren von Pattern Mining
+haben das gemeinsame Problem, dass sich nicht fokusierbar
+sind. Es werden immer alle Rules gemined, ganz gleich, ob
+diese auch wirklich interessant für den User sind. Besser
+wäre es, wenn man stattdessen dem User ein Interface gibt,
+welches er zur Einschränkung der Suche nutzen kann. Damit
+kann neben relevanteren Ergebnissen unter Umständen auch
+eine Verkürzung der Laufzeit einhergehen. 
+
+Das Mining bisher hat sich die Konzepte von Support und
+Confidence zu nutzen gemacht, um Items und Transaktionen
+zu prunen. Dies soll nun durch das Pruning mit Constraints
+ersetzt werden. Ein Item oder eine Transaktion wird dann
+geprunt, wenn es/sie nicht mehr alle Constraints erfüllt.
+
+Ein naiver Ansatz wäre nun, zuerst mit den bekannten 
+Algorithmen alle Association Rules zu generieren und diese
+dann in einem \textit{Post-Pruning} hinterher zu filtern.
+Diese Variante ist jedoch nicht effektiv, da
+die Laufzeit eines solchen Vergehens offensichtlich mehr
+Zeit in Anspruch nimmt, als nötig. Es wäre doch viel besser,
+wenn man schon während der Association Rule Erzeugung
+die irrelevanten Rules prunen könnte. Das ist in der Tat
+möglch, dafür müssen die Constraints jedoch bestimmte
+Eigenschaften erfüllen, auf die wir gleich eingehen werden.
+
+Zunächst klassifizieren wir jedoch die möglichen Constraints.
+Im Wesentlichen lässt sich zwischen \textbf{Data Constraints}
+und \textbf{Rule Constraints} unterscheiden.
+
+\textit{Data Constraints} spezifizieren sehr genau, wie das
+Mining Ergebnis auszusehen hat, z.B. "'Finde alle Produkte,
+die in \textit{Freiburg} im \textit{Dezember 2014} oft
+zusammen gekauft wurden."', oder Einschränkungen auf 
+bestimmte Attribute, z.B. (region, price, brand, customer).
+Das Problem ist, dass hierbei die Mining Ergebnisse nicht
+nur besonders stark eingegrenzt werden; es setzt auch voraus,
+dass der User ein sehr gutes Verständis der Daten hat und
+schon eine Vorstellung hat, wie das Ergebnis aussehen sollte.
+
+\textit{Rule Constraints} hingegen wirken nicht so
+einschränkend. Sie treffen lediglich Aussagen über die
+Struktur der zu minenden Regeln, z.B. "'Nur Frequent Itemsets
+der Größe 3."' oder "'Finde alle Paare von günstigen Items, 
+die den Kauf eines oder mehrerer teurer
+Item(s) gefördert haben."'
+
+Im Folgenden werden wir auf zwei Ansätze eingehen, mit
+denen Constraint basiertes Mining möglich ist. Der
+Unterschied zwischen den beiden Ansätzen besteht in der
+zugrunde liegenden Datenstruktur (vermutlich können
+die Konzepte trotzdem auch auf andere Situationen 
+verallgemeinert werden).
+
+\subsubsection{Meta-Rule Guided Mining}
+Beim Meta-Rule Guided Mining gehen wir von einer
+relationalen Datenbank mit Schema aus. Für Datenbanken
+kennt man im Allgemeinen bereits schon naive Anfrage-
+Sprachen wie SQL. Das Problem ist, dass diese zu restriktiv
+sind. 
+
+Eine Abwandlung hiervon ist die \textit{Data Mining Query
+Language} (DMQL). Angenommen, wir hätten eine Datenbank, die wie folgt aussieht:
+\begin{align*}
+	student(\text{name, sID, status, major, gpa, birthplace,
+	birthdate, adress})\\
+	course(\text{cID, title, dept})\\
+	grading(\text{sID, cID, instructor, semester, grade}).
+\end{align*}
+Eine Anfrage in DMQL hätte dann ungefähr die Form:
+\begin{align}
+	\text{Finde alle Regeln der Form:}\\
+	major(s:\text{ student},\ x)\wedge Q(s,\ y)
+	\Longrightarrow R(s,\ z)\\
+	\text{from } student\\
+	\text{where } birthplace = Canada\\
+	\text{in relevance to } major,\ gpa,\ status,\ adress.
+\end{align}
+In dieser Anfrage sind mehrere Arten von Constraints
+enthalten, auch einige, die nicht Teil der Vorlesung waren.
+Die bisher kennengelernten \textit{Data} und 
+\textit{Rule Constraints} kommen in obigem Beispiel
+aber auch vor: In Zeile 2 ist die so genannte \textbf{
+Meta Rule} zu finden. In ihrer ersten Komponente stellt
+\(student\) eine Data Constraint dar. Ebenso ist Zeile 3
+eine Data Constraint, da sie angibt, welche Art von Daten 
+als Ergebnis zulässig sind. Auch Zeile 4 ist eine Data 
+Constraint. Eine Rule Constraint stellt die Tatsache dar, dass
+auf der linken Seite der Regel zwei Prädikate stehen müssen.
+Prädikate sind Variablen, die mit Attributen aus der 
+betrachteten Datenbank instanziiert werden während dem
+Mining Prozess. Das Mining Ergebnis könnte dann die Form
+\[
+major(s,\text{ Art}) \wedge gpa(s, \text{ Excellent})
+\Longrightarrow status(s, \text{ Graduate})
+\quad (60\%)
+\]
+haben, also alle Kanadier, die Kunst studieren und einen
+exzellenten Notenschnitt haben, bestehen auch ihr Studium,
+wobei diese Regel einen Support von 60\(\%\) hat. Ein 
+Kapitel über Meta-Rule Guided Mining findet sich auch in
+\citet{HanBOOK}; hier werden jedoch ein paar Konzepte
+anders als in der Vorlesung definiert. 
+
+\subsubsection{1-var und 2-var Constraints}
+Wenn wir es nicht mit einer ganzen relationalen Datenbank
+zu tun haben, sondern nur mit einer einfachen Datenbank
+aus unserem Warenkorb-Szenario, dann gibt es die Möglichkeit
+mit \textbf{1-var} und \textbf{2-var Constraints} zu 
+arbeiten. Wie der Name schon sagt wirkt jeweils entweder
+eine Seite der Regel (links oder rechts) oder beide Seiten 
+einschränkend. 
+
+\begin{enumerate}
+\item \textbf{1-var Constraints:} Eine 1-var Constraint kann eine der
+folgenden Formen annehmen.
+\begin{enumerate}
+\item \textit{Class Constraint:} Hat die Form \(S\subset A\), wobei
+\(S\) eine Menge und \(A\) ein Attribut ist. Diese Constraints sagen
+aus, dass \(S\) eine Menge von Werten aus der Domain von \(A\) ist.
+\item \textit{Domain Constraints:} Hat eine der folgenden Formen.
+\begin{enumerate}
+\item \(S\theta v\), wobei \(S\) eine Menge, \(v\) eine Konstante aus der
+Dömane von \(S\) und \(\theta\in\{=,\neq, <,\leq, >\geq\}\) ist.
+Sie sagen aus, dass alle Elemente aus \(S\) in der Beziehung \(\theta\)
+zu \(v\) stehen.
+\item \(v\theta S\), wobei \(v\) und \(S\) wie oben sind und 
+\(\theta\in\{\in,\notin\}\) ist. Sie sagen lediglich aus, dass
+\(v\) in \(S\) vorkommen muss (oder nicht vorkommen darf).
+\item \(V\theta S\) oder \(S\theta V\), wobei \(S\) wie oben ist,
+\(V\) eine Menge von Konstanten aus der Domäne von \(S\) und 
+\(\theta\in\{\subseteq ,\not\subseteq , \subset ,\not\subset , =,\neq\}\) ist.
+\end{enumerate}
+\item \textit{Aggegrate Constraint:} Hat die Form \(agg(S)\theta v\),
+wobei \(agg\) eine der Aggregatsfunktionen \textit{min, max, sum, count} und
+\textit{avg} ist, und \(\theta\in\{=,\neq,<,\leq,>,\geq\}\) ist. Sie sagt aus,
+dass das Aggregat der numerischen Werte aus \(S\) in der Beziehung \(\theta\) zu
+\(v\) stehen.
+\end{enumerate}
+\item \textbf{2-var Constraints:} Eine 2-var Constriant kann eine der folgenden
+Formen annehmen.
+\begin{enumerate}
+\item \(S_1\theta S_2\), wobei \(S_i\) eine Menge und \(\theta\in\{\subseteq,
+\not\subseteq, \subset,\not\subset\}\) ist.
+\item \((S_1\diamond S_2)\theta V\), wobei \(S_1,\ S_2\) Mengen sind, 
+\(\diamond\in\{\cap,\cup\}\) und \(\theta\in\{=,\neq ,\subseteq ,\not\subseteq ,\subset ,
+\not\subset \}\) ist.
+\item \(agg_1(S_1)\theta agg_2(S_2)\), wobei \(\theta\in\{=,\neq ,< ,\leq , > ,\geq\}\)
+ist.
+\end{enumerate}
+\end{enumerate}
+
+
+Eine Anfrage unter gegebenen Constraints an die Datenbank
+unter Zuhilfenahme der eben vorgestellten 1-var und 2-var 
+Constraints ist mit der \textit{constrained association
+query} (CAQ) möglich. Diese hat die Form \(\{S_1,S_2
+\ |\ \mathcal{C}\}\)	, wobei \(\mathcal{C}\) eine
+Menge an Constraints auf \(S_1,\ S_2\) ist. Ein Beispiel
+wäre 
+\begin{align*}
+\{(S_1,S_2)\ |\ &S_1\subset \text{Item }\&\ 
+S_2\subset \text{Item }\ \&\\
+&count(S_1) = 1\ \&\ count(S_2) = 1\ \&\\
+&freq(S_1)\ \&\ freq(S_2)\}.
+\end{align*}
+Diese CAQ fragt nach allen Single Item Paaren, die den 
+Mindestsupport erfüllen. Für ausgefeiltere CAQs und Beispiele
+sei auf \citet{Ng98} verwiesen.
+
+Beim Apriori Algorithmus und seinen Erweiterungen hat
+man sich zwei wichtige Eigenschaften von Frequent Itemsets
+zu nutze gemacht, nämlich die, dass alle Untermengen eines
+Frequent Itemsets ebenfalls frequent sein müssen, und
+dass keine Obermenge eines nicht frequent Itemsets frequent
+sein kann. Diese Eigenschaften haben sich zur Generierung
+von Frequent Itemsets "'tief in den Algorithmus"' reindrücken
+lassen, d.h. dass sie schon während den einzelnen Iterationen 
+berücksichtigt wurden. Für unsere Constraints wollen wir
+nun im Folgenden auch solche Eigenschaften finden, die es
+uns erlauben, die Constraints möglichst weit in unseren
+Algorithmus reinzudrücken, wodurch sich der Aufwand im
+Post-Pruning erheblich verringert oder sogar ganz entfällt.
+
+\subsubsection{Eigenschaften von Constraints}
+\begin{table}[!ht]
+  \centering
+  \caption{Charakterisierung der Anti-Monotonizität und Succinctness von
+	1-var Constraints.}
+  \label{tab:var_con}
+\begin{tabular}{lcc}
+	\toprule
+	1-var Constraint & Anti-Monoton & Succinct\\
+	\midrule
+	\(S\theta v\), \(\theta\in\{=,\leq,\geq\}\) & ja & ja\\
+	\(v\in S\) & nein & ja\\
+	\(S\supseteq V\) & nein & ja\\
+	\(S\subseteq V\) & ja & ja\\
+	\(S = V\) & teilwese & ja\\
+	\midrule
+	\(min(S)\leq v\) & nein & ja\\
+	\(min(S)\geq v\) & ja & ja\\
+	\(min(S) = v\) & teilweise & ja\\
+	\midrule
+	\(max(S)\leq v\) & ja & ja\\
+	\(max(S)\geq v\) & nein & ja\\
+	\(max(S) = v\) & teilweise & ja\\
+	\midrule
+	\(count(S)\leq v\) & ja & schwach\\
+	\(count(S)\geq v\) & nein & schwach\\
+	\(count(S) = v\) & teilweise & schwach\\
+	\midrule
+	\(sum(S)\leq v\) & ja & nein\\
+	\(sum(S)\geq v\) & nein & nein\\
+	\(sum(S) = v\) & teilweise & nein\\
+	\midrule
+	\(avg(S)\theta v\), \(\theta\in\{=, \leq, \geq\}\) & nein & nein\\
+	\midrule
+	(Frequency Constraint) & (ja) & (nein)\\
+	\bottomrule
+\end{tabular}
+	\\
+	\vspace{10pt}
+	{\raggedright \(^*\) Aus Platzgründen sind hier die Negationen der 
+	jeweiligen Relationen nicht aufgelistet.\\}
+\end{table}
+
+Die gewünschten Eigenschaften heißen \textbf{Anti-
+Monotonizität} und \textbf{Succinctness}.
+
+Erstere lässt sich wie folgt definieren: \textit{Eine 1-var
+Constraint C ist anti-monoton genau dann, wenn für alle
+Mengen \(S,\ S'\) gilt:}
+\[ S \supseteq S' \& \text{ S erfüllt C} \Longrightarrow
+\text{ S'erfüllt C}. \]
+Das Ziel ist es nun, mithilfe der Anti-Monotonizität möglichst
+früh diejenigen Itemsets, die das Constraint nicht mehr
+erfüllen, zu prunen, da auch deren Obermengen die 
+Constraints nicht mehr erfüllen können.
+
+Die Succintcness-Eigenschaft soll es ermöglichen, schon die
+Kandidaten nicht zu erzeugen, die die Constraints nicht 
+erfüllen würden. Die Definition ist nicht so straight-forward
+wie bei der Anti-Monotonizität, der interessierte Student sei
+abermals auf \citet{Ng98} verwiesen. Man sollte sich merken,
+dass ein Constraint dann succinct ist, wenn man alle
+Itemsets, die das Constraint erfüllen, "'kurz und knapp"'
+aufschreiben kann. Das heißt, man kann bereits alle möglichen
+Frequent Itemsets und Association Rules erzeugen, ohne überhaupt
+jemals auf die Datenbank geblickt haben zu müssen. Dies ist z.B.
+mit regulären Ausdrücken möglich.
+
+Dies ist bei Weitem noch nicht der Wahrheit letzter Schluss. Es wurden
+Effektiv gerade mal die grundlegenden Konzepte erklärt. Die genaue
+Implementierung der Constraints in den Algorithmus stellt ein ganz
+anderes Problem dar. Es ist leicht zu erkennen, dass aufgrund der
+unterschiedlichen Kombinationen von Constraint Eigenschaften, z.B.
+anti-monoton aber nicht succinct oder sowohl anti-monoton als auch 
+succinct, andere Strategien beim Einfügen in den verwendeten Algorithmus
+benutzt werden müssen,
+eine Übersicht findet sich in Tabelle~\ref{tab:var_con}. 
+Da dies aber über den Stoff der Vorlesung hinaus
+geht, beschäftigen wir uns lieber mit einer anderen Variation: Dem Finden
+von \textit{Frequent Sequences}.
+
+\FloatBarrier
+\subsection{Constrained Frequent Sequence Mining}
+Anstelle von Itemsets kann es auch interessant sein, sich Folgen von Items
+anzuschauen. Eine Folge von Items ist eine Menge \(S = \langle s_1,\ \dots,\ 
+s_n\rangle\), bei der die Reihenfolge fest gegeben ist. Eine Teilfolge \(T\)
+lässt sich aus \(S\) generieren, indem beliebig viele \(s_i\in S\) aus \(S\)
+für \(i \leq n\) entfernt werden. Aus wirtschaftlicher Sicht kann dies
+interessant sein, wenn z.B. einen Einkaufstrend für schwangere Frauen in den
+Daten erkennen kann. Hat man so etwas wie ein Pattern für das Einkaufsverhalten
+von Frauen über den gesamten Zeitraum der Schwangerschaft, so könnte man diese
+Informationen nutzen, um jeweils zugeschnittene Werbung für potentiell Schwangere
+zu schalten.
+
+Das Mining nach Frequent Sequences ist dem von Association Rules nicht unähnlich.
+Das Grundgerüst stellt wieder der Appriori Algorithmus dar. Dieser wird dadurch
+erweitert, dass innerhalb jeder Iteration sowohl Support-basiert, als auch
+Constraint-basiert geprunt wird. Constraints sind in diesem Falle meist 
+\textit{Reguläre Ausdrücke}, da sie zum einen ein mächtiges Beschreibungswerkzeug
+und zum anderen leicht in deterministische endliche Automaten überführbar sind.
+Auch für  RegEx gibt es die Konzepte von Anti-Monotonizität und Succinctness, wobei
+Succinctness nach dem Verständis des Verfassers schon sowieso für alle RegEx gilt.
+
+Ein Beispiel für eine \textit{nicht} anti-monotone RegEx wäre \((ab)^*\). Betrachtet
+man die Folge \(abab\), welche die Constraint erfüllt, so besitzt diese diverse 
+Teilfolgen, z.B. \(aab\), die die Constraint nicht mehr erfüllen. Beim Mining
+wäre es egal, ob die Folge \(aab\) möglicherweise frequent ist, da sie aufgrund
+des Constraint-basierten Prunings (welches vor dem Support-basierten geschieht,
+da man sonst das Constraint nicht effektiv genutzt hätte) niemals in \(L_3\)
+erscheinen wird. 
+
+Auf den ersten Blick scheint dies ja wünschenswert zu sein.
+Man erhält gerade die Frequent Sequences, die das Constraint erfüllen und man
+muss sich nicht mit Sequencen herumschlagen, die zwar frequent sind, jedoch das
+Constraint nicht erfüllen und damit für den User uninteressant sind. The devil
+is in the detail.
+
+Wenn unser Constraint nicht anti-monoton ist, dann kann es passieren, dass eine
+Teilfolge existiert, die unser Constraint nicht erfüllt, obwohl die Ausgangsfolge
+konform ist. Schaut man in den SPIRIT Algorithmus \citep{Garofalakis99}, so sieht man aber, dass dann
+eine solche Folge für die späteren Iterationen nicht mehr betrachtet wird, man hat
+für diese Teilfolgen keine Informationen mehr über ihren Support-count. Das hat
+zur Folge, dass diese Folgen nicht mehr zum Support Counting von längeren Folgen
+benutzt werden können, d.h. die Effektivität unseres Support-basierten Prunings
+wird erheblich verringert. 
+
+Dieser Trade-Off zwischen Constraint- und Support-basiertem Pruning hängt in
+großem Maße von der Restriktivität unseres gewählten Constraints ab. Ist es sehr
+restriktiv (und damit im Allgemeinen auch oft nicht mehr anti-monoton), so bleibt
+offensichtlich hinterher "'nicht mehr viel"' für das Support-basierte Pruning übrig.
+Es konnte in Studien gezeigt werden, dass ein zu starkes Constraint sich sogar negativ
+auf die Laufzeit unseres Algorithmus auswirken kann. Ein Möglicher Lösungsansatz
+ist die \textbf{Relaxation} unseres Anfangsconstraints \(C\). Hierbei wird einfach ein
+Constraint \(C'\) gewählt, für das gilt:\textit{ Wenn eine Folge \(C\) erfüllt, dann erfüllt
+sie auch \(C'\).} Es gibt verschiedene Abstufungen der Stärke der Relaxation, es
+reicht aber, sich zu merken, dass \(C'\) "'mehr durchlässt"' als \(C\). Am besten
+wählt man \(C'\) derart, dass es anti-monoton ist, sodass man alle Teilfolgen einer
+erzeugten zulässigen Folge behalten und damit für das Support-basierte Pruning nutzen
+kann. Für genauere Infos und die Ergebnisse der verschiedenen Relaxationsstufen sei
+auf \citet{Garofalakis99} verwiesen.

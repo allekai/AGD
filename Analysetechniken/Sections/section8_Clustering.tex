@@ -1,0 +1,841 @@
+\section{Clustering}
+Beim Clustering geht es darum, eine möglichst natürliche 
+Partitionierung der Daten in \(k\) Cluster zu finden. Cluster
+können anhand ihrer \textbf{Intra-} und \textbf{Inter-Cluster
+Similarity} qualifiziert werden, also wie sehr sich die Elemente
+im selben Cluster ähneln und wie sehr sich die Objekte aus
+verschiedenen Clustern unterscheiden. Gemessen wird diese
+Ähnlichkeit im Allgemeinen mit der Distanz der Objekte zueinander
+gemessen. Damit lässt sich die so genannte \textbf{Criterion
+Function} aufstellen, die minimiert werden soll:
+\[\text{min } E = \sum_{i=1}^k \sum_{\vec{x}\in C_i} 
+d(\vec{x},\ \vec{m_i}).\]
+Hierbei muss \(k\) jedoch bekannt sein; das Problem ist nun
+jedoch die Wahl von \(k\). Das beste Ergebnis entsteht
+trivialerweise, wenn man jedem Datenobjekt seinen eigenen
+Cluster zuweist, wodurch \(E\) verschwindet. Das kann
+jedoch nicht gewünscht sein. 
+
+Die Wahl der Anzahl der Cluster ist also generell ein nicht 
+offensichtlich lösbares Problem. Es würde ein profundes Wissen
+über die Verteilung der Daten voraussetzen, was jedoch meistens
+nicht vorhanden ist. Deswegen werden stattdessen oft verschiedene
+Clusterings erzeugt, die dann miteinander verglichen werden. Auf
+das beste Clustering fällt dann die Wahl.
+
+Aber was heißt hier das "'beste"'? Wie kann man die Güte eines
+Clusterings qualifizieren? Abhilfe verschafft uns hier der 
+\textbf{Silhouette-Koeffizient}. Dieser nutzt zum einen die
+Eigenschaften von Intra- \/ Inter-Cluster Similarity aus und 
+wächst zum anderne nicht monoton mit \(k\), was bei der
+Criterion Function nicht gegeben ist. Die Silhouette eines Objekte
+soll ausdrücken, wie sehr das Objekt tatsächlich zum
+theoretisch angenommenen Cluster und nicht zu nächst gelegenen
+gehört. Hierbei seien nun
+\begin{align*}
+a(o)&=\frac{1}{\left| C(o) \right|}\sum_{p\in C(o)}dist(o,\ p),\\
+b(o)&=\min_{C_i \neq C(o)} \left(\frac{1}{\left| C(o) \right|}
+\sum_{p\in C(o)}dist(o,\ p)\right)
+\end{align*}
+die mittleren Distanzen von Objekt \(o\) zu den Objekten des
+eigenen Clusters (\(a(o)\)) und den Objekten des nächstgelegenen
+anderen Clusters (\(b(o)\)). Das gewählte Objekt \(o\) kann
+nun entweder tatsächlich ein Objekt der Menge sein, oder ein
+beliebiger Repräsentant (z.B. der Centroid, dazu später mehr).
+
+Die Silhouette von \(o\) ist nun
+definiert als
+\[ s(o) = \begin{cases}
+		0 & \text{if } a(o)=0\text{, d.h. } \left| C_i \right| = 1,\\
+		\frac{b(o)-a(o)}{\max\{a(o),\ b(o)\}} & sonst.
+		\end{cases}\]
+Der Wertebereich von \(s(o)\) erstreckt sich auf \([-1,\ 1]\) .
+Werte nahe 1 bedeuten, dass unser Clustering relativ gut ist,
+da die Objekte in ihren eigenen Clustern liegen, womit \(a(o)\)
+klein wird. Liegen hingegen die Objekte in den falschen Clustern, 
+dann wird \(b(o)\) sehr klein, \(a(o)\) jedoch sehr groß, womit
+\(s(o)\) negativ wird. Es sind also Werte nahe bei 1 für \(s(o)\)
+wünschenswerte. Möchte man nun ein Clustering \(\mathcal{C}=
+\{C_1,\ \dots ,\ C_k\}\) als Ganzes bewerten, so kann man
+\[ silh(\mathcal{C}) = \frac{1}{\left| \mathcal{C}\right|}
+\sum_{C_i \in \mathcal{C}}\frac{1}{\left| C_i\right|}
+\sum_{o\in C_i} s(o)\]
+berechnen. Durch die Normalisierungen erstreckt sich der
+Wertebereich von silh(\(\mathcal{C}\)) wieder auf  \([-1,\ 1]\).
+Über die Interpretation, ab wann nun ein Clustering als gut
+zu bezeichnen ist, kann man, wie bei fast allen Koeffizienten,
+im Detail streiten. Grob sagt man, dass ein Clustering für 
+Werte \(> 0,5\) mittelmäßig bis gut sind, für Werte zwischen
+\(0\) und \(0,5\) keine oder nur eine schwache Strukturierung 
+vorliegt, und für negative Werte unser Clustering wohl falsch ist.
+
+Um diese Einführung in das Konzept von Clustering zu beenden 
+und mit den konkreten Clustering Algorithmen fortfahren zu können,
+müssen wir noch kurz ansprechen, wie man Distanzen zwischen
+Mengen von Datenobjekten misst. Dafür werden wir die drei folgenden
+Methoden verwenden, die im Wesentlichen gleich funktionieren,
+nämlich
+\begin{align*}
+\text{Single Link: }& dist_{sl}(X,\ Y) &= \min_{x\in X,\ y\in Y} 
+dist(x,\ y,),\\
+\text{Complete Link: }& dist_{cl}(X,\ Y) &= \max_{x\in X,\ y\in Y} 
+dist(x,\ y,),\\
+\text{Average Link: }& dist_{al}(X,\ Y) &= 
+\frac{1}{\left|X\right|\left|Y\right|}\sum_{x\in X,\ y\in Y} 
+dist(x,\ y).
+\end{align*}
+Der Single Link ist der Abstand zwischen den nächsten beiden Objekten
+zweier Cluster, der Complete Link beschreibt die Distanz zwischen den
+beiden am weitesten voneinander entfernten Objekten. Das Problem
+dieser beiden Maße ist, dass sie für Ausreißer besonders anfällig sind.
+Der Average Link ist in dieser Hinsicht geeigneter, insbesondere, wenn
+wird viele Datenobjekte zur Verfügung haben.
+
+
+Grob lassen sich Clustering Verfahren in folgende
+Kategorien einteilen:
+\begin{itemize}
+\item \textbf{Partitionierend:} Hierbei werden die Daten in
+Partitionen eingeteilt, so dass jede Partition nicht leer ist und jedes
+Objekt zu \textit{genau einem} Cluster gehört. Meistens gehen
+die Verfahren derart vor, dass zunächst ein initiales Clustering erstellt
+wird, welches in iterativen Abläufen durch Verschieben der Objekte
+in andere Cluster verbessert werden soll. Durch die schiere Menge
+an möglichen Partitionierungen ist es selten möglich, ein globales
+Optimum zu finden, insbesondere wenn wir es mit großen
+Datenbeständen zu tun haben. Stattdessen greift man auf Heuristiken
+zurück, indem z.B. Cluster durch Medoide (dazu gleich mehr) oder
+ihren Mittelwert repräsentiert werden. Diese Verfahren sind gut in der
+Lage, sphärische Cluster in kleinen bis mittleren Datenbeständen zu 
+finden. Für große Datenmengen oder komplex Clusterformen werden
+Erweiterungen der vorgestellten Algorithmen benötigt.
+\item \textbf{Hierarchisch:} Hierbei geht es darum, eine Hierarchie
+aufzubauen, die unseren Datenbestand wiederspiegelt. Im Wesentlichen
+unterscheidet man hier \textbf{agglomerative} (bottom-up) und
+\textbf{divisive} (top-down) Methoden. Das Problem bei diesen 
+Verfahren ist, dass man einen \textit{split} oder \textit{merge} 
+Schritt nicht mehr rückgängig machen kann. Das hat zwar den Vorteil,
+dass die kombinatorische Zahl an theoretisch zu betrachteten
+Möglichkeiten entfällt, dafür jedoch Fehler auch nicht mehr rückgängig
+gemacht werden können. Es gibt verschiedene Lösungsansätze, von
+denen wir uns später BIRCH ansehen werden, in welchem zunächst
+mittels agglomerativen hierarchischem Clustering ein (guter) 
+Ausgangspunkt für ein partitionierendes Verfahren erzeugt wird (man
+möchte hier vor allem die iterative Reallokation der Datenobjekte in
+den partitionierenden Verfahren nutzen).
+\item \textbf{Dichte-basiert:} Hierbei wird die Objektdichte
+in bestimmten Teilräumen betrachtet. Dadurch ist es möglich, zum
+einen Noise möglichst aus unseren Clustern rauszuhalten, was in
+den anderen Verfahren nicht ohne weiteres gegeben ist, und zum 
+anderen beliebige Formen von Clustern zu finden. 
+\item \textbf{Probabilistisch:} Bei diesen Verfahren werden
+Objekte nur mit einer bestimmten \textit{Wahrscheinlichkeit} einem
+bestimmten Cluster zugewiesen. Diese Verfahren nehmen für jedes
+Cluster eine Verteilungsfunktion an, mithilfe derer die Zugehörigkeit
+eines Objektes zu besagtem Cluster gemessen werden kann. Sie bieten
+auch die Möglichkeit, anhand der Daten die Anzahl der Cluster zu 
+bestimmen, auch unter Berücksichtigung von Noise und Ausreißern.
+\end{itemize}
+Verfahren aus verschiedenen Kategorien lassen sich auch leicht
+miteinander kombinieren (siehe BIRCH).
+
+\subsection{Partitionierendes Clustering}
+\subsubsection{k-Means}
+\textbf{k-Means} ist ein ziemlich einfaches, naives Clustering
+Verfahren. Am Anfang wählt man beliebig \(k\) Datenobjekte,
+die als Surrogate für unsere Cluster dienen, und weist dann jedes
+andere Datenobjekt dem ihm am nächsten gelegenen Surrogat zu.
+So erhält man eine Partitionierung aller Datenobjekte in \(k\) 
+Cluster. Da man nicht davon ausgehen kann, dass man beim ersten
+Mal bereits die optimalen Mittelpunkte der Cluster gefunden hat,
+geht man iterativ wie folgt vor: Man bestimmt den Mittelpunkt eines
+jeden Clusters und wählt im nächsten Schritt diese Mittelpunkte als
+Surrogate für die Neuzuweisung der Datenojekte. Dieses Vorgehen
+verschiebt in jedem Schritt den Mittelpunkt des aktuellen Clusters
+in Richtung des Mittelpunktes des (lokal) optimalen Clusters, so lange,
+bis für eine bestimmte Anzahl an Iterationen keine signifikante 
+Verbesserung mehr möglich ist (z.B. 4 Iterationen lang keine
+Verbesserung \(> \epsilon = 10^{-4}\)). Das Gütemaß kann
+hierbei sowohl die Criterion Function als auch der Silhouette Koeffizient
+sein, da unser \(k\) in jeder Iteration gleich bleibt. Die Wahl des
+Mittelpunktes kann auch auf zwei mögliche Methoden geschehen.
+Entweder wählt man den \textbf{Medoid} des Clusters oder den
+\textbf{Centroid}. Der Medoid ist der Datenpunkt, der dem 
+tatsächlichen Clustermittelpunkt, dem Centroid, am nächsten ist.
+Centroide sind also nicht notwendigerweise auch tatsächlich in unserem
+Datenbestand enhalten, jedoch kann der Fall eintreten, dass Medoid 
+und Centroid zusammenfallen.
+
+Die Wahl der Punkte in der Initialisierungsphase (auch \textbf{Seeds}
+genannt) ist maßgebend für das spätere Ergebnis. k-Means erzeugt
+nämlich zunächst nur lokale Optimalpunkte. Ein ungeschickte oder
+unglückliche Wahl der Seeds kann dazu führen, dass man ein Lösung
+findet, die vom globalen Optimum weit entfernt ist, dieses jedoch
+nie mit den gegebenen Seeds erreichen kann. Dies könnte z.B. dann passieren, 
+wenn die Seeds dicht beieinander liegen. Ein Ansatz wäre
+eine Greedy-Lösung, indem die Seeds immer mit einem Mindestabstand
+zueinander gewählt werden müssen. Dadurch wird eine bessere 
+Abdeckung der Raumes gewährleistet. Insgesamt ist diese Lösung aber
+auch kein Garant für ein (nahezu) globales Optimum, weswegen man
+auch mit einem Greedy-Ansatz nicht vermeiden kann, mehrere Runs
+von k-Means laufen zu lassen mit unterschiedlichen Seeds.
+
+Dies Stellt bereits eine der Variationen für k-Means dar. Neben der 
+Anzahl an Runs kann auch das Stop-Kriterium angepasst werden,
+wodurch die Genauigkeit der Lösung variiert werden kann. Hat man
+es mit sehr großen Datenbeständen zu tun, so kann es zu teuer sein,
+in jeder Iteration die ganze Datenbank zu scannen. Hierfür ist Sampling
+eine Lösung. Generell lässt sich aber wohl sagen, dass k-Means 
+besonders empfänglich für eine raffinierte Wahl der Seeds ist, da
+damit nicht nur die Laufzeit, sondern auch die Güte der Lösung
+stark beeinflusst werden können.
+
+Eine Variation des Verfahrens, die sich nicht mit den Parametern
+von k-Means beschäftigt, ist das Ersetzen von womöglich schlechten
+Medoiden. Ein Medoid kann als schlecht angenommen werden, wenn er
+weniger als \(\frac{N}{k}* minDev\) Datenobjekte zugewiesen
+bekommen hat. Hierbei ist \(N\) die Anzahl der Datenobjekte
+insgesamt, \(k\) die Anzahl der Cluster und \(minDev\) eine 
+Konstante, die der Tatsache Rechnung trägt, dass es wohl kaum eine
+Gleichverteilung der Daten auf alle Cluster gibt. Je nach Wahl von
+\(minDev\) sind also auch kleine Cluster möglich.
+
+\subsubsection{k-Means in der Variante CLARANS}
+Wie bereits eben gesagt, ist k-Means für sehr große Datenbestände
+ungeeignet, da zu viele Datenobjekte in jedem Schritt 
+zu oft betrachtet werden
+müssten. "'Zu oft"' bedeutet hier, dass in jeder Iteration jeder Medoid
+verändert wird, d.h. man muss alle Datenobjekte mit allen Medoiden
+neu vergleichen. Ebenfalls wurde gesagt, dass Sampling hier helfen kann.
+Dieses Verfahren hat sogar einen Namen, nämlich \textbf{CLARA}
+(Clustering LARge Applications). CLARA nimmt sich ein Sample,
+und führt auf diesem k-Means aus. Aufgrund der kleineren Größe
+kann k-Means effektiv ausgeführt werden und bei einer hinreichend 
+randomisierten Auswahl des Samples ist das Ergebnis meist auch
+recht gut.
+
+Ein Problem stellt jedoch die Beschränkung auf ein einziges Sample
+dar. CLARA wählt ein Sample, was effektiv eine Einschränkung des
+Raumes bedeutet. Ist in diesem Raum nun nicht der Optimalpunkt
+eines Clusters enthalten, so kann CLARA nie ein optimales Ergebnis 
+liefern. Man müsste CLARA mehrmals mit verschiedenen Samples
+laufen lassen.
+
+Dieses Problem wird durch \textbf{CLARANS} (Clustering Large
+Applications based upon RANdomized Search) gelöst. Die Grundidee
+ist, dass man einen Graphen betrachtet, in dem die Knoten Seeds
+für k-Means darstellen. Knoten sind genau dann verbunden, wenn
+sich die Seeds in \textit{genau einem} Medoiden unterscheiden.
+Der Unterschied zu CLARA besteht nun darin, dass man nicht auf einem
+Sample des Datenbestandes arbeitet, sondern auf einem Sample aus
+Nachbarn: Man wählt zunächst einen beliebigen Seed, also einen 
+beliebigen Knoten aus dem Graphen aus. Danach wählt man beliebig eine
+zuvor festgelegte Anzahl an Nachbarknoten und vergleicht die Clusterings
+untereinander. Das Clustering, welches am besten ist, wird als aktuelles
+Minimum gewählt. Ebenso wie k-Means findet CLARANS zunächst nur 
+lokale Optima, weswegen mehrere Runs von CLARANS mit unterschiedlichen
+Startseeds nötig sind. 
+
+Experimentell konnte gezeigt werden, dass CLARANS schneller läuft,
+als der naive k-Means und CLARA. Für die Performance kann man
+verschiedene Variationen bei der Auswahl der Nachbarn sowie der
+zugrunde liegenden Datenstruktur (z.B. R-Baum etc.) wählen. Das im
+letzten Abschnitt Gesagte über das Ersetzen von schlechten Medoiden
+lässt sich auch auf CLARANS übertragen.
+
+\subsubsection{BIRCH}
+Whut?\footnote{Okay, es lässt sich darüber streiten, ob wir BIRCH als
+hierarchisches
+oder als partitionierendes Verfahren einstufen. Let's be honest: BIRCH
+heißt \textit{Balanced Iterative Reducing and Clustering using Hierarchies}
+-- das trägt es ja schon im Namen. In der Vorlesung wird es als
+partitionierendes Verfahren vorgestellt; das könnte daran liegen, dass
+am Ende doch nur ein Seeds für ein partitionierendes Verfahren entsteht 
+bzw. dass die Lösung, die BIRCH anfangs produziert aus diversen
+Gründen weniger handlich ist, als es ein auf k-Means basierendes Verfahren
+liefern würde.}
+
+\noindent BIRCH benutzt als Grundgerüst einen so genannten
+\textbf{CF-Tree} (Clustering Feature Tree). In diesem werden die
+Cluster anhand ihrer bestimmten Features bestimmt und das auf
+mehreren Hierarchieebenen. Die Features eines Clusters sind ein
+Tripel \(CF=(N,\ \vec{LF},\ SS)\), wobei \(N\) die Zahl der 
+Datenobjekte im Cluster, \(\vec{LF} = \sum\nolimits_{i=1}^N
+\vec{o_i}\) die lineare Summe aller Objekte des Clusters und 
+\(SS=\sum\nolimits_{i=1}^N
+\vec{o_{i}^2}\) die Summe der Quadrate der Clusterobjekte ist.
+Mit diesen Werten lassen sich weitere Eigenschaften von Clustern
+berechnen, z.B. der Centroid und der Radius.
+\footnote{Sollte sich der Verfasser dieser Zeilen nicht irren, dann gilt
+für den Radius \(R = \left(\frac{SS}{N}-\frac{LS^2}{N^2}\right)^{\frac{1}{2}}\).}
+Diese kompakte 
+Darstellung von Clustern macht den CF-Tree zu einem sparsamen
+Repräsentanten des Clusterings auf unserem Datenbestand. 
+
+Der Vollständigkeit halber hier noch die Definitionen von
+\begin{align*}
+&\text{Centroid:} &\vec{x_0} = \frac{\sum_{i=1}^N \vec{x_i}}{N},\\
+&\text{Radius:} &R =\left( \frac{\sum_{i=1}^N \left(\vec{x_i}-\vec{x_0}
+\right)^2}{N}\right)^{\frac{1}{2}},\\
+&\text{Durchmesser:} &D = \left( \frac{\sum_{i=1}^N \sum_{j=1}{N} \left(\vec{x_i}-\vec{x_j}
+\right)^2}{N(N-1)}\right)^{\frac{1}{2}}\\
+\end{align*}
+\begin{align*}
+&\text{und der Durchschnittlichen Inter Cluster Distanz:} &\quad\\
+ &D_2 = \left( \frac{\sum_{i=1}^{N_1} \sum_{j=N_1 +1}{N_1 + N_2} \left(\vec{x_i}-\vec{x_j}
+\right)^2}{N_1 N_2)}\right)^{\frac{1}{2}}. &
+\end{align*}
+
+Kommen wir nun aber endlich zum tatsächlichen CF-Tree. Der CF-Tree ist
+ein höhenbalancierter Baum, in dem jeder Knoten einem Cluster entspricht. 
+In den Blättern sind die s.g. \textbf{Elementarcluster} enthalten, in den 
+inneren Knoten befinden sich Mengen an Tupeln der Form \((CF_i,\ \text{
+child}_i)\). Dabei enthält Child nur einen Verweis auf den Knoten, dessen 
+Cluster aggregiert das CF des aktuellen Childs begründen (geht man im
+Baum nach oben, so ergibt sich das CF eines Knotens aggregiert aus den
+CF's seiner Children). Die Parameter, die man anfangs bei der Erstellung
+des Baumes mitgeben muss sind
+\begin{itemize}
+\item \textbf{B}: Der Fan-Out für innere Knoten, also die Zahl der Kinder,
+die ein innerer Knoten maximal haben darf.
+\item \textbf{B'}: Die Kapazität eines Blattes.
+\item \textbf{T}: Der Schwellenwert für den Radius oder Durchmesser
+eines \textbf{Elementarclusters}.
+\end{itemize}
+Der Parameter T ist wichtig, da ohne ihn beim Einfügen der Elemente
+in den Baum ansonsten ein einziger Megacluster entstehen würde.
+
+Das \textit{Einfügen} in den Baum erfolgt relativ einfach. Es werden
+nacheinander alle Datenobjekte in den Elementarcluster eingefügt, dessen
+Centroid den kleinsten Abstand zum einzufügenden Datenobjekt hat. Wird
+dabei T überschritten, so muss ein neuer Elementarcluster erzeugt werden.
+Wird damit jedoch die maximale Anzahl an Clustern pro Blatt (B') überschritten
+so muss der Knoten in zwei neue Blattknoten gesplittet werden.
+
+Das \textit{Splitten} funktioniert, indem man die beiden Cluster im Knoten
+als Seeds für die neuen Blätter wählt, die am weitesten voneinander entfernt
+sind. Die übrigen Cluster werden dann dem  Knoten des näher gelegenen
+Seeds zugewiesen. Danach sowie nach jedem eingefügten Datenobjekt müssen
+die Knoteneinträge bzgl. ihrer CF nach oben hin bis zur Wurzel geupdated
+werden. Das Splitting erzeugt zwei neue Blattknoten, d.h. der Elternknoten
+des gesplitteten Knotens muss nun zwei Einträge aufnehmen, anstelle eines
+einzigen. Ist der Elternknoten jedoch ebenfalls bereits voll, dann muss auch
+dieser gesplittet werden, wodurch sich für dessen Eltern das gleiche Problem
+ergeben kann.
+
+Damit der CF-Tree nicht komplett wild wächst und Elementarcluster, die
+eigentlich nahe beieinander liegen durch ungeünstiges Splitting im Baum weit
+voneinander entfernt stehen, können ähnliche Cluster auch gemergt werden.
+Ein \textit{Merge} kann sich insbesondere nach einem Splitting anbieten.
+Führt man die eben genannte "'Splitting-Kette"' ganz bis zum Schluss durch,
+so gibt es einen Knoten, der nicht mehr gesplittet wurde (das kann auch eine
+etwaige neue Wurzel sein). Man betrachtet nun die Kinder dieses Knotens und
+wählt das Paar, das sich am nächsten ist. Dies sind Kandidaten für einen Merge.
+Sind beide Kandidaten nicht das Ergebnis des Splittings (wenn einer der beiden
+ein "'Split"'-Knoten ist, ist das noch in Ordnung), dann werde diese beiden
+zu einem neuem Knoten zusammengefügt. Gegebenenfalls sind nach dem Merge
+noch weitere Splittingschritte notwendig. Dafür gewinnt man jedoch, dass
+die Wahrscheinlichkeit, dass ähnliche Cluster in komplett verschiedenen 
+Subtrees des Baumes landen, verringert wird.
+
+Dies zeigt ein deutliches Problem von BIRCH auf, was es als alleiniges 
+Clustering disqualifiziert. Das Splitting von Knoten beruht nicht auf der Struktur
+des zugrundeliegenden Datenbestandes. Stattdessen wird lediglich aufgrund 
+von technischen Eigenheiten des Algorithmus und des Rechnersystems
+gesplittet. Auch sind die gefundenen Cluster sehr abhängig vom gewählten
+T. Hat man z.B. in seinen Daten ein eindeutiges, schweres und dichtes natürliches
+Cluster, das jedoch einen Radius größer T hat, dann kann dieses nie identifiziert
+werden. Stattdessen wird es im Baum durch einzelne Elementarcluster 
+repräsentiert, die im schlimmsten Fall sogar in verschiedenen Subtrees stehen.
+Damit ist zum einen das direkte Auslesen der Cluster aus dem Baum keine gute Idee 
+und zum anderen ist die Aussagekraft der Hierarchischen Struktur des
+Baumes wenigstens fragwürdig. Deswegen haben auch die Erfinder von BIRCH
+vorgeschlagen, dass man stattdessen das Ergebnis von BIRCH als Seeds für
+ein anderes Clustering Verfahren nimmt, in der Hoffnung, dass durch die
+Vorarbeit von BIRCH ein gutes Ergebnis erzielt werden kann.
+
+\subsection{Hierarchisches Clustering}
+Das Prinzip von Hierarchischem Clustering dürfte jetzt spätestens seit BIRCH
+bekannt sein. Wie bereits in der Einführung erwähnt unterscheidet man
+im Wesentlichen zwischen zwei Ansätzen: den \textbf{agglomerativen} und
+den \textbf{divisiven} Verfahren. Das Ergebnis jeweils lässt sich
+gut als Dendogramm darstellen, da so die Verschachtelung der Cluster gut 
+visualisiert wird.
+
+Ein einfaches agglomeratives Verfahren ist das iterative Zusammenfügen von
+einzelnen Objekten zu immer größeren Clustern basierend auf deren Abstand.
+Dies funktioniert im Prinzip genauso wie das Bestimmen eines minimalen
+Spannbaumes. Der Rechenaufwand entsteht in diesem Verfahren vor allem
+zu Beginn, da am Anfang die Abstände aller Objekte jeweils zueinander 
+bestimmt werden müssen. In den Folgenden Schritten müssen dann
+lediglich für das neue Cluster die Entfernungen berechnet werden.
+Insgesamt gibt es also
+eine quadratische Laufzeit (\(\frac{n(n-1)}{2}\) um genau zu sein)
+in der Größe des Datenbestandes. Nicht effizient, aber 
+es funktioniert. Ein Vorteil ist, dass durch dieses Vorgehen auch lokale Muster
+gut berücksichtigt werden können.
+
+Ein Beispiel für ein divisives Clustering wäre \textbf{DIANA} (DIvisiv ANAlysis).
+Hierbei hat man anfangs einen "'Mega Cluser"', der alle Datenobjekte beinhaltet.
+Danach bestimmt man das Objekt, dass im Mittel den größten Abstand zu allen
+anderen Objekten hat. Dieses Objekt wird als Seed für unsere "'SplinterGroup"'
+gewählt. Danach wird iterativ jedes übrige Objekte aus dem Rest (also Cluster
+ohne SplinterGroup) auf seine Clusterzugehörigkeit geprüft. Dafür wird die
+durchschnittliche Unterschiedlichkeit zu jedem Cluster berechnet und daraus
+die Differenz gebildet. Formal ergibt sich
+\[D(o') = \sum_{o_j \in \text{Rest}} \frac{d(o',o_j)}{\left| \text{Rest}
+\right|} - \sum_{o_j \in \text{SplinterGroup}} \frac{d(o',o_j)}{\left|
+\text{SplinterGroup} \right|}.\]
+Man beachte die Ähnlichkeit zur Silhouette eines Objektes. Prinzipiell wird bei
+beiden ja das Gleiche geprüft, hier findet lediglich keine Normierung statt.
+Hat man nun für alle übrigen Objkete \(D(o)\) berechnet, so wählt das Objekt
+mit dem größten positiven Wert aus, und fügt dieses der SplinterGroup hinzu. 
+Danach wird das Spiel so lange wiederholt, bis kein Objekt mehr ein positives 
+\(D(o)\) beseitzt. Danach ist man mit diesem Cluster fertig. Als nächstes wählt
+man den Cluster, der den größten Durchmesser hat und verfährt genauso mit 
+diesem. Man kann den Algorithmus entweder so lange laufen lassen, bis man
+tatsächlich alle Datenobjekte in eigene Cluster unterteilt hat, oder man legt
+stattdessen einen unteren Grenzwert fest, der Cluster ab einer gewissen Dichte
+und Größe als fest annimt und diese nicht mehr splittet (d.h. findet man durch
+Splitting ein kleines, sehr dichtes Cluster, dann macht es wohl keinen Sinn, 
+dieses weiter aufzuteilen). DIANA war einer der ersten (vielleicht sogar 
+\textbf{der} erste) Ansatz eines divisiven Verfahrens, der nicht an der
+exponentiellen Anzahl an Splittmöglichkeiten am Anfang des Algorithmus
+gescheitert ist. Hat man nämlich am Anfang nur sein Mega Cluster gegeben, ist
+es nicht trivial ersichtlicht, wie man dieses nun splittet. Würde man nun alle
+Möglichkeiten miteinander vergleichen wollen, dann müsst man insgesamt
+\(2^{n-1}-2\) Möglichkeiten betrachten. DIANA umgeht dieses Problem durch
+sein iteratives Vorgehen. Ein Vorteil von Hierarchischen Verfahren insgesamt ist,
+dass sie sich nicht zu sehr auf den "'Kleinscheiß"' verfahren; durch den top-down
+Ansatz sind globale Trends in den Daten besser erfassbar, als bei 
+agglomerativen Verfahren.
+
+\subsection{Probleme mit hochdimensionalen Räumen}
+Wie bereits in früheren Kapiteln erwähnt ist die Anzahl der Dimensionen unseres
+Merkmalraumes ein gravierendes Problem. Haben wir Datensätze mit vielen 
+hundert Dimensionen, dann kann wohl kaum der Fall eintreten, dass sich die
+Daten gut in Cluster einteilen lassen. Stattdessen hat man mehr einen Raum
+voller Noise. Dichte-basierte Verfahren kan man in den Wind schießen und
+Hierarchien in so vielen Dimensionen sind auch wenig sinnvoll.
+
+Es kann jedoch der Fall sein, dass es Datensätze gibt, die nur in einer kleinen
+Anzahl an Dimensionen ein Cluster bilden. Diese lassen sich durch das so
+genannte \textbf{Projected Clustering} finden. Dieser Algorithmus erhält
+als Input \(k\), die Anzahl der zu findenden Cluster, und \(l\), die
+durchschnittliche Zahl der Dimensionen pro Cluster. Als Output erhält man
+eine Partitinierung der Daten in \(k+1\) Mengen (+1 für die Daten, die in
+kein Cluster gefallen sind) und eine Menge an Dimensionen \(D_i\) für jedes
+Cluster \(C_i\).
+
+Projected Clustering funktioniert im Prinzip genauso wie k-Means, nur dass
+nun am Anfang jedes Schrittes die Dimensionen, in denen die Medoiden 
+signifikant sind, ermittelt werden müssen. 
+
+Dies geschieht dadurch, dass man
+für jede Dimension einzeln den durchschnittlichen Abstand zwischen Medoid
+\(m_i\) und den Objekten in seiner \textbf{Locality} \(\mathcal{L}_i\)
+bestimmt. Die Locality kann man sich als Kugel um den Medoiden vorstellen.
+Die Größe dieser Kugel kann beliebig gewählt werden, in der Vorlesung wurde
+sie mit dem Abstand zum jeweils nächsten Medoiden vorgestellt. Die berechnete
+durchschnittliche Distanz der Objekte in der Locality
+ in einer bestimmten Dimension \(j\) sei als \(X_{i,j}\) bezeichnet.
+Das \(i\) steht für die Locality \(\mathcal{L}_i\). Hat man alle \(X_{i,j}\)
+einer Locality berechnet, so berechnet man aus diesen nun wieder den 
+Durchschnitt \[Y_i = \frac{\sum_{j=i}^d X_{i,j}}{d},\] wobei \(d\) die
+Gesamtzahl der Dimensionen ist. Spontan lässt sich festhalten, dass, falls 
+die Differenz
+\(X_{i,j}-Y_i\) negativ wird, die Dimension \(j\) wichtig für den Medoiden
+\(m_i\) ist. In der Vorlesung wurde ein Beispiel gezeigt, in dem ein Cluster
+zunächst nur in einer Dimension signifikant war. Hat man jedoch die Daten
+des Clusters in allen Dimensionen \textbf{gestaucht}, so wurden dadurch 
+auch absolut 
+gesehen die \(X_{i,j}\) kleiner. Verglichen mit der Ausgangsverteilung der
+Daten wären diese nun auf einmal in allen Dimensionen signifikant! Um solche
+Effekte zu vermeiden, benutzen wir stattdessen die Standardabweichung der
+\(X_{i,j}\) von ihrem jeweiligen \(Y_i\), um die Werte zu normalisieren.
+Die Standardabweichung sei 
+\[\sigma_i =\sqrt{\frac{\sum_j (X_{i,j} - Y_i)^2}{d-1}}.\]
+Damit lässt sich nun die Kennzahl \(Z_{i,j} = \frac{X_{i,j}-Y_i}{\sigma_i}\) 
+berechnen. Wenn die Standardabweichung klein wird, dann wird der Quotient 
+insgesamt groß. Das heißt, wenn die Daten in vielen Dimensionen ähnlich um
+\(m_i\) verteilt sind, scheint unser Medoid ein brauchbarer Mittelpunkt für
+seine Locality und damit potentiell auch für sein Cluster zu sein. Deswegen 
+werden die \(Z_{i,j}\) zunächst einmal der Größe nach sortiert. Danach wählt
+man die ersten \(k*l\) \(Z_{i,j}\) aus und ordnet diese ihren Medoiden zu.
+Der Sinn dahinter ist, dass man die Dimensionen jeweils für jeden Medoiden 
+anhand ihrer Signifikanz für die Beschreibung der Locality des Medoiden sortiert.
+Und das sogar Locality- und damit auch Cluster-übergreifend. Damit kann man 
+die \textit{wichtigsten Dimensionen für die wichtigsten Medoiden} unseres
+Datenbestandes finden. Auch ist durch diese Wahl der \(Z_{i,j}\) die 
+Bedingung, dass es pro Cluster im Durchschnitt \(l\) Dimensionen gibt,
+immer noch gewährleistet.
+
+Nachdem wir nun den Medoiden ihre Dimensionen zugeordnet haben, müssen
+wir wieder die Daten den Medoiden zuordnen. Offenbar sollte dies am besten
+die Dimensionen, in denen die Medoiden signifikant sind, berücksichtigen.
+Dabei haben wir jedoch das Problem, dass gegebenenfalls Medoiden mit weniger
+Dimensionen einen Vorteil bei der Distanzbestimmung haben. Deswegen 
+verwenden wir die \textit{Manhattan Segmental Distance}, die jedes mal
+die Anzahl der Dimensionen pro Medoiden herausnormalisiert.
+
+Haben wir nun alle Datenobjekte ihrem nächsten Medoiden zugeordnet, dann
+berechnen wir den Schwerpunkt dieser Partition und der Spaß geht von vorne los.
+
+
+\subsection{Clustering mit kategorischen Daten}
+Wenn wir uns unser Warenkorbszenario anschauen, dann bestehen unsere
+Transaktionen nicht aus numerischen Werten, sondern sind Bit-Vektoren, die
+angeben, ob ein Item enthalten ist oder nicht. Bei einer hohen Zahl an
+möglichen Items ist zudem auch die Dimension unserer Vektoren sehr hoch.
+Dies hat zur Folge, dass selbst Kunden mit einem eigentlich gleichem Kaufverhalten
+unterschiedlich eingestuft werden, z.B. Premium-Kunden, die zwar Luxusgüter
+kaufen, aber eben nicht \textbf{exakt} die selben. Außerdem funktionieren
+herkömmliche euklidische Distanzmaße nicht sinnvoll, z.B. wird ein Bit-Vektor,
+der ganz am Anfang eine 1 und ansonsten nur 0 enthält ähnlich eingestuft
+wie ein Vektor, der ganz am Ende eine 1 und ansonsten nur 0 hat. Die beiden
+Vektoren stimmen nur in den Items überein, die nicht gekauft wurden. Das
+ist nicht unbedingt hilfreich (außer in Sonderfällen evtl.).
+
+Deswegen brauchen wir ein anderes Ähnlichkeitsmaß, nämlich den
+so genannten \textbf{Jaccard-Koeffizienten}. Dieser beschreibt die
+Ähnlichkeit zweier Transaktionen anhand ihrer gleichen Items.
+\[\text{Jaccard } = \frac{\left| T_1 \cap T_2 \right|}{\left| T_1 \cup T_2 \right|}\]
+Der Jaccard-Koeffizient alleine reicht aber noch nicht aus. Wie im Beispiel
+aus der Vorlesung gezeigt, funktioniert der Jaccard-Koeffizient als Distanzmaß
+in einem naiven agglomerativen Verfahren deswegen nicht, da die Transaktionen
+nur paarweise betrachtet werden. 
+
+Es lässt sich feststellen, dass, um bei unseren beiden Premium-Kunden zu bleiben,
+diese zwar jeweils für sich genommen nur wenig gleiches Items in ihren
+Transaktionen haben; wenn man jedoch noch andere hinzunimmt, so
+kann man feststellen, dass sie mit diesen anderen mehr Ähnlichkeit haben.
+Über diese "'Brücke"' sind die beiden Ausgangskunden dann miteinander
+verbunden. Dieses Konzept der \textbf{Nachbarschaft} kann uns beim
+Clustering behilflich werden. 
+
+Dafür gibt es die \textbf{Link-basierte Methode}. Bei ihr werden zwei
+Punkte dann als Nachbarn betrachtet, wenn ihre Ähnlichkeit einen
+gewissen Schwellwert überschreitet. Was genau dieses Ähnlichkeitsmaß ist,
+ist abhängig von der Situation. Bei unseren Transaktionen, also Mengen von
+Items, bietet sich der Jaccard-Koeffizient an. Nun werden Links zwischen den
+einzelnen Punkten erzeugt, wobei die Anzahl der Links zwischen zwei Punkten
+der Zahl ihrer gemeinsamen Nachbarn entspricht. Als nächstes werden dann
+die beiden Punkte / Cluster gemergt, die die größte Linkzahl zwischen sich 
+haben. Dies wird so lange wiederholt, bis man nur noch einen einzigen Cluster
+hat (also ein agglomeratives hierarchisches Verfahren).
+
+Zusammenfassend lässt sich festhalten, dass Clustering mit kategorischen
+Daten nicht ohne weitere Denkarbeit zu lösen ist. Man muss sich geeignete
+Kriterien überlegen, der Ansatz mit der Nachbarschaft ist aber meistens
+schon eine recht gute Wahl und liefert brauchbare Ergebnisse. Auch ist
+oben vorgestellte Link-basierte Methode nicht in Stein gemeiselt; wie gesagt,
+kann das Abstandmaß durchaus variiert werden, um sich besser den Daten
+anzupassen, und auch das agglomerative Verfahren kann ein anderes sein.
+So lässt sich k-Means dahingehend abändern, dass der "'Abstand"' zwischen
+zwei Objekten der Anzahl ihrer Links, also gemeinsamen Nachbarn, entspricht.
+Nicht zuletzt muss man sich auch Gedanken über die Repräsentation der
+gefundenen Cluster machen. Im Allgemeinen können mit der Link-basierten
+Methode auch nicht runde Cluster gefunden werden, insbesondere wären auch
+stark sichelförmige Cluster möglich. Wie kann man aber solche Cluster ausgeben?
+Der Mittelpunkt wird wohl nicht ausreichen und ist im Beispiel sogar irreführend.
+Man wird wohl nicht darum herumkommen, mehrere Punkte ausgeben zu
+müssen, damit der User ein Gefühl für das Cluster bekommt, aber das
+dürfte gerade für hochdimensionale Lösungen wenig intuitiv sein.
+
+\subsection{Dichte-basiertes Clustering}
+\subsubsection{DBSCAN}
+\textbf{Density-Based Spatial Clustering of Applications with Noise} (DBSCAN)
+ist ein Verfahren, dass sich die \textbf{Dichte} von Clustern und
+von unseren Datenobjekten zu Nutze macht. Dabei ist ein Objekt genau
+dann dicht, wenn es mehr als \(minPts\) andere Datenobjekte innerhalb einer
+\(\epsilon\)- Umgebung besitzt. Punkte, die selbst in einer solchen
+\(\epsilon\)- Umgebung liegen, aber selbst nicht dicht sind, heißen
+\textbf{dichte-erreichbar}.
+
+Die Idee des Algorithmus ist nun Folgende: Wähle einen Punkte aus
+dem Datenbestand. Prüfe, ob es dicht ist. Falls ja, dann ist der Punkt
+ein potentieller Kandidat für ein Cluster und wir fügen alle seine Nachbarn
+dem Cluster hinzu. Betrachte nun alle seine Nachbarn und prüfe, ob diese
+dicht sind. Falls ja, wiederhole das Spiel von eben (d.h. expandiere die
+Nachbarn um ihre \(\epsilon\)- Umgebung und prüfe Dichte der neuen
+Punkte). Wiederhole dies, bis alle Punkte erreicht wurden. Wähle dann
+einen anderen, noch nicht besuchten Punkt aus. Wiederhole, bis alle Punkte
+besucht wurden.
+
+Man kann sehen, dass die Zuordnung von dichten Punkten deterministisch
+ist. Nichtdeterministisch wird es, wenn wir dichte-erreichbarer Punkte
+betrachten. Diese können auch zwischen zwei Clustern liegen. Bei ihrer
+Zuordnung hängt es nun davon ab, welchen Cluster man zuerst erstellt.
+
+Die Kosten dieses Verfahrens hängen maßgeblich von der Expansion, also
+dem Finden der Nachbarn, ab. Ohne eine entsprechende Implementierung
+müsste man jedes mal den ganzen Datenbestand scannen. Hierbei sind
+räumliche Indexstrukturen ein wahrer Segen, z.B. R-Trees. Hat man eine
+entsprechende Implementierung, so belaufen sich die Kosten etwa auf
+\(O(n \log n)\). Im schlimmsten Fall hätten wir es stattdessen mit
+\(O(n^2)\) zu tun.
+
+Die \textit{Parameter} von DBSCAN sind zum einen \(\epsilon\) und
+zum anderen \(minPts\). Generell lässt sich sagen, dass eine Veränderung
+der Parameter eine Auswirkung auf die \textit{Dichte} und
+\textit{Größe} der gefundenen Cluster hat. Die Zahl der gefundenen Cluster
+könnte auch variieren; das hängt jedoch sehr von dem gegebenen Datenbestand ab.
+An und für sich ist es blöd, dass der Anwender diese Parameter spezifizieren 
+muss, da sie sich stark auf die Qualität des Ergebnisses auswirken, aber
+daran lässt sich nichts ändern. Um hier eine bessere Wahl der Parameter
+zu ermöglichen, müsste Wissen über die Verteilung der Daten vorhanden
+sein, was man nicht voraussetzen kann. Und wenn man dieses Wissen hätte,
+wozu würden wir dann noch Clustern wollen? Man wird sich also insgesamt bei
+der Parameterwahl nicht vor einem Trial \& Error Prozess drücken können.
+
+\subsubsection{OPTICS}
+\textbf{Ordering Points To Identify the Clustering Structure} (OPTICS) 
+soll bei der Wahl des \(\epsilon\) für unser DBSCAN helfen, indem es
+die Auswirkungen auf das Clustering visualisiert für verschiedene Werte für
+\(\epsilon\). \(minPts\) muss jedoch noch weiterhin vom User selbst
+gewählt werden.
+
+Hierfür werden wir weitere Distanzkonzepte brauchen. Zum einen haben wir die
+\textbf{core-distance}, die dem minimalen \(\epsilon\) entspricht,
+für das das Objekt noch \textbf{dicht} ist. Die andere Distanz ist die
+\textbf{reachability-distance}
+\footnote{Auf Wikipedia wird's anders definiert. Dort ist das "'undefined"'
+Kriterium, ob der aktuell betrachtete Punkt dicht ist, oder nicht.}
+von \(o\) zu Punkt \(p\)
+\begin{align*}
+ reach_{\bar{\epsilon , minPts}}(o,p) = 
+ \begin{cases}
+ undefined & \text{wenn } dist(o,p) >\bar{\epsilon},\\
+\max \{dist(p,o), coreDist_{minPts}(p)\} & sonst.\\
+\end{cases}
+\end{align*}
+Die Idee dahinter ist, dass wir uns zunächst nur für Objekte interessieren,
+die überhaupt in der \(\bar{\epsilon}\)-Umgebung unseres betrachteten
+Objekte liegen. Dabei ist \(\bar{\epsilon}\) der maximale Wert für
+unser \(\epsilon\). Indem wir also die nicht direkt erreichbaren Objekte
+ersteinmal außer Acht lassen, haben wir die Hoffnung, dass wir nahe Objekte
+auch möglichst zeitnah betrachten. Für die betrachteten Objekte gilt, dass,
+wenn sie innerhalb des cores liegen, die Reihenfolge ihrer Betrachtung egal ist.
+Das kommt daher, dass das Objekt für ein \(\epsilon\) kleiner als seine
+\(coreDist\) nicht mehr dicht wäre. Dann aber würde das Objekt auch nicht
+mehr zu einem Cluster gehören. Insofern beschränken wir uns auf den
+Fall, dass das Objekt doch dicht ist, also die Nachbarn des Objektes in
+jedem Fall (unabhängig vom aktuellen \(\epsilon\) betrachtet werden.
+Dies gilt in der Form nicht für die Objekte, die außerhalb des cores liegen.
+Diese sind nämlich nur dann vom aktuellen Objekt aus direkt erreichbar, wenn
+das \(\epsilon\) entsprechend gewählt wird. Der Unterschied zu den Punkten,
+die außerhalb der \(\bar{\epsilon}\)-Umgebung liegen, ist, dass die Punkte
+\textit{überhaupt} erreicht werden können.
+\footnote{Irgendwie erscheint der Ansatz von Wikipedia, Punkte auszuschließen,
+die nicht dicht sind, sinnvoller...}
+
+Der Algorithmus geht wie folgt vor. Man wählt sich einen beliebigen Punkt
+als Start. Von diesem berechnet man dann die core-distance. Seine 
+reachability-distance ist am Anfang undefined, da wir die reachability-distance
+für neue Punkte zu allen Punkten aus der Ausgabeliste berechnen, um so den
+nächsten Punkt zu den bisher ausgegebenen zu finden. Da es aber noch keine 
+Punkte in der Ausgabe gibt, wird der Wert einfach auf undefined gesetzt.
+Als neuer Punkt wird dann einer der Punkte gewählt, die vom Startpunkt
+aus erreichbar sind. Von diesen wird die reachability-distance berechnet und die
+Punkte werden anahnd derer in einer PriorityQueue gespeichert. Aus dieser
+Queue werden dann die Objekte nacheinander ausgelesen, d.h. es wird immer
+der nächste Punkte zur Ausgabeliste gewählt. Hat man einen neuen Punkt
+gewählt, und besucht diesen (man fügt ihn also der Ausgabeliste hinzu), so
+muss die PriorityQueue jedes Mal aktualisiert werden. Insgesamt erhält man
+als Ausgabe also die Datenpunkte sortiert nach ihrer reachability-distance.
+
+Plottet man dieses Ausgabe als Säulendiagramm, so dass man an der
+Höhe die Größe der reachability-distance ablesen kann. Man stellt fest, dass
+es immer wieder zu Tälern kommt, d.h. es gibt Mengen an Daten, die zueinandern 
+eine kleine reachability-distance haben. Das sind die Cluster. Unser variables
+\(\epsilon\) kann man sich nun als horizontale Linie vorstellen, die man
+über den Plot legen und vertikal verschieben könnte. Alle Täler, die für ein
+bestimmtes \(\epsilon\) noch unter der Horizontalen liegen, sind für dieses
+\(\epsilon\) dicht, d.h. sie sind Kandidaten für Cluster. Im Allgemeinen muss
+der User die im Plot dargestellten Cluster noch von Hand untersuchen, um
+festzustellen, welche dieser sich tatsächlich als tauglich erweisen.
+
+Die Laufzeit ist im Grunde ähnlich wie bei DBSCAN; da jedoch unser
+\(\bar{\epsilon}\) fast immer größer ist als das \(\epsilon\) aus
+DBSCAN, sind die Nachbarschaftsanfragen bei OPTICS aufwändiger.
+
+Die Parameter sind dieses Mal das \(\bar{\epsilon}\) und \(minPts\).
+Veränderungen von ersterem führen nur zu relativ kleinen Veränderungen.
+Man wählt diesen Parameter sowieso etwas größer, damit man später
+Variationsmöglichkeiten bei der Wahl des \(\epsilon\)-Wertes hat. Für
+genügund große Werte von \(\bar{\epsilon}\) gibt es also kaum Probleme.
+Wählt man den Wert aber zu klein, dann ergeben sich daraus kleinere Cluster
+mit höherer Dichte. Große Cluster, die jedoch eine gringere Dichte besitzen
+bleiben außen vor. Warum würde man dann nicht einfach das \(\bar{\epsilon}\)
+rießig wählen, sodass immer alle Objekte in der \(\bar{\epsilon}\)-Umgebung 
+liegen? So würde man das "'Full-Picture"' bekommen. Das Problem ist hierbei
+die Performance. Die Laufzeit würde unweigerlich quadratisch werden, selbst
+bei geeigneten Implementierungen, da nun in jedem Durchlauf alle Datenobjekte
+gescannt und geupdatet werden müssten. Der andere Parameter \(minPts\)
+wirkt sich vor allem auf notwendige Dichte, und damit auch auf die Zahl der Cluster
+aus. Wählt man ihn zu klein, dann hat man das Problem, dass die Cluster zu
+kleinteilig werden, d.h. die Darstellung sieht das sehr zersplittert aus, weil sich
+große Cluster in eine Unmenge ein kleinen Unterclustern aufteilen. Eine 
+gute Wahl von \(minPts\) dürfte wohl ebenfalls erst nach einem Trial \& Error
+Prozess möglich sein.
+
+\subsection{Probabilistisches Clustering}
+Wie bereits bei der Klassifikation angesprochen ist es meistens nicht wirklich
+sinnvoll (und evtl. auch gar nicht möglich) Objekte zu 100\% einem
+bestimmten Cluster zuzuweisen. Stattdessen will man die Objekte
+mit einer bestimmten Wahrscheinlichkeit einem Cluster zuordnen. Die setzte 
+aber Voraus, dass wir Annahmen über die Verteilungen innerhalb der Cluster
+treffen und auch über die Aufftrittswahrscheinlichkeit eines Clusters.
+Dieses Problem wird auch \textit{Finite Mixture Problem} genannt.
+
+\subsubsection{Expectation Maximization}
+Ein Algorithmus, der uns hierbei hilft, ist der \textbf{EM-Algorithmus}.
+Die Idee ist es, einen Art ML-Schätzer auf unsere angenommenen
+Verteilungen anzuwenden und die Parameter dahingehen zu verändern,
+dass sich die angenommenen Verteilungen möglichst gut mit den echten
+decken.
+
+Nehmen wir dafür zunächst eine Normalverteilung in allen Clustern an. Dann
+raten wir für alle Cluster deren \(\mu\) und \(\sigma\) und 
+für die Cluster als solche raten wir die jeweilige Wahrscheinlichkeit für
+ihren auftritt \(p_k\). Was wir nun berechnen
+wollen, ist die Wahrscheinlichkeit, dass ein gegebenes Objekt zu einem
+bestimmten Cluster gehört, also
+\[ P[Cluster_k\ |\ x] = \frac{P[x\ |\ Cluster_k] * P[Cluster_k]}{P[x]}
+=\frac{f(\mu_k,\sigma_k,x) * p_k}{P[x]}\],
+wobei \(x\) ein konkretes Datenobjekt sei und \(f(\mu,\sigma,x)\) die
+Wahrscheinlichkeitsdichtefunktion des Clusters \(k\) sei. Auf der rechten Seite
+fehlt eigentlich nur noch das \(P[x]\) zur Berechnung des Quotienten. Es gilt
+jedoch auch \(P[x] )= \sum_k P[x\ |\ Cluster]*p_k\). Das ist genau der
+Teil, der im Zähler unserer obgien Gleichung steht. Und da wir über alle Cluster
+aufsummieren, bedeutet das effektiv eine Normalisierung unserer errechneten
+Werte. Die Bestimmung dieser Wahrscheinlichkeiten ist der \textbf{Expectation
+Schritt}, als nächstes kommt der \textbf{Maximization Schritt}. Hierbei wollen
+wir unsere geratenen Parameter möglichst den echten Werten annähern. Hierfür
+berechnen wir für jedes Cluster
+\begin{align*}
+\mu_k = \frac{\sum_{i=1}^{|DB|}w_i x_i}{\sum_{i=1}^{|DB|} w_i} &\qquad &
+\sigma_k = \frac{\sum_{i=1}^{|DB|} w_i(x_i - \mu)^2}{\sum_{i=1}^{|DB|} w_i}.
+\end{align*}
+Dabei sei \(|DB|\) die Mächtigkeit unseres Datenbestandes und \(w_i\) entspricht
+unserem im Expectation Schritt errechneten \(P[A\ |\ x]\). Damit haben wir
+unsere neuen Werte für den nächsten Durchlauf, d.h. die vorhin geratenen
+Werte werden nun für den kommenden Expectation Schritt durch die eben
+errechneten Werte ersetzt.\footnote{Tatsächlich wurde in der Vorlesung
+nur vorgestellt, wie die Parameter der Verteilungen \textbf{innerhalb} der Cluster
+neu berechnet werden. Die Annahme über die Verteilung der Cluster selbst
+(\(p_k\)) bleibt fest. Das dürfte wohl insofern kritisch sein, als dass man
+schon im Vorhinein ein Wissen über die Wahrscheinlichkeiten der Cluster haben
+muss. Das dürfte jedoch i.A. nicht der Fall sein...}
+Die beiden Schritte werden dann so lange wiederholt, bis sich unsere
+\textit{Terminierungsfunktion} nicht mehr wesentlich ändert. Sie ähnelt einem
+ML-Schätzer\footnote{Eigentlich fast identisch bis auf die Gewichtung mit den
+\(p_k\), die der Verfasser als kritisch sieht. Ein einfacher ML-Schätzer, wie er
+im Rest der Literatur verwendet wird, dürfte ein genauso gutes Ergebnis liefern 
+ohne Voraussetzung von Domänenwissens.}
+und lautet
+\[ \prod_{i=1}^{|DB|}\left( \sum_{k=1}^{|Cluster|} 
+f(\mu_k,\sigma_k,x_i)*p_k \right). \]
+Diese Funktion soll maximiert werden. Es lässt sich beweisen, dass sie auch immer
+konvergiert, weswegen unsere Iterationen dann abgebrochen werden sollten, 
+wenn für eine bestimmte Zahl an Durchläufen sich der Wert unserer
+Terminierungsfunktion nicht mehr signifikant verändert. Diese Funktion ist nicht
+robust gegen Ausreißer: Sollte ein Wert nur eine sehr kleine Wahrscheinlichkeit besitzen,
+in überhaupt irgendein Cluster zu fallen, dann wird der entsprechende Faktor in
+obigem Produkt sehr sehr klein, was Auswirkungen auf den gesamten Wert hat. 
+Das ist jedoch zum einen aufgrund der Konvergenz eigentlich kein Problem, am
+Ende kommen wir doch an das Ziel. Zum anderen ließe sich wie beim 
+herkömmlichen ML-Schätzer stattdessen die log-Likelihood berechnen, wodurch
+die Funktion weniger anfällig für Ausreißer wird, und die Werte, mit denen man
+rechnet, werden auch schöner.
+
+Dieser Algorithmus findet nur lokale Optima, es müssen also mehrere Runs
+mit verschieden geratenen Parametern durchgeführt werden.
+
+\subsubsection{Erweiterungen von Mixture Models}
+In der Vorlesung wurden folgende Erweiterungen von Mixture Models vorgestellt:
+\begin{itemize}
+\item \textbf{Mehr als 2 Klassen:} Das haben wir oben bereits getan, in der
+Vorlesung wurde alles nur anhand von 2 Klassen präsentiert. Wir machen das hier 
+aus Leidenschaft natürlich gleich explizit für den allgemeinen Fall.
+\item \textbf{Mehr als ein Attribut:} Hier kommt es darauf an, ob wir von
+Unabhängigkeit der Attribute ausgehen, oder nicht. Falls sie unabhängig sind,
+ist der Fall eigentlich ganz einfach: Aus unseren \(P[x\|\ A]\) wird 
+\(\prod_{i=1}^{|I|} P[x_i\ |\ A]\), wobei \(I\) die Anzahl der
+Attribute ist. Das Problem hierbei ist jedoch die
+Anzahl an Parametern. Wir müssten jetzt für jedes Cluster \(I\) Mittelwerte
+und \(I\) Varianzen berechnen. Das ist ein bisschen viel.\\
+Gehen wir aber nun stattdessen von abhängigen Variablen aus, dann wird 
+der Aufwand sogar noch größer: Wir müssen nun nicht mehr die Standardabweichungen
+berechnen, sondern die Kovarianz-Matrix. Diese ist quadratisch mit \(I^2\) vielen
+Einträgen. Aufgrund der Symmetrie reicht es jedoch, nur eine Dreiecksmatrix davon
+zu berechnen. Damit ergeben sich für Cluster \(I + \frac{I(I-1)}{2}\) viele 
+Parameter (Standardabweichungen + Einträge Kovarianz-Matrix).
+\item \textbf{Kategorische Attribute:} Bisher sind wir nur von numerischen
+Attributen ausgegangen, d.h. die Berechnung der Mittelwerte und 
+Standardabweichungen ist relativ "'straight forward"'. Diesem Teil werden wir uns unten
+widmen.
+\item \textbf{Andere Verteilungen:} Da wir im Prinzip einen ML-Schätzer als
+Gütemaß verwenden, können auch einfach andere Verteilungen verwendet werden.
+Kleine Anpassungen sind nötig, der Algorithmus läuft im Groben aber gleich ab.
+Die Wahl der Verteilungen setzt aber ebenfalls zumindest ein grobes Wissen über 
+die gegebenen Daten voraus. Wählt man die Verteilungen jedoch passend, so 
+kann man eine gute Darstellung des Datenbestandes erreichen.
+\end{itemize}
+Wie eben angekündigt wollen wir uns jetzt nochmal mit dem Thema kategorische
+Daten beschäftigen. Hier ist das Vorgehen auf den ersten Blick nicht ganz klar, da
+wir nicht von einer Normalverteilungsannahme ausgehen können. Betrachten wir
+den Fall für \textbf{ein} Attribut, das \(\nu\) Ausprägungen annehmen kann
+(z.B. Ausprägung des Attributs Marke einer Kamera wäre Nikon, Canon, Sony,
+ \(\dots\). Dann haben wir bei \(k\) Clustern insgesamt \(k *\mu\) Parameter.
+ Wir müssen nämlich pro Cluster die Wahrscheinlichkeit für das Auftreten der
+ Merkmale schätzen (der Verfasser stellt sich dies als Tortendiagramm pro Cluster
+ vor). Die Wahrscheinlichkeit der Clusterzugehörigkeit bei einem gegebenen 
+ Datenobjekt ist dann
+ \[ P[Cluster\ |\ x] = \frac{P[x\ |\ Cluster]*P[Cluster]}{P[x]}.\]
+ Die ist unser Expectation Schritt. Im ersten Schritt raten wir dafür 
+ \(P[x\ |\ Cluster]\) und \(P[Cluster]\). Im Maximization Schritt wollen
+ wir diese Parameter berechnen. Hierfür berechnen wir erst
+ \[ P[Cluster] = \sum_i P[Cluster\ |\ x_i]*P[x_i].\]
+ Hierbei nutzen wir die eben berechneten Wahrscheinlichkeiten und die 
+ Werte für \(P[x_i]\) lassen sich direkt durch Abzählen bestimmen, sind
+ also die relativen Häufigkeiten. Mit diesem Wert lässt sich nun noch das 
+ fehlende
+ \[P[x\ |\ Cluster] = \frac{P[Cluster\ |\ x]*P[x]}{P[Cluster]}\]
+ berechnen. Diese Werte werden nun für die nächsten Iterationen verwendet.
+ 
+ Als Terminierungsfunktion dient nun wieder eine Art ML-Schätzer:
+ \[\prod_{i=1}^{|I|}\left( \sum_{k=1}^{|K|}
+ P[x\ |\ Cluster] * P[Cluster] \right)\]
+ Es kann jedoch aber auch vorkommen, dass ein Attributwert gar nicht
+ angenommen wird. Dann wird \(P[x] = 0\) und wir hätten an einigen
+ Stellen in unserer Berechnung ein Problem. Deswegen wird mithilfe des
+ \textbf{Laplace Estimators} einfach das Vorkommen eines jeden Merkmals um
+ 1 erhöht. Man tut so, als würde die Merkmalsausprägung wenigstens einmal
+ vorkommen.
+ 
+ Auch hier wird nur ein lokales Optimum gefunden, d.h. mehrere Runs sind nötig.
+
+ Im Falle von mehreren Attributen ist das Vorgehen sowohl im korrelierten als auch
+ im unabhängigen Fall gleich: Man konstruiert aus den \(\i\) Attributen mit
+ jeweils \(\nu_i\) Ausprägungen ein neues Attribut, welches \(\prod_i \nu_i\) 
+ Ausprägungen hat. Dabei dürfen die selbst Attribute jedoch nur überschaubar
+ in ihrer Anzahl sein und sie dürfen jeweils nicht zu viele Ausprägungen besitzen.
+ Die Zahl der zu schätzenden Parameter wäre schlicht zu groß. Außerdem besteht
+ dabei umso mehr die Gefahr des Overfittings. 
+ 
+ Im Übrigen lässt sich festhalten, dass es zwar Lösungen für Datenbestände gibt,
+ die numerische und kategorische Daten zusammen verarbeiten können, diese
+ jedoch oft sehr komplex sind.
+ 
+ Zusammenfassend noch ein paar Punkte bzgl. EM und Overfitting. EM setzt darauf,
+ dass der User die Anzahl der Cluster und die Korrelationen der Attribute
+ explizit angibt. Generell gilt, zu viele Parameter führen gerne mal zu Overfitting.
+ Deswegen sollten nicht alle Attribute als kovariat markiert werden. Auch muss
+ bei der Wahl der Anzahl der Cluster Vorsicht walten; zu viele Cluster und es
+ entsteht ein Overfitting (worst case wäre Anzahl der Cluster = Anzahl der
+ Datenobjekte). Auch sollten Verteilungen mit zu vielen Parametern vermieden werden,
+ da diese zum einen mehr Rechenaufwand erfordern können und zum anderen
+ leicht zu Overfitting führen, da man durch viele Parameter "'Tweaks"' leichter
+ ein Clustering finden kann, dass "'gut aussieht"', aber zu sehr an den Trainingsdaten
+ orientiert ist.

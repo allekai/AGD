@@ -1,0 +1,87 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}		% for special characters
+\usepackage[T1]{fontenc}		% for correct use of western european characterfonts
+\usepackage{lmodern}
+\usepackage{ngerman}			% for german typsetting
+\usepackage[authoryear]{natbib}		% author-year citation
+
+\usepackage{microtype}			% for those nasty over/underfull boxes
+\usepackage{amsmath}			% for the good math
+\usepackage{amsfonts}			% for the good math
+
+\usepackage{hyperref}			% for urls
+%\usepackage{pdfpages}			% for including pdfs
+\usepackage{graphicx}			% for including graphics
+\usepackage{tikz}			% Tikz ist kein Zeichenprogramm!
+\usetikzlibrary{arrows,arrows.meta}	% TikZ arrows
+\usepackage{booktabs}			% for nicer tables
+\usepackage{subfigure}			% for many pictures next to each other
+\usepackage[algoruled,linesnumberedhidden,german]{algorithm2e}
+\usepackage[labelfont=bf, figurename=Abb.]{caption}	% for bold caption titles
+\usepackage{placeins}			% stop floats from jumping to the end of document
+
+
+%%% new commands %%%
+
+\renewcommand{\abstractname}{Einleitung}
+
+%%% main document %%%
+
+\begin{document}
+\pagenumbering{gobble}
+\title{Analysetechniken für große Datenbestände}
+\author{Alexander Poth \\
+	KIT - Karlsruhe Institue of Technology \\
+	Information Engineering and Management\\
+	\texttt{alexander.poth@informationswirtschaft.org}}
+\date{\today}
+\maketitle
+\newpage
+\begin{abstract}
+In unserer heutigen Zeit fallen eine Vielzahl von Daten in allen Bereichen des 
+Lebens an. Dies ist der immer effizienteren Datenaufzeichnung und -übermittlung 
+geschuldet, z.B. durch RFID-Chips, GPS-Geräten und allerlei Sensoren, die in
+unseren Smartphones verbaut sind. Um diese Daten sinnvoll verwerten zu können und
+Vorhersagen über unbekannte Variablen treffen zu können, sind Möglichkeiten zur 
+Analyse von großen Datenbeständen zu einem der wichtigsten Themen geworden. Ziel 
+dieser Zusammenfassung und der zugehörigen Vorlesung ist es, dem Studierenden 
+Techniken vorzustellen, die es ihm ermöglichen, \textbf{nichttriviale, implizite 
+und potentiell nützliche} Zusammenhänge in Datenbeständen zu finden. Potentiell nützlich 
+kann in diesem Kontext bedeuten, dass man keine Ergebnis erhält, die man nicht ohnehin 
+schon vorher kannte oder redundant sind. Hierbei ist der Begriff \textit{groß} 
+vorsichtig zu benutzen. Die "'Größe"' eines Datenbestandes hängt insbesondere von der
+Komplexität der Daten, den Mustern, nach denen man sucht, und der verfügbaren CPU-Power ab.
+\end{abstract}
+\newpage
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\input{Sections/section1}
+\newpage
+\input{Sections/section2}
+\newpage
+\input{Sections/section3}
+\newpage
+\input{Sections/section4}
+\newpage
+\input{Sections/section5}
+\newpage
+\input{Sections/section6}
+\newpage
+\input{Sections/section7_Constraints}
+\newpage
+\input{Sections/section8_Clustering}
+\newpage
+\input{Sections/section9_StatModels}
+\newpage
+\input{Sections/section10_LM_SVM}
+\newpage
+\input{Sections/section11_Ensembles}
+
+\FloatBarrier
+\bibliographystyle{plainnat}
+\bibliography{agd}
+	
+\end{document}
