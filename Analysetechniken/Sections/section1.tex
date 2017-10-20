@@ -4,14 +4,25 @@ Zunächst wiederholen wir ein paar Grundlagen aus der Statistik.
 \subsection{Beschaffenheit von Daten}
 Daten können in verschiedenen Kategorien vorliegen:
 \begin{itemize}
-	\item \textbf{Nominal}: Hier herrscht keine natürliche Ordnung der Werte (z.B. Name, Farbe, ...)
-	\item \textbf{Ordinal}: Eine Anordnung ist möglich. Es kann jedoch nicht ohne Weiteres eine Metrik angelegt werden (z.B.  ist nicht quantifiziert, um wie viel sich groß und gigantisch unterscheiden)
-	\item \textbf{Metrisch-diskret}: Es existiert eine endliche Anzahl an Werten, auf die eine Metrik angewandt werden kann (z.B. \({n\in \mathbb{N}\ |\ n \in [0,100]}\))
-	\item \textbf{Metrisch-kontinuierlich}: Es existieren unendlich viele Werte, auf die eine Metrik angewandt werden kann (z.B. \({n\in \mathbb{R}\ |\ n \in [0,100]}\))
+	\item \textbf{Nominal}: Hier herrscht keine natürliche Ordnung der
+            Werte (z.B. Name, Farbe, ...)
+	\item \textbf{Ordinal}: Eine Anordnung ist möglich. Es kann jedoch
+            nicht ohne Weiteres eine Metrik angelegt werden (z.B.  ist nicht
+            quantifiziert, um wie viel sich groß und gigantisch unterscheiden)
+	\item \textbf{Metrisch-diskret}: Es existiert eine abzählbare Anzahl an
+            Werten, auf die eine Metrik angewandt werden kann (z.B.
+            \({n\in \mathbb{N}\ |\ n \in [0,100]}\))
+	\item \textbf{Metrisch-kontinuierlich}: Es existieren überabzählbar viele
+            Werte, auf die eine Metrik angewandt werden kann (z.B.
+            \({n\in \mathbb{R}\ |\ n \in [0,100]}\))
 \end{itemize}
-Weiter können die Datensätze auch unterschiedlich komplex sein. Die kann sich unter anderem in der \textbf{Dimensionalität} der Daten widerspiegeln. So haben offensichtlich die Datensätze einer einfachen Namensliste eine geringere Dimension als die  in den Kundendatenbanken einer großen Firma.
+Weiter können die Datensätze auch unterschiedlich komplex sein. Dies kann sich
+unter anderem in der \textbf{Dimensionalität} der Daten widerspiegeln. So haben
+offensichtlich die Datensätze einer einfachen Namensliste eine geringere
+Dimension als die  in den Kundendatenbanken einer großen Firma.
 
-Betrachten wir metrisch skalierte Daten, so gilt für eine Metrik d und Domäne M:
+Betrachten wir metrisch skalierte Daten, so gilt für eine Metrik \(d\) und
+Domäne \(M\):
 \begin{align*}
 	&\forall p,q,r \in M:&\\
 	\\
@@ -19,10 +30,15 @@ Betrachten wir metrisch skalierte Daten, so gilt für eine Metrik d und Domäne 
 	&Definitheit &d(p,q)=0\Leftrightarrow p = q\\
 	&Dreiecksungleichung &d(p,r)\leq d(p,q)+d(q,r)\\
 \end{align*}
-Metrik bezeichnet hierbei eine Funktion, die den Abstand zweier Punkte im Raum beschreibt.
+Eine Metrik bezeichnet hierbei eine Funktion, die den Abstand zweier Punkte in
+einem metrischen Raum beschreibt.
 
 \subsection{Einfache deskriptive Statistik}
-Im Folgenden betrachten wir einfache Methoden zur Beschreibung von Daten, um diese besser verstehen zu können. Dafür dienen vor allem so genannte \textbf{Aggregate}. Sie vereinen \textit{alle Werte} eines Attributes und berechnen daraus einen \textit{einzigen} skalaren Wert. In Standard-SQL werden folgende Funktionen verwendet: 
+Im Folgenden betrachten wir einfache Methoden zur Beschreibung von Daten, um
+diese besser verstehen zu können. Dafür dienen vor allem so genannte
+\textbf{Aggregate}. Sie vereinen \textit{alle Werte} eines Attributes und
+berechnen daraus einen \textit{einzigen} skalaren Wert. In Standard-SQL werden
+folgende Funktionen verwendet: 
 \begin{itemize}
 	\item COUNT() - Zählt die Anzahl
 	\item SUM() - Bildet die Summe
@@ -30,15 +46,26 @@ Im Folgenden betrachten wir einfache Methoden zur Beschreibung von Daten, um die
 	\item MAX() - Gibt das Maximum aus
 	\item AVG() - Berechnet das arithmetische Mittel
 \end{itemize}
-In spezialisierteren SQL-Versionen gibt es weitere Aggregatsfunktionen (z.B. für die Bereiche Statistik, Physik, etc.). Manche dieser Aggregate haben den Vorteil, dass sie sich in ihrer Ausführung parallelisieren lassen, z.B. kann für die MIN()-Funktion der Datenbestand in kleinere Bestände aufgeteilt werden, aus denen jeweils das Minimum berechnet wird, woraufhin in einem zweiten Schritt das Minumim der Minima berechnet wird.
-Aufgrund dieser Eigenschaften lassen sich die Aggregate klassifizieren (\(F\) bezeichne die Aggregatsfunktion):
+In spezialisierteren SQL-Versionen gibt es weitere Aggregatsfunktionen (z.B.
+für die Bereiche Statistik, Physik, etc.). Manche dieser Aggregate haben den
+Vorteil, dass sie sich in ihrer Ausführung parallelisieren lassen, z.B. kann
+für die MIN()-Funktion der Datenbestand in kleinere Bestände aufgeteilt werden,
+aus denen jeweils das Minimum berechnet wird, woraufhin in einem zweiten
+Schritt das Minumim der Hilfsminima berechnet wird.
+Aufgrund dieser Eigenschaften lassen sich die Aggregate klassifizieren (\(F\)
+bezeichne die Aggregatsfunktion):
 \begin{itemize}
-	\item \textbf{distributiv}: Formal gibt es eine Funktion \(G\), so dass \(F(\{X_{i,j}\}) = G(\{F(\{X_{i,j}| i = 1, ..., I\}) | j = 1, ..., J\})\) gilt. Auf Deutsch: F wird erst auf Teilmengen ausgeführt, dann G auf der Ergebnismenge. Hierbei ist \(I \in \mathbb{N}\) die Mächtigkeit der Teilmengen und \(J\in\mathbb{N}\) ihre Anzahl (es ist nicht zwingend notwendig, dass alle Teilmengen auch tatsächlich die gleiche Mächtigkeit haben).
-	\item \textbf{algebraisch}: Formal gibt es eine Funktion \(G\), die \(M\)-Tupel liefert und \(H\), so dass \(F(\{X_{i,j}\}) = H(\{G(\{X_{i,j}| i = 1, ..., I\}) | j = 1, ..., J\})\) gilt. Auf Deutsch: Die Definition entspricht der distributiver Aggregate, jedoch hat man hier die Freiheit, in der inneren Klammer eine Funktion anzuwenden, die nicht die Ausgangsaggregatfunktion \(F\) ist. So könnte man z.B. AVG() folgendermaßen formalisieren:
+	\item \textbf{distributiv}: Formal gibt es eine Funktion \(G\), sodass \(F(\{X_{i,j}\}) = G(\{F(\{X_{i,j}| i = 1, ..., I\}) | j = 1, ..., J\})\) gilt. Auf Deutsch: F wird erst auf Teilmengen ausgeführt, dann G auf der Ergebnismenge. Hierbei ist \(I \in \mathbb{N}\) die Mächtigkeit der Teilmengen und \(J\in\mathbb{N}\) ihre Anzahl (es ist nicht zwingend notwendig, dass alle Teilmengen auch tatsächlich die gleiche Mächtigkeit haben).
+	\item \textbf{algebraisch}: Formal gibt es eine Funktion \(G\), die \(M\)-Tupel liefert und \(H\), sodass \(F(\{X_{i,j}\}) = H(\{G(\{X_{i,j}| i = 1, ..., I\}) | j = 1, ..., J\})\) gilt. Auf Deutsch: Die Definition entspricht der distributiver Aggregate, jedoch hat man hier die Freiheit, in der inneren Klammer eine Funktion anzuwenden, die nicht die Ausgangsaggregatfunktion \(F\) ist. So könnte man z.B. AVG() folgendermaßen formalisieren:
 	\begin{align*}
 		G &: \text{Menge von } \mathbb{R} \rightarrow (\mathbb{R},\mathbb{N}),\ S \mapsto a:= (\sum_{x\in S} x, |S|) \\
-		H &: \text{Menge von } (\mathbb{R},\mathbb{N}) \rightarrow \mathbb{R},\ a \mapsto \frac{\sum\nolimits_{a\in A} a.first}{\sum\nolimits_{a\in A}a.second}
+		H &: \text{Menge von } (\mathbb{R},\mathbb{N}) \rightarrow \mathbb{R},\ A \mapsto \frac{\sum\nolimits_{a\in A} a.first}{\sum\nolimits_{a\in A}a.second}
 	\end{align*}
+        Hier werden zunächst alle Teilmengen der Ausgangsmenge auf Tupel,
+        bestehend aus der Summe ihrer Elemente und ihrer Mächtigkeit,
+        abgebildet. Damit erhält man die Menge aller dieser Tupel \(A\). Diese
+        Menge wird daraufhin wieder gemäß der zweiten Zeile auf \(\mathbb{R}\)
+        abgebildet.
 	\item \textbf{holistisch}: Holistische Aggregate sind all jene, die weder distributiv noch algebraisch sind. Man kann das Problem also nicht in Teilprobleme zerlegen, z.B. bei median() oder häufigsterWert(). \textbf{Definition aus der Vorlesung}: Man kann keine Beschränkung des Speicherbedarfs für Sub-Aggregate angeben.
 \end{itemize}
 Offensichtlich sind distributive bzw. algebraische Aggregate aufgrund ihrer Parallelisierungsmöglichkeiten effizienter in ihrer Berechnung.
@@ -49,19 +76,20 @@ Offensichtlich sind distributive bzw. algebraische Aggregate aufgrund ihrer Para
 Als nächstes geht es um Kennzahlen, die etwas über die Tendenz in unseren Daten aussagen. Die bekannteste ist das \textbf{arithmetische Mittel}
 \[\bar{x}= \frac{1}{n} \sum_{i=1}^n x_i\ .\]
 Dieses kann man auch weiter verfeinern zum \textbf{gewichteten arithmetischen Mittel}
-\[\bar{x}_w = \frac{\sum_{i=1}^n w_i * x_i}{\sum_{i=1}^n w_i}\ .\]
-Anschaulich beschrieben, wird jedes \(x_i\) mit einem prozentualem Wert multipliziert, wobei sich diese Gewichte zu 1 aufaddieren.
+\[\bar{x}_w = \frac{\sum_{i=1}^n w_i x_i}{\sum_{i=1}^n w_i}\ .\]
+Anschaulich beschrieben, wird jedes \(x_i\) mit einem prozentualem Wert
+multipliziert.
 Laut obiger Klassifikation lassen sich diese Kennzahlen als \textit{algebraisch} einstufen. Des Weiteren sind sie nur auf numerische Daten anwendbar.
 Wenn es um die Mitte unseres Wertebereiches geht, kann das sogar ein Grundschüler ausrechnen:
-\[midrange = \frac{max - min}{2}\]
+\[midrange = \frac{max - min}{2}.\]
 Auch \textit{midrange} kann nur auf numerische Daten angewandt werden.
 
 Der \textbf{Median} gibt bei sortierter Anordnung den Wert an, der in der Mitte liegt:
 \[
 x_{med} = 
 \begin{cases}
-	x_{\frac{n+1}{2}} &\quad \text{für } n \text{ ungerade}\\
-	\frac{1}{2}(x_{n/2} + x_{n/2+1}) &\quad \text{für } n \text{ gerade}\
+	x_{\frac{n+1}{2}} &\quad \text{für } n \text{ ungerade,}\\
+	\frac{1}{2}(x_{n/2} + x_{n/2+1}) &\quad \text{für } n \text{ gerade.}\
 \end{cases}
 \]
 Der Median lässt sich auf numerische und ordinale Daten anwenden und ist als \textit{holistisch} einzustufen.
@@ -71,17 +99,27 @@ Der \textbf{Modus} gibt den Wert an, der im Datenbestand am häufigsten vorkommt
 \noindent Beim Modus muss beachtet werden, dass evtl. wichtige Informationen über unsere Daten ignoriert werden können, z.B. weitere Peaks bei multimodalen Verteilungen.
 
 \subsection{Quantifizierung der Streuung der Daten}
-\textbf{Quantile} sind Lagemaße, die einen Schwellenwert in unseren Daten beschreiben, d.h. ein bestimmter Anteil ist kleiner als das Quantil, der Rest ist größer. Besondere Quantile sind die \textbf{Quartile}: Das 0.25-Quartil \(Q_{0.25}\) bzw. \(Q_1\) gibt den Wert an, für den 25\% der Werte kleiner oder gleich und 75\% der Werte größer oder gleich \(Q_1\) sind. Analog wird \(Q_{0.75}\) bzw. \(Q_3\) definiert. Es gilt: \(Q_2 = Q_{0.5} = x_{med}\). Mit diesen Quartilen lässt sich der so genannte \textbf{Inter-Quartils-Abstand} definieren als \(IQR = Q_3 - Q_1\). Als \textbf{Ausreißer} bezeichnet man Werte, die mehr als \(1,5 \times IQR\) von \(Q_1\) nach unten oder \(Q_3\) nach oben abweichen.
+\textbf{Quantile} sind Lagemaße, die einen Schwellenwert in unseren Daten
+beschreiben, d.h. ein bestimmter Anteil ist kleiner als das Quantil, der Rest
+ist größer. Besondere Quantile sind die \textbf{Quartile}: Das 0.25-Quartil
+\(Q_{0.25}\) bzw. \(Q_1\) gibt den Wert an, für den 25\% der Werte kleiner oder
+gleich und 75\% der Werte größer als \(Q_1\) sind. Analog wird
+\(Q_{0.75}\) bzw. \(Q_3\) definiert. Es gilt: \(Q_2 = Q_{0.5} = x_{med}\). Mit
+diesen Quartilen lässt sich der so genannte \textbf{Inter-Quartils-Abstand}
+definieren als \(IQR = Q_3 - Q_1\). Als \textbf{Ausreißer} bezeichnet man
+Werte, die mehr als \(1,5 \times IQR\) von \(Q_1\) nach unten oder \(Q_3\)
+nach oben abweichen.
 
-Weitere wichtige Streumaße sind \textbf{Varianz} und \textbf{Standardabweichung}:
+Weitere wichtige Streumaße sind \textbf{Stichprobenvarianz} und
+\textbf{-abweichung}:
 \begin{align*}
 	\sigma^{2} &= \frac{1}{n-1}\sum\limits_{i=1}^n (x_i -\bar{x})^2 \\
 	\sigma &= \sqrt{\sigma^{2}} \\
 \end{align*}
+Diese Maße fallen für jede Stichprobe unterschiedlich aus und sollten wie immer
+mit Vorsicht interpretiert werden.
 
 \subsection{Boxplots}
-Wir halten uns kurz.
-
 \noindent Die Daten in Abb.~\ref{fig:boxplot} sind als Box repräsentiert. Die Ränder der Box sind \(Q_1\) bzw. \(Q_3\), womit die Höhe der Box dem \(IQR\) entspricht. Innerhalb der Box ist \(x_{med}\) explizit eingezeichnet. Das Minimum und Maximum sind als "'whiskers"' eingezeichnet.
 \begin{figure}[ht]
 	\centering
@@ -92,7 +130,13 @@ Wir halten uns kurz.
 \footnotetext{2. Foliensatz, S.17, Analysetechniken für große Datenbestände, Prof. Dr.-Ing. Klemens Böhm}
 
 \subsection{Histogramme}
-\textbf{Histogramme} zeigen die Häufigkeit, mit der einzelne Werte auftreten. Falls nahezu bzw. alle Werte unterschiedlich sind, hat man jedoch mit einem Histogramm nichts gewonnen. Deswegen werden die Daten in Klassen bzw. "'Buckets"' unterteilt. Dies stellt im Allgemeinen eine recht gute Approximation dar. Wählt man die Partitionierung der Art, dass alle Klassen gleich breit sind, erhalten wir ein \textit{Equi-Width}-Histogramm, Abb.~\ref{fig:equiWidth}.
+\textbf{Histogramme} zeigen die Häufigkeit, mit der einzelne Werte auftreten.
+Falls nahezu bzw. alle Werte unterschiedlich sind, hat man jedoch mit einem
+Histogramm nichts gewonnen. Deswegen werden die Daten in Klassen bzw.
+"'Buckets"' unterteilt. Dies stellt im Allgemeinen eine recht gute
+Approximation dar. Wählt man die Partitionierung derart, dass alle Klassen
+gleich breit sind, erhalten wir ein \textit{Equi-Width}-Histogramm,
+Abb.~\ref{fig:equiWidth}.
 
 \begin{figure}[ht]
 	\centering
@@ -117,19 +161,30 @@ Probleme ergeben sich für Histogramme bei höher dimensionalen Datenbeständen.
 \subsection{Entropie}
 Die \textbf{Entropie} einer Menge gibt an, wie zufällig die Daten in ihr verteilt sind, d.h. die Entropie dient als Maß für die Unordnung und ist definiert als
 \[
-	E(S)=-\sum\limits_{j\in S} p_j \cdot \log{p_j}.
+	E(S)=-\sum\limits_{j\in S} p_j \log{p_j}.
 \]
 Hierbei bezeichnet \(j\) die Klassen in \(S\), \(p_j\) die relative Häufigkeit der Elemente in Klasse \(j\) und \(\log{p_j}\) wird als statistische Signifikanz bezeichnet. Da \(p_j \leq 1 \), gilt \(\log{p_j} \leq 0\), was durch das negative Vorzeichen der Summe aufgehoben wird. Offensichtlich ist die Entropie minimal, wenn alle Werte in einer Klasse liegen, da somit \(p_1 = 1\) wird und sich alle Summanden zu \(0\) ergeben. Im Gegensatz dazu wird die Entropie für eine gegebene Klassenanzahl maximal, wenn \(p_i = p_j,\ \forall i,j\in S\) gilt, die Werte also über alle Klassen gleichverteilt sind. 
 
+An dieser Stelle sei ausdrücklich auf die Relevanz der Entropie sowie der
+Erweiterung und Anwendung, die in späteren Kapiteln auftreten hingewiesen.
+
 \subsection{Wahrscheinlichkeitstheorie}
-Die Wahrscheinlichkeitstheorie ist zentral für die Datenanalyse, da viele Algorithmen auf Annahmen probabilistischer Natur zum Datenbestand beruhen. Ein zentrales Konzept ist der \textit{Wahrscheinlichkeitsraum}, der durch das 3-Tupel \((\Omega, F, P)\) beschrieben wird. Hierbei ist \(\Omega\) die Ergebnismenge, \(F\subseteq 2^{\Omega}\) der Raum der Ereignisse und \(P\) ist das Wahrscheinlichkeitsmaß, dass jedem Ereignis einen Wert aus \([0,1]\) zuweist. \(F\) ist hierbei abgeschlossen unter Komplement und Vereinigung und enthält das triviale (sichere) und leere (unmögliche) Ereignis. Das Wahrscheinlichkeitsmaß \(P\) erfüllt die \textit{Axiome von Kolmogoroff}:
+Die Wahrscheinlichkeitstheorie ist zentral für die Datenanalyse, da viele
+Algorithmen auf Annahmen probabilistischer Natur über den Datenbestand beruhen.
+Ein zentrales Konzept ist der \textit{Wahrscheinlichkeitsraum}, der durch das
+3-Tupel \((\Omega, F, P)\) beschrieben wird. Hierbei ist \(\Omega\) die
+Ergebnismenge, \(F\subseteq 2^{\Omega}\) der Raum der Ereignisse und \(P\) ist
+das Wahrscheinlichkeitsmaß, dass jedem Ereignis einen Wert aus \([0,1]\) zuweist.
+\(F\) ist hierbei abgeschlossen unter Komplement und Vereinigung und enthält
+das triviale (sichere) und leere (unmögliche) Ereignis. Das
+Wahrscheinlichkeitsmaß \(P\) erfüllt die \textit{Axiome von Kolmogorow}:
 \begin{align*}
 	&\text{(K1) Nichtnegativität}	&\quad P(a)\geq 0\\
 	&\text{(K2) Triviales Ereignis}	&\quad P(\Omega) = 1\\
 	&\text{(K3) Additivität}	&\quad \text{Für } a\cap b = \emptyset: P(a\cup b) = P(a) + P(b)\\
 \end{align*}
 
-\noindent Variablen, deren Wert vom Zufall abhängt, nennen wir ganz kreativ \textbf{Zufallsvariable}. Diese Zufallsvariablen können auch als Abbildung aufgefasst werden. Dabei wird jedem \(\omega \in \Omega\) ein reeller Wert \(x = X(\omega)\) zugewiesen, was auch als \textit{Realisierung} von \(X\) bezeichnet wird. Mit \(X\) können aber auch \textbf{Ereignisse} beschrieben werden, z.B. \(\{X = x\} \text{ oder } \{X \leq x\}\). Man denke anschauliche an das Werfen mit 2 Würfeln, wobei \(X = \text{ Summe der Augen}\).
+\noindent Variablen, deren Wert vom Zufall abhängt, nennen wir ganz kreativ \textbf{Zufallsvariable}. Diese Zufallsvariablen können auch als Abbildung aufgefasst werden. Dabei wird jedem \(\omega \in \Omega\) ein reeller Wert \(x = X(\omega)\) zugewiesen, was auch als \textit{Realisierung} von \(X\) bezeichnet wird. Mit \(X\) können aber auch \textbf{Ereignisse} beschrieben werden, z.B. \(\{X = x\} \text{ oder } \{X \leq x\}\). Man denke anschaulich an das Werfen mit 2 Würfeln, wobei \(X = \text{ Summe der Augen}\).
 
 \begin{figure}[hb]
 	\centering
@@ -138,9 +193,11 @@ Die Wahrscheinlichkeitstheorie ist zentral für die Datenanalyse, da viele Algor
 	\label{fig:contingency_ex}
 \end{figure}
 
-Multivariate Verteilungen beschreiben die Wahrscheinlichkeitsverteilung einer mehrdimensionalen Zufallsvariable bzw. mehrerer Zufallsvariablen. Zumindest für 2-dimensionale Zufallsvariablen kann die Verteilung in einer \textit{Kontingenztabelle} dargestellt werden, die schematisch in Abb.~\ref{fig:contingency_ex} zu sehen ist. Summiert man die einzelnen Spalten auf, so erhält man die Randverteilung für \(X\); summiert man die einzelnen Zeilen auf, so erhält man die Randverteilung von \(Y\).
+Multivariate Verteilungen beschreiben die Wahrscheinlichkeitsverteilung einer mehrdimensionalen Zufallsvariable bzw. mehrerer Zufallsvariablen. Zumindest für 2-dimensionale Zufallsvariablen kann die Verteilung in einer \textit{Kontingenztabelle} dargestellt werden, die schematisch in Abb.~\ref{fig:contingency_ex} zu sehen ist. Summiert man die einzelnen Spalten auf, so erhält man die Randverteilung für \(Y\); summiert man die einzelnen Zeilen auf, so erhält man die Randverteilung von \(X\).
 
-Die Zufallsvariablen können aber auch voneinander abhängen. Die Verteilung einer Zufallsvariable, gegeben den Wert der anderen, nennt man \textbf{bedingte Verteilung} und wir durch
+Die Zufallsvariablen können aber auch voneinander abhängen. Die Verteilung
+einer Zufallsvariable, gegeben den Wert der anderen, nennt man \textbf{bedingte
+Verteilung} und wird durch
 \[
 	P(X=a\ |\ Y=b)=\frac{P(X=a,Y=b)}{P(Y=b)}
 \]
@@ -151,11 +208,11 @@ Sei \(X\) nun kontinuierlich. Damit ergibt sich die \textit{Wahrscheinlichkeitsd
 
 Der \textbf{Erwartungswert} \(E(X)\) für den diskreten bzw. kontinuierlichen Fall lautet
 \begin{align*}
-	&E(X)=\sum_{i\geq 1} x_i f(x_i) &E(X) = \int_{-\infty}^{\infty} xf(x)dx
+	&E(X)=\sum_{i\geq 1} x_i f(x_i) &E(X) = \int_{-\infty}^{\infty}xf(x)dx.
 \end{align*}
 Durch den Verschiebungssatz erhalten wir für die \textbf{Varianz} \(Var(X)=E(X^2)-E(X)^2\). Somit ergeben sich für diskrete bzw. kontinuierliche Zufallsvariablen
 \begin{align*}
-	&Var(X)=\sum_i f(x_i) x_i^2 - (\sum_i f(x_i) \bar{x})^2 &Var(X)=\int_{-\infty}^{\infty} x^2f(x)dx - E(X)^2
+	&Var(X)=\sum_i f(x_i) x_i^2 - (\sum_i f(x_i) \bar{x})^2&Var(X)=\int_{-\infty}^{\infty} x^2f(x)dx - E(X)^2.
 \end{align*}
 
 Um Zusammenhänge zwischen den Zufallsvariablen anschaulich darzustellen, gibt es bestimmte Kennzahlen. Zum einen die \textbf{Kovarianz}, die als
@@ -168,7 +225,13 @@ Um Zusammenhänge zwischen den Zufallsvariablen anschaulich darzustellen, gibt e
 		\int\limits_{-\infty}^{\infty} \int\limits_{-\infty}^{\infty} f(x,y)(x-E(X))(y-E(Y))dxdy\quad X \text{ und } Y \text{ stetig}\\
 		\end{cases}
 \end{align*}
-definiert ist. Betrachten wir die zweite Gleichung. In einem Koordinatensystem durch den Punkt \((E(X),E(Y))\) liefern die Werte des ersten und dritten Quadranten einen positiven Beitrag zur Gesamtsumme, die Werte des zweiten und vierten Quadranten hingegen negative. Damit ergibt sich, dass die Kovarianz zwar anzeigen kann, ob die Daten positiv/negativ korreliert sind oder unabhängig; da sie aber unskaliert ist, lässt sich die Stärke der Korrelation nicht sinnvoll qunatifizieren.
+definiert ist. Betrachten wir die zweite Gleichung. In einem Koordinatensystem
+durch den Punkt \((E(X),E(Y))\) liefern die Werte des ersten und dritten
+Quadranten einen positiven Beitrag zur Gesamtsumme, die Werte des zweiten und
+vierten Quadranten hingegen negative. Damit ergibt sich, dass die Kovarianz
+zwar anzeigen kann, ob die Daten positiv/negativ korreliert sind oder
+unabhängig; da sie aber unskaliert ist, lässt sich die Stärke der Korrelation
+nicht sinnvoll quantifizieren.
 Eine gängige Normierung ergibt sich mittels der Standardabweichung und man erhält den \textbf{Korrelationskoeffizienten} 
 \[
 	\rho(X,Y) = \frac{Cov(X,Y)}{\sqrt{Var(X)} \sqrt{Var(Y)}}.
@@ -211,8 +274,8 @@ vor. Damit lässt sich der gesamte Test kurz zusammenfassen:
 	\item \textbf{Ablehnungsbereich:} \(\chi^2 > \chi_{1-\alpha}^2((k-1)(m-1))\)
 \end{itemize}
 Der Verlust der Freiheitsgrade tritt durch die Schätzung \(\tilde{h}_{ij}\) auf.
-Mit anderen Worten: Ist ein \(\chi^2\)-Wert besonders groß, so kann der entsprehcenden
-Tabelle die Wahrscheinlichkeit für so einen Wert entnommen werden. Ist dieser sehr
+Mit anderen Worten: Ist ein \(\chi^2\)-Wert besonders groß, so kann der
+entsprechenden Tabelle die Wahrscheinlichkeit für so einen Wert entnommen werden. Ist dieser sehr
 klein, so wird die Nullhypothese verworfen. Bei diesem Test ist zu beachten,
 dass der \(\chi^2\)-Wert in hohem Maße von dem Stichprobemumfang \(n\) abhängig ist.
 
@@ -222,7 +285,7 @@ dass die beobachteten Ereignisse bereits sortiert vorliegen. Aus diesen Werten
 wird nun die Summenhäufigkeitsfunktion (empirische Verteilungfunktion) \(S\) berechnet,
 die nun mit der angenommenen Verteilungsfunktion \(F_0\) verglichen wird. Hierfür werden
 an den Stellen \(x_i\) die Differenzen der beiden Funktionen berechnet, also
-\(S(x_{i-1}-F(x_i)\) und \(S(x_i)-F(x_i)\). Hierbei ist \(S(x_0):=0\). Man prüft also
+\(S(x_{i-1})-F(x_i)\) und \(S(x_i)-F(x_i)\). Hierbei ist \(S(x_0):=0\). Man prüft also
 die Stärke der Abweichung der angenommenen Funktion von den echten Werten.
 Insgesamt ist damit also \(H_0:\ F(x)=F_0(x).\)
 Die größte Differenz \(d_{max}\) wird nun mit den Tabellenwerten verglichen. 
@@ -302,7 +365,7 @@ stattdessen \(E(p) = \frac{\sum y_i}{n}\) verwenden, was im Prinzip ein
 wenn man \(p\) maximieren möchte, den obigen Ausdruck selbst, oder den Logarithmus
 davon berechnet, ergibt sich stattdessen die \textbf{Log-Likelihood-Funktion}
 \[
-	\sum\limits_{i_1}^n y_i \log{p} + (1-y_i)\log(1-p).
+    \sum\limits_{i_1}^n (y_i \log{p} + (1-y_i)\log(1-p)).
 \]
 Auch hier gilt, dass pro Summand vom inneren Term nur ein Summand übrig bleibt.
 Die Log-Likelihood-Funktion bietet den Vorteil, dass man nicht so viele Produkte
@@ -350,13 +413,21 @@ weglassen. Dies setzt jedoch ein Wissen über die spzifische Domäne voraus. Hat
 man dieses Wissen nicht, müssen andere Maßstäbe angesetzt werden, z.B. welche 
 Attribute lassen sich relativ gut mit anderen Anttriubutwerten vorhersagen,
 sprich wo liegt eine Abhängigkeit vor? Da es insgesamt \(2^d\) mögliche
-Teilmengen von Attributen gibt (\(d\) ist die Mächtigkeit der Domain), 
+Teilmengen von Attributen gibt (\(d\) ist die Mächtigkeit der Domäne), 
 können wir die Lösung oft nicht direkt explizit ausrechenen. Hier
 müssen Heuristiken zur Auswahl der Dimensionen angewandt werden, z.B. wird zuerst die
 \textit{Vorhersagekraft} jedes Attributs ermittelt und nur die besten Attribute
-werden behalten, oder schrittweise Auswahl der miteinander am vorhersagekräftigsten
-Attribute bis man genügend hat, oder eine schrittweise Eliminierung der am
-wenigsten nützlichen Attribute.
+werden behalten, oder es erfolgt eine schrittweise Auswahl der miteinander am vorhersagekräftigsten
+Attribute bis man genügend hat; analog kann auch eine schrittweise Eliminierung der am
+wenigsten nützlichen Attribute erfolgen. Dies entspricht eine Top-Down bzw.
+Bottom-Up Ansatz. Denkbar ist natürlich auch eine Kombination der beiden
+Verfahren, d.h. in jeder Iteration wird sowohl ein neues Attribut hinzugefügt,
+also auch ein altes entfernt. Dies kann insbesondere im Bereich der Regression
+ein nützliches Verfahren bei der Auswahl der Regressoren sein. Auf dieses Weise
+kann auch Multikollinearität in gewisser Weise berücksichtigt werden. Für eine
+tiefergehende Betrachtung der Herausforderungen, die sich bei der Feature
+Selection ergeben, sei auf einschlägige Ökonometrie Veranstaltungen und
+entsprechende Literatur verwiesen.
 
 \textbf{Hauptachsentransformation:} Auch Singulärwertzerlegung genannt, oder auf 
 englisch Principal Component Analysis, Singular Value Decomposition oder Latent 
@@ -457,16 +528,30 @@ sehr schnell schwierig und die Werte für die Singulärwerte sind auch weitaus w
 eindeutig. Es ist also im Allgemeinen nicht so einfach, passende Werte zu finden,
 die die Struktur des Datenbestanden treffend wiedergeben.
 
+\textbf{Nachreichung:} Dieser Abschnitt über SVD ist vor allem als
+Visualisierung zu verstehen. Die Darstellung ist schwer an
+\url{https://www.youtube.com/watch?v=P5mlg91as1c} angelehnt. 
+Die Mathematik dahinter ist für die Klausur
+irrelevant und gerade für Informationswirte nicht unbedingt Teil des mathematischen
+Curriculums. Wer sich näher mit diesem Thema befassen möchte, sei auf diverse
+Vorlesungen auf YouTube verwiesen oder auch das eine oder andere Mathematik
+Lehrbuch. Für die Klausur ist es zum einen unwahrscheinlich, dass dieses Thema
+allzu genau abgefragt wird, und zum anderen dürfte es bereits reichen, die
+Dimensionen der Matrizen und wie so miteinander verrechnet werden zu kennen.
+Die Länge der Darstellung dieses für die Klausur nur begrenzt relevanten Themas
+rührt aus der Lust der Autors, mit \texttt{R} ein wenig herumspielen zu wollen.
+Der Fokus sollte beim Lernen folglich auf anderen Kapiteln liegen.
+
 \subsubsection{Diskretisierung}
 Okay, wir halten uns kurz.  \textbf{Entropiebasierte Diskretisierung:} Wir teilen
-unseren Datenbestand \(S\) auf in kleinere Partitionierungen. Wo genau wir aber
-die Intervallsgrenzen am besten setzen, verrät uns die \textbf{Entropie des Splits}:
+unsere Attributmenge \(S\) in kleinere Partitionierungen auf. Wo genau wir aber
+die Intervallgrenzen am besten setzen, verrät uns die \textbf{Entropie des Splits}:
 \[
 	Entropie_{Split}(S,T) = \frac{|S_1|}{|S|} Entropie(S_1) +
 	\frac{|S_2|}{|S|} Entropie(S_2)
 \]
 Hierbei ist \(T\) der Schwellenwert für den Split. Diesen gilt es effizient zu wählen.
-Natürlich lässt sich das auch für mehr als 2 Partitionen machen. Optimal ist unsere
+Natürlich lässt sich das auch für mehr als 2 Partitionen implementieren. Optimal ist unsere
 Partitionierung, wenn obige Funktion minimiert wird. Die Berechnung wird rekursiv
 durchgeführt, bis irgendein Abbruchkriterium erfüllt ist.
 

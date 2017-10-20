@@ -4,87 +4,87 @@
 \contentsline {subsection}{\numberline {1.3}Qualifizierung der Tendenz insgesamt}{3}{subsection.1.3}
 \contentsline {subsection}{\numberline {1.4}Quantifizierung der Streuung der Daten}{4}{subsection.1.4}
 \contentsline {subsection}{\numberline {1.5}Boxplots}{4}{subsection.1.5}
-\contentsline {subsection}{\numberline {1.6}Histogramme}{5}{subsection.1.6}
+\contentsline {subsection}{\numberline {1.6}Histogramme}{4}{subsection.1.6}
 \contentsline {subsection}{\numberline {1.7}Entropie}{6}{subsection.1.7}
-\contentsline {subsection}{\numberline {1.8}Wahrscheinlichkeitstheorie}{6}{subsection.1.8}
+\contentsline {subsection}{\numberline {1.8}Wahrscheinlichkeitstheorie}{7}{subsection.1.8}
 \contentsline {subsection}{\numberline {1.9}Statistische Tests}{9}{subsection.1.9}
 \contentsline {subsubsection}{\numberline {1.9.1}Chi-Quadrat Unabh\IeC {\"a}ngigkeitstest}{9}{subsubsection.1.9.1}
 \contentsline {subsubsection}{\numberline {1.9.2}Kolmogorov-Smirnov-Test}{10}{subsubsection.1.9.2}
 \contentsline {subsubsection}{\numberline {1.9.3}Wilcoxon-Mann-Whitney Test}{10}{subsubsection.1.9.3}
 \contentsline {subsubsection}{\numberline {1.9.4}Bernoulli-Experiment}{11}{subsubsection.1.9.4}
 \contentsline {subsection}{\numberline {1.10}Datenreduktion}{12}{subsection.1.10}
-\contentsline {subsubsection}{\numberline {1.10.1}Numerosity Reduction}{12}{subsubsection.1.10.1}
+\contentsline {subsubsection}{\numberline {1.10.1}Numerosity Reduction}{13}{subsubsection.1.10.1}
 \contentsline {subsubsection}{\numberline {1.10.2}Dimensionality Reduction}{13}{subsubsection.1.10.2}
-\contentsline {subsubsection}{\numberline {1.10.3}Diskretisierung}{17}{subsubsection.1.10.3}
-\contentsline {section}{\numberline {2}Informatik Grundlagen}{19}{section.2}
-\contentsline {subsection}{\numberline {2.1}Indizierung allgemein}{19}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}R\IeC {\"a}umliche Indexstrukturen}{20}{subsection.2.2}
-\contentsline {subsubsection}{\numberline {2.2.1}Normalisierung}{20}{subsubsection.2.2.1}
-\contentsline {subsubsection}{\numberline {2.2.2}k-dimensionale B\IeC {\"a}ume}{21}{subsubsection.2.2.2}
-\contentsline {subsubsection}{\numberline {2.2.3}Objekte mit r\IeC {\"a}umlicher Ausdehnung}{21}{subsubsection.2.2.3}
-\contentsline {subsubsection}{\numberline {2.2.4}Optimierung kd-B\IeC {\"a}ume}{23}{subsubsection.2.2.4}
-\contentsline {subsubsection}{\numberline {2.2.5}R-Baum}{24}{subsubsection.2.2.5}
-\contentsline {subsection}{\numberline {2.3}Instanzbasiertes Lernen}{27}{subsection.2.3}
-\contentsline {section}{\numberline {3}Klassifikation mit Entscheidungsb\IeC {\"a}umen}{29}{section.3}
-\contentsline {subsection}{\numberline {3.1}Attribute vs. Features}{29}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Bin\IeC {\"a}re Entscheidungsb\IeC {\"a}ume}{29}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Kosten beim Lernen}{31}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}NULL-Werte}{32}{subsection.3.4}
-\contentsline {section}{\numberline {4}Evaluation von Datenanalyseverfahren}{34}{section.4}
-\contentsline {subsection}{\numberline {4.1}Training und Testing}{34}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Wahrscheinlichkeiten als Vorhersageergebnis}{35}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Fehlerarten und entsprechende Ma\IeC {\ss }e}{36}{subsection.4.3}
-\contentsline {subsubsection}{\numberline {4.3.1}Bias vs. Varianz}{36}{subsubsection.4.3.1}
-\contentsline {subsubsection}{\numberline {4.3.2}Fehlerarten und Erfolgsquote}{36}{subsubsection.4.3.2}
-\contentsline {subsection}{\numberline {4.4}Lift Charts}{37}{subsection.4.4}
-\contentsline {subsection}{\numberline {4.5}ROC Kurven}{38}{subsection.4.5}
-\contentsline {subsection}{\numberline {4.6}Minimum Description Language}{42}{subsection.4.6}
-\contentsline {subsubsection}{\numberline {4.6.1}Minimum Message Length}{42}{subsubsection.4.6.1}
-\contentsline {section}{\numberline {5}Association Rules}{46}{section.5}
-\contentsline {subsection}{\numberline {5.1}Apriori}{47}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}Multidimensional Association Rules}{49}{subsection.5.2}
-\contentsline {subsection}{\numberline {5.3}Multi-Level Association Rules}{49}{subsection.5.3}
-\contentsline {section}{\numberline {6}Association Rules - Erweiterungen und Anwendungen}{53}{section.6}
-\contentsline {subsection}{\numberline {6.1}Direct Hashing and Pruning}{53}{subsection.6.1}
-\contentsline {subsubsection}{\numberline {6.1.1}Candidate Itemset Reduktion}{53}{subsubsection.6.1.1}
-\contentsline {subsubsection}{\numberline {6.1.2}Datenbankreduktion}{53}{subsubsection.6.1.2}
-\contentsline {subsubsection}{\numberline {6.1.3}DHP Algorithmus}{54}{subsubsection.6.1.3}
-\contentsline {subsection}{\numberline {6.2}Sampling}{55}{subsection.6.2}
-\contentsline {subsubsection}{\numberline {6.2.1}Negative Border}{55}{subsubsection.6.2.1}
-\contentsline {subsection}{\numberline {6.3}Optimistische Verfeinerung}{56}{subsection.6.3}
-\contentsline {subsection}{\numberline {6.4}Frequent Pattern Trees}{57}{subsection.6.4}
-\contentsline {subsubsection}{\numberline {6.4.1}FP-Tree Erzeugung}{57}{subsubsection.6.4.1}
-\contentsline {subsubsection}{\numberline {6.4.2}Frequent Pattern Mining}{58}{subsubsection.6.4.2}
-\contentsline {section}{\numberline {7}Pattern Mining unter Constraints}{60}{section.7}
-\contentsline {subsection}{\numberline {7.1}Constrained Association Rules}{60}{subsection.7.1}
-\contentsline {subsubsection}{\numberline {7.1.1}Meta-Rule Guided Mining}{61}{subsubsection.7.1.1}
-\contentsline {subsubsection}{\numberline {7.1.2}1-var und 2-var Constraints}{62}{subsubsection.7.1.2}
-\contentsline {subsubsection}{\numberline {7.1.3}Eigenschaften von Constraints}{63}{subsubsection.7.1.3}
-\contentsline {subsection}{\numberline {7.2}Constrained Frequent Sequence Mining}{65}{subsection.7.2}
-\contentsline {section}{\numberline {8}Clustering}{67}{section.8}
-\contentsline {subsection}{\numberline {8.1}Partitionierendes Clustering}{70}{subsection.8.1}
-\contentsline {subsubsection}{\numberline {8.1.1}k-Means}{70}{subsubsection.8.1.1}
-\contentsline {subsubsection}{\numberline {8.1.2}k-Means in der Variante CLARANS}{71}{subsubsection.8.1.2}
-\contentsline {subsubsection}{\numberline {8.1.3}BIRCH}{72}{subsubsection.8.1.3}
-\contentsline {subsection}{\numberline {8.2}Hierarchisches Clustering}{74}{subsection.8.2}
-\contentsline {subsection}{\numberline {8.3}Probleme mit hochdimensionalen R\IeC {\"a}umen}{76}{subsection.8.3}
-\contentsline {subsection}{\numberline {8.4}Clustering mit kategorischen Daten}{77}{subsection.8.4}
-\contentsline {subsection}{\numberline {8.5}Dichte-basiertes Clustering}{79}{subsection.8.5}
-\contentsline {subsubsection}{\numberline {8.5.1}DBSCAN}{79}{subsubsection.8.5.1}
-\contentsline {subsubsection}{\numberline {8.5.2}OPTICS}{80}{subsubsection.8.5.2}
-\contentsline {subsection}{\numberline {8.6}Probabilistisches Clustering}{82}{subsection.8.6}
-\contentsline {subsubsection}{\numberline {8.6.1}Expectation Maximization}{82}{subsubsection.8.6.1}
-\contentsline {subsubsection}{\numberline {8.6.2}Erweiterungen von Mixture Models}{83}{subsubsection.8.6.2}
-\contentsline {section}{\numberline {9}Statistische Modellierung}{87}{section.9}
-\contentsline {subsection}{\numberline {9.1}Naive Bayes}{87}{subsection.9.1}
-\contentsline {subsection}{\numberline {9.2}Bayesian Networks}{88}{subsection.9.2}
-\contentsline {subsection}{\numberline {9.3}Anwendung Bayesian Networks: Duplikaterkennung}{90}{subsection.9.3}
-\contentsline {section}{\numberline {10}Lineare Modelle und SVMs}{92}{section.10}
-\contentsline {subsection}{\numberline {10.1}Logistic Regression}{92}{subsection.10.1}
-\contentsline {subsection}{\numberline {10.2}Support Vector Machines}{93}{subsection.10.2}
-\contentsline {subsection}{\numberline {10.3}Support Vector Regression}{95}{subsection.10.3}
-\contentsline {section}{\numberline {11}Ensembles}{96}{section.11}
-\contentsline {subsection}{\numberline {11.1}Bagging}{96}{subsection.11.1}
-\contentsline {subsection}{\numberline {11.2}Boosting}{97}{subsection.11.2}
-\contentsline {subsection}{\numberline {11.3}Stacking}{98}{subsection.11.3}
-\contentsline {subsection}{\numberline {11.4}Interpretation von Ensembles}{98}{subsection.11.4}
+\contentsline {subsubsection}{\numberline {1.10.3}Diskretisierung}{19}{subsubsection.1.10.3}
+\contentsline {section}{\numberline {2}Informatik Grundlagen}{20}{section.2}
+\contentsline {subsection}{\numberline {2.1}Indizierung allgemein}{20}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}R\IeC {\"a}umliche Indexstrukturen}{21}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Normalisierung}{21}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}k-dimensionale B\IeC {\"a}ume}{22}{subsubsection.2.2.2}
+\contentsline {subsubsection}{\numberline {2.2.3}Objekte mit r\IeC {\"a}umlicher Ausdehnung}{22}{subsubsection.2.2.3}
+\contentsline {subsubsection}{\numberline {2.2.4}Optimierung kd-B\IeC {\"a}ume}{24}{subsubsection.2.2.4}
+\contentsline {subsubsection}{\numberline {2.2.5}R-Baum}{25}{subsubsection.2.2.5}
+\contentsline {subsection}{\numberline {2.3}Instanzbasiertes Lernen}{28}{subsection.2.3}
+\contentsline {section}{\numberline {3}Klassifikation mit Entscheidungsb\IeC {\"a}umen}{30}{section.3}
+\contentsline {subsection}{\numberline {3.1}Attribute vs. Features}{30}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Bin\IeC {\"a}re Entscheidungsb\IeC {\"a}ume}{30}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Kosten beim Lernen}{32}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}NULL-Werte}{33}{subsection.3.4}
+\contentsline {section}{\numberline {4}Evaluation von Datenanalyseverfahren}{35}{section.4}
+\contentsline {subsection}{\numberline {4.1}Training und Testing}{35}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Wahrscheinlichkeiten als Vorhersageergebnis}{36}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Fehlerarten und entsprechende Ma\IeC {\ss }e}{37}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Bias vs. Varianz}{37}{subsubsection.4.3.1}
+\contentsline {subsubsection}{\numberline {4.3.2}Fehlerarten und Erfolgsquote}{37}{subsubsection.4.3.2}
+\contentsline {subsection}{\numberline {4.4}Lift Charts}{38}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}ROC Kurven}{39}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Minimum Description Language}{43}{subsection.4.6}
+\contentsline {subsubsection}{\numberline {4.6.1}Minimum Message Length}{43}{subsubsection.4.6.1}
+\contentsline {section}{\numberline {5}Association Rules}{47}{section.5}
+\contentsline {subsection}{\numberline {5.1}Apriori}{48}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Multidimensional Association Rules}{50}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Multi-Level Association Rules}{50}{subsection.5.3}
+\contentsline {section}{\numberline {6}Association Rules - Erweiterungen und Anwendungen}{54}{section.6}
+\contentsline {subsection}{\numberline {6.1}Direct Hashing and Pruning}{54}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Candidate Itemset Reduktion}{54}{subsubsection.6.1.1}
+\contentsline {subsubsection}{\numberline {6.1.2}Datenbankreduktion}{54}{subsubsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.3}DHP Algorithmus}{55}{subsubsection.6.1.3}
+\contentsline {subsection}{\numberline {6.2}Sampling}{56}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}Negative Border}{56}{subsubsection.6.2.1}
+\contentsline {subsection}{\numberline {6.3}Optimistische Verfeinerung}{57}{subsection.6.3}
+\contentsline {subsection}{\numberline {6.4}Frequent Pattern Trees}{58}{subsection.6.4}
+\contentsline {subsubsection}{\numberline {6.4.1}FP-Tree Erzeugung}{58}{subsubsection.6.4.1}
+\contentsline {subsubsection}{\numberline {6.4.2}Frequent Pattern Mining}{59}{subsubsection.6.4.2}
+\contentsline {section}{\numberline {7}Pattern Mining unter Constraints}{61}{section.7}
+\contentsline {subsection}{\numberline {7.1}Constrained Association Rules}{61}{subsection.7.1}
+\contentsline {subsubsection}{\numberline {7.1.1}Meta-Rule Guided Mining}{62}{subsubsection.7.1.1}
+\contentsline {subsubsection}{\numberline {7.1.2}1-var und 2-var Constraints}{63}{subsubsection.7.1.2}
+\contentsline {subsubsection}{\numberline {7.1.3}Eigenschaften von Constraints}{64}{subsubsection.7.1.3}
+\contentsline {subsection}{\numberline {7.2}Constrained Frequent Sequence Mining}{66}{subsection.7.2}
+\contentsline {section}{\numberline {8}Clustering}{68}{section.8}
+\contentsline {subsection}{\numberline {8.1}Partitionierendes Clustering}{71}{subsection.8.1}
+\contentsline {subsubsection}{\numberline {8.1.1}k-Means}{71}{subsubsection.8.1.1}
+\contentsline {subsubsection}{\numberline {8.1.2}k-Means in der Variante CLARANS}{72}{subsubsection.8.1.2}
+\contentsline {subsubsection}{\numberline {8.1.3}BIRCH}{73}{subsubsection.8.1.3}
+\contentsline {subsection}{\numberline {8.2}Hierarchisches Clustering}{75}{subsection.8.2}
+\contentsline {subsection}{\numberline {8.3}Probleme mit hochdimensionalen R\IeC {\"a}umen}{77}{subsection.8.3}
+\contentsline {subsection}{\numberline {8.4}Clustering mit kategorischen Daten}{78}{subsection.8.4}
+\contentsline {subsection}{\numberline {8.5}Dichte-basiertes Clustering}{80}{subsection.8.5}
+\contentsline {subsubsection}{\numberline {8.5.1}DBSCAN}{80}{subsubsection.8.5.1}
+\contentsline {subsubsection}{\numberline {8.5.2}OPTICS}{81}{subsubsection.8.5.2}
+\contentsline {subsection}{\numberline {8.6}Probabilistisches Clustering}{83}{subsection.8.6}
+\contentsline {subsubsection}{\numberline {8.6.1}Expectation Maximization}{83}{subsubsection.8.6.1}
+\contentsline {subsubsection}{\numberline {8.6.2}Erweiterungen von Mixture Models}{84}{subsubsection.8.6.2}
+\contentsline {section}{\numberline {9}Statistische Modellierung}{88}{section.9}
+\contentsline {subsection}{\numberline {9.1}Naive Bayes}{88}{subsection.9.1}
+\contentsline {subsection}{\numberline {9.2}Bayesian Networks}{89}{subsection.9.2}
+\contentsline {subsection}{\numberline {9.3}Anwendung Bayesian Networks: Duplikaterkennung}{91}{subsection.9.3}
+\contentsline {section}{\numberline {10}Lineare Modelle und SVMs}{93}{section.10}
+\contentsline {subsection}{\numberline {10.1}Logistic Regression}{93}{subsection.10.1}
+\contentsline {subsection}{\numberline {10.2}Support Vector Machines}{94}{subsection.10.2}
+\contentsline {subsection}{\numberline {10.3}Support Vector Regression}{96}{subsection.10.3}
+\contentsline {section}{\numberline {11}Ensembles}{97}{section.11}
+\contentsline {subsection}{\numberline {11.1}Bagging}{97}{subsection.11.1}
+\contentsline {subsection}{\numberline {11.2}Boosting}{98}{subsection.11.2}
+\contentsline {subsection}{\numberline {11.3}Stacking}{99}{subsection.11.3}
+\contentsline {subsection}{\numberline {11.4}Interpretation von Ensembles}{99}{subsection.11.4}
