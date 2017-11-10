@@ -21,9 +21,9 @@
 \contentsline {subsection}{\numberline {2.2}R\IeC {\"a}umliche Indexstrukturen}{21}{subsection.2.2}
 \contentsline {subsubsection}{\numberline {2.2.1}Normalisierung}{21}{subsubsection.2.2.1}
 \contentsline {subsubsection}{\numberline {2.2.2}k-dimensionale B\IeC {\"a}ume}{22}{subsubsection.2.2.2}
-\contentsline {subsubsection}{\numberline {2.2.3}Objekte mit r\IeC {\"a}umlicher Ausdehnung}{22}{subsubsection.2.2.3}
+\contentsline {subsubsection}{\numberline {2.2.3}Objekte mit r\IeC {\"a}umlicher Ausdehnung}{23}{subsubsection.2.2.3}
 \contentsline {subsubsection}{\numberline {2.2.4}Optimierung kd-B\IeC {\"a}ume}{24}{subsubsection.2.2.4}
-\contentsline {subsubsection}{\numberline {2.2.5}R-Baum}{25}{subsubsection.2.2.5}
+\contentsline {subsubsection}{\numberline {2.2.5}R-Baum}{26}{subsubsection.2.2.5}
 \contentsline {subsection}{\numberline {2.3}Instanzbasiertes Lernen}{28}{subsection.2.3}
 \contentsline {section}{\numberline {3}Klassifikation mit Entscheidungsb\IeC {\"a}umen}{30}{section.3}
 \contentsline {subsection}{\numberline {3.1}Attribute vs. Features}{30}{subsection.3.1}

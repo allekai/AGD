@@ -2,14 +2,15 @@
 
 \subsection{Indizierung allgemein}
 Bei großen Datenbeständen ist es nicht mehr möglich, die gesamten Daten in den
-Arbeitsspeicher unseres Rechners zu laden. Zugriffe auf die Daten sind jedoch nur
+Arbeitsspeicher unseres Rechners zu laden. Ein schneller Zugriff und eine
+effiziente Verarbeitung der Daten ist jedoch nur
 vom Arbeitsspeicher aus möglich, wodurch die Daten erst vom Hauptspeicher (z.B. Disk,
 HDD, etc.) in den RAM geladen werden müssen, was eine relativ teure Operation ist.
 Kommt es hier zu Verzögerungen, so bezeichnet man diese als \textit{Zugriffslücken}.
 
 Daten im Hauptspeicher liegen zumeist nicht als einzelne Objekte vor, sondern als
 ganze \textit{Seiten}. Will man nun auf ein Objekt \(a\) auf Seite \(A\) zugreifen,
-so muss die gesamte Seite mit allen ihren enthaltenen ELementen mit in den RAM geladen
+so muss die gesamte Seite mit allen ihren enthaltenen Elementen mit in den RAM geladen
 werden.
 
 \begin{figure}[ht]
@@ -44,13 +45,13 @@ Seite jemand mit einer \(1.0\) auftaucht.
 Diese Indizierung ist natürlich auch für \textbf{mehrere Attribute} möglich.
 Oben kommt die Note \(3,8\) mehrfach vor. Sortieren wir zusätzlich auch nach dem
 Namen, erhalten wir eine eindeutigere Indizierung. Es gilt zu beachten, dass
-eine Sortierung \((gpa, name)\) im Allgemeinen \underline{nicht} \((name, gpa)\)
+eine Sortierung \((gpa, name)\) im Allgemeinen \textbf{nicht} \((name, gpa)\)
 gleicht.
 
 \subsection{Räumliche Indexstrukturen}
 \subsubsection{Normalisierung}
 Betrachten wir nun Datenbestände mit mehreren Dimensionen. Möchte man hier die
-Ähnlichkeit von zwei Datensätzen bestimmen, so wäre ein naiver Ansatz, einfach
+Ähnlichkeit von zwei Datenpunkten bestimmen, so wäre ein naiver Ansatz, einfach
 die Distanz zwischen den beiden Punkten im \(n\)-dimensionalen Raum zu berechnen.
 Ein Problem ergibt sich jedoch daraus, dass mit der einfachen Berechnung des Abstandes
 zweier Punkte der sich ergebende Wert mit der Anzahl der Dimensionen automatisch
@@ -59,9 +60,10 @@ jeweils unterschiedlichen Einheiten würde dies mittels
 \[
 	a_i = \frac{v_i - min\ v_j}{max\ v_j - min\ v_j}
 \]
-geschehen, wobei \(v_i\) ein Wert aus dem betrachteten Tupel ist (ob es der erste
-oder zweite Wert ist, spielt keine Rolle, beide werden gleich normiert) und \(v_j\)
-ein anderer Wert aus dem Wertebereich ist. Die Notation ist tatsächlich nicht schön.
+geschehen, wobei \(v_i\) ein Wert aus dem betrachteten Tupel ist und \(v_j\)
+ein Wert aus dem Wertebereich von \(v_i\) ist. Beispielhaft möge \(v_i\) für
+das Alter einer Person stehen. Wir begrenzen den Wertebereich von \(v_i\) auf
+\([0,\ 120]\). Damit ergeben sich die min / max Werte zu 0 bzw. 120. 
 
 Diese Normierung trägt zwar den Unterschieden in den Einheiten der Dimensionen
 Rechnung (z.B. Alter und Einkommen), jedoch noch nicht der Anzahl der Dimensionen.
@@ -70,7 +72,10 @@ Würde man nun einfach den Abstand der Punkte berechnen, ergäbe sich mit
 	d(x_1, x_2) = \sum\limits_{i\in D} |x_{1,i} - x_{2,i}|
 \]
 die sogenannte \textit{Manhatten Distance}. Mit dieser Formel ist die Abhängigkeit
-des Abstands von den Dimensionen eindeutig. Um diese nun auch zu normieren, gibt
+des Abstands von den Dimensionen schnell ersichtlich.
+Eine höhere Dimensionenzahl führt zu einer größeren Summe. Da die Summanden als
+Beträge definiert sind, ergibt sich eine monoton wachsende Folge in Abhänigkeit der
+Dimensionalität der Daten. Um diese nun auch sinnvoll zu normieren, gibt
 es die \textbf{Manhatten Segmental Distance} mit
 \[
 	d_D(x_1, x_2) = \frac{\sum\limits_{i\in D} |x_{1,i} - x_{2,i}|}{|D|}
@@ -80,14 +85,14 @@ wobei \(|D|\) die Anzahl der Dimensionen ist.
 \subsubsection{k-dimensionale Bäume}
 Das Konzept von kd-Bäumen ist einfach erklärt. Man nehme eine Dimension und suche
 sich den Punkt, bei welchem die Hälfte der Datensätze jeweils auf beide Seiten
-verteilt ist. Nun nehme man die nächste Dimension, und wiederholt das Ganze. Dieses
-Spiel wird nun so lange getrieben, bis man entweder jeden Punkt eindeutig durch
+verteilt ist. Nun nehme man die nächste Dimension, und wiederhole das Ganze. Dieses
+Spiel wird so lange getrieben, bis man entweder jeden Punkt eindeutig durch
 einen Pfad beschrieben hat, oder in jedem Blatt nur noch ein gewisse (geringe) 
 Anzahl an Elementen liegt. Auf diese Weise kann man Punkte durch Traversieren
 des Baumes sehr leicht auffinden. Auch sind Bereichsanfragen möglich. 
 Im 2D-Raum würde dadurch eine Art "'Raster"' entstehen.
-\textit{Bereichsanfragen} sind möglich, indem man prüft, ob der Raum, den man abfragt
-eine Überlappung mit dem Split des aktuellen Knotens hat, oder nicht. Fall
+\textit{Bereichsanfragen} sind möglich, indem man prüft, ob der Raum, den man abfragt,
+eine Überlappung mit dem Split des aktuellen Knotens hat, oder nicht. Falls
 der Bereich nur in eine Hälfte des Splits fällt, dann kann man einfach in diesen Teilbaum
 absteigen und den anderen Teilbaum vernachlässigen. Fällt ein Split jedoch
 in den Bereich der Anfrage, so muss man in beide Teilbäume absteigen, um alle
@@ -134,37 +139,43 @@ für eine NN-Anfrage mit einem kDB-Baum gegeben.
 
 
 Die genaue Berechnung der Distanzen des Anfragepunktes zu den Zonen ist im Einzelnen
-zu implementieren, je nach gegebenem Fall.
+zu implementieren, je nach gegebenem Fall. An dieser Stelle sei darauf hingewiesen,
+dass die einzelnen Schritte des Algorithmus~\ref{alg:NN} für die Klausur bekannt sein
+sollten.
 
 \subsubsection{Objekte mit räumlicher Ausdehnung}
 Im Folgenden sollen die zu untersuchenden Objekte nicht nur lediglich durch Punkte
 dargestellt werden, sondern auch durch höher-dimensionale Objekte. Diese Objekte
 können z.T. nicht regelmäßig sein, was die Arbeit mit diesen Objekten deutlich
-erschweren kann. Deswegen können diese durch die so genannten \textit{Minimum
-Bounding Rectangles} approximiert werden, welche man sich als Box kleinster
+erschweren kann. 
+Nicht regelmäßige Objekte sind in diesem Kontext diejenige Formen, die komplexer sind,
+als z.B. ein einfaches Rechteck oder eine Elipse.
+Deswegen werden diese durch die so genannten \textit{Minimum
+Bounding Rectangles} approximiert, welche man sich als Box kleinster
 Ausdehnung vorstellen kann, die das Objekt noch umfasst. Mit solchen Objekten
 stellt sich für Punktanfragen die Frage, in welche der Objekte (Rechtecke) der
 Punkt fällt. Die Rechtecke können sich durchaus auch überschneiden und überlappen
 und sie werden durch eine bestimmte Menge an Punkten beschrieben. Im 2-dimensionalen
-sei dies \((links,\ rechts,\ unten,\ oben)\), also x-Position links /rechts und 
+sei dies \((links,\ rechts,\ unten,\ oben)\), also x-Position links / rechts und 
 y-Position oben / unten. 
 
 Auch hier lässt sich der Raum an bestimmten Werten splitten und als Baum
 repräsentieren. Im 2-dimensionalen Fall würde man also nach den einzelnen
 Seiten der Rechtecke splitten. Der Unterschied zu normalen kd-Bäumen besteht
 hierbei jedoch darin, dass, wenn der zu suchende Punkt zum Beispiel einen größeren
-x-Wert aufweist, als der aktuelle Schwellenwert
+x-Wert aufweist als der aktuelle Schwellenwert
 für die linke Seite, man nicht nur in den rechten
 Teilbaum absteigt, sondern man in beide absteigen muss. Insbesondere gilt es zu
 beachten, dass dies jeweils für die zu untersuchende Seite der Rechtecke gilt,
 d.h. würde man nun nach dem x-Wert der rechten Seite unterscheiden, so müsste man
 in beide Teilbäume absteigen, wenn der Wert des zu suchenden Punktes kleiner als
 der Schwellenwert wäre. Entsprechendes gilt auch für die oberen und unteren
-Seiten. 
+Seiten. Für eine Visualisierung dieses Sachverhaltes sei auf die Vorlesungsfolien
+verwiesen.
 
 \subsubsection{Optimierung kd-Bäume}
 Zunächst eine Klarstellung: \textit{Physische Knoten} sind die Seiten auf dem
-Speichermedium, \textit{Logische Knoten} sind die Knoten des Baumes. Nach dieser
+Speichermedium, \textit{Logische Knoten} sind die Knoten des Indexbaumes. Nach dieser
 Interpretation ist es durchaus möglich, dass ein physischer Knoten mehrere logische
 Knoten enthalten kann. Es wäre auch verschwenderisch, jeden logischen Knoten durch
 eine Seite im Speicher zu repräsentieren. 
@@ -208,14 +219,13 @@ Für die Prüfung sollte man wohl lediglich die Vor- und Nachteile eines kdB-Bau
 kennen.
 
 \begin{table}[thbp]
+    \centering
 \begin{tabular}{p{5cm} l}
 	\toprule
-	Vorteile & Nachteil \\
+	Vorteile & Nachteile \\
 	\midrule
 	Abstand Daten und Wurzel immer gleich & Komplexe Reorganisation \\
-	\midrule
 	Pro physischem Knoten genau eine Speicherseite & \\
-	\midrule
 	Effizienterer Zugriff & \\
 	\bottomrule
 \end{tabular}
@@ -284,7 +294,7 @@ zu viele Dimensionen kommt es zu immer häufigeren Überlappungen der Objekte,
 wodurch die Effizienz der Suche stark leidet, da nun nicht mehr eindeutig ist,
 in welchen Teilbaum man absteigen muss.
 
-Als Schlusswort zum R-Baum wie zu allen oben genannten Indexstrukturen lässt
+Als Schlusswort zum R-Baum sowie zu allen oben genannten Indexstrukturen lässt
 sich festhalten, dass sie alle nur einen Kompromiss darstellen. Zwar wird das
 Auffinden der Datenobjekte durch die Indizierung erheblich effizienter, die
 Verwaltung und die Aktualisierung der Strukturen ist jedoch um einiges komplexer
@@ -326,3 +336,8 @@ hoher Dimmensionalität kommen. So kann es bei Indexstrukturen über hochdimensi
 Daten zu Problemen mit der Aussagekraft der Distanzwerte kommen oder es kann aufgrund
 der Anzahl der Dimensionen zu viele Partitionsmöglichkeiten geben.
 
+Aus diesem Kapitel sollte man mitnehmen, dass Indexstrukturen für effektive
+Suchanfragen unerlässlich sind, diese jeodch nicht vom Fluch der Dimensionalität
+befreit sind. Lernziel sollte es sein, den Ablauf einer NN-Anfrage verstanden zu
+haben und die Baumstrukturen mit ihren Vor- und Nachteilen sowie deren Unterschiede
+zu kennen.
