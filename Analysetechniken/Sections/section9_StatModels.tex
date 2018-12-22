@@ -1,18 +1,18 @@
 \section{Statistische Modellierung}
-Wir wollen uns nocheinmal der Klassifikation zuwenden. Wie bereits
+Wir wollen uns noch einmal der Klassifikation zuwenden. Wie bereits
 gesehen, sind Wahrscheinlichkeiten als Ergebnis einer Klassifikation
 sinnvoller, als absolute Zuweisungen. Dafür gibt es nun im Folgenden
 zwei Ansätze: \textbf{Naive Bayes} geht von der Unabhängigkeit
-der Attribute aus (was selten der Realität entspricht, desewegen "'Naive"')
+der Attribute aus (was selten der Realität entspricht, deswegen "'Naive"')
 und \textbf{Bayesian Networks}, die die Korreliertheit der Attribute
-berücksichten können.
+berücksichtigen können.
 
 \subsection{Naive Bayes}
 \textbf{Standardfall:} Wir haben einen vollständigen Datenbestand 
 mit seinen Klassenzugehörigkeiten. Wir bestimmen zunächst durch
-Abzählen die relative Häufigkeiten der Klassenzugrhörigkeiten, also
+Abzählen die relative Häufigkeiten der Klassenzugehörigkeiten, also
 \(P[Klasse]\), und dann bestimmten wir die relativen Häufigkeiten
-der Attributwerte pro Klasse, also \(P[x\|\ Klasse]\). Dabei wird
+der Attributwerte pro Klasse, also \(P[x \mid Klasse]\). Dabei wird
 \(P[Klasse]\) auch als \textit{Baysian Prior} bezeichnet. Ist dieser
 nicht bestimmbar, so gehen wir einfach von einer Gleichverteilung der
 Klassen aus.
@@ -20,10 +20,10 @@ Klassen aus.
 Wenn wir nun die Klassenzugehörigkeitswahrscheinlichkeiten
 eines neuen Objekte \(o\)
 bestimmen wollen, lassen sich diese einfach durch
-\[ P[Klasse\ |\ o] = \frac{\prod_j (P[o_j\ |\ Klasse])*P[Klasse]}{P[o]}\]
+\[ P[Klasse \mid o] = \frac{\prod_j P[o_j \mid Klasse] \cdot P[Klasse]}{P[o]}\]
 berechnen. \(P[o]\) fällt hier wieder weg, da man durch Normalisierung
-sowieso \(P[o] = \sum_i P[o\ |\ Klasse_i]*P[Klasse_i]\) berechnen
-lässt. Desweiteren gilt, dass sich \(P[o\ |\ Klasse]\) aufgrund
+sowieso \(P[o] = \sum_i P[o \mid Klasse_i] \cdot P[Klasse_i]\) berechnen
+lässt. Des Weiteren gilt, dass sich \(P[o \mid Klasse]\) aufgrund
 der Unabhängigkeitsannahme auch als Produkt der bedingten
 Wahrscheinlichkeiten der einzelnen Attribute berechnen lässt. Daher das
 Produkt über \(j\).
@@ -41,18 +41,18 @@ indem bei der Wahrscheinlichkeitsberechnung einfach die entsprechenden
 Faktoren ausgelassen werden.
 
 Haben wir zum Teil auch numerische Werte, dann können wir nicht
-mit relativen Häufikeiten arbeiten. Für diese Attribute werden dann
+mit relativen Häufigkeiten arbeiten. Für diese Attribute werden dann
 Klassenweise Verteilungen angenommen und die Parameter für diese
-berechnet (überlicherweise einfach die Normalverteilung annehmen).
+berechnet (üblicherweise einfach die Normalverteilung annehmen).
 Dann kann mit der Wahrscheinlichkeitsdichtefunktion wieder wie oben
 die Klassenzugehörigkeitswahrscheinlichkeiten berechnen.
 
 \subsection{Bayesian Networks}
 Mit diesen Netzwerken können auch Korrelationen der Attribute
-modelliert werden. Die Struktur des Netzwerks ist ein DAG, der jeweils
-pro Attribut und pro Klasse einen Knoten besitzt. Zwischen den Knoten
-gibt es ganau dann eine Kante, wenn es eine Abhängigkeit zwischen den 
-beiden Knoteninhalten gibt. Zwischen Klassen-Knoten und
+modelliert werden. Die Struktur des Netzwerks ist ein DAG (Directed Acyclic
+Graph), der jeweils pro Attribut und pro Klasse einen Knoten besitzt.
+Zwischen den Knoten gibt es genau dann eine Kante, wenn es eine Abhängigkeit
+zwischen den beiden Knoteninhalten gibt. Zwischen Klassen-Knoten und
 Attribut-Knoten gibt es \textbf{immer} eine Abhängigkeit. Die Richtung
 der Abhängigkeit soll seine Kausalität modellieren; sie bestimmt lediglich
 die Struktur der Wahrscheinlichkeitstabellen, die später in den Knoten
@@ -65,7 +65,7 @@ Sonderfälle, wie fehlende Daten oder numerische Werte.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.75\textwidth]{Figures/cpt}
-	\caption[BN Beispiel]{Beispiel für ein Bayesian Network. \footnotemark}
+	\caption[BN Beispiel]{Beispiel für ein Bayesian Network.\footnotemark}
 	\label{fig:cpt}
 \end{figure}
 \footnotetext{11. Foliensatz, S.33, Analysetechniken für große Datenbestände, Prof. Dr.-Ing. Klemens Böhm}
@@ -76,7 +76,7 @@ Tabellen stehen nun die von den abhängigen Attribute bedingten
 Wahrscheinlichkeiten. Man hat sieht, dass der Preis, den man für
 die höhere Genauigkeit zahlt, die größere Zahl an Parametern ist.
 Aber immerhin: Würde man explizit alle möglichen Attributwert-
-Kombinationen in einer einzigen großen Zustandtabelle modellieren,
+Kombinationen in einer einzigen großen Zustandstabelle modellieren,
 so hätte diese die Größe des Produkts der Anzahl an Attributen je
 Attribut.
 
@@ -85,17 +85,21 @@ entsprechenden Wahrscheinlichkeiten für die Attribute aus dem Netzwerk
 abliest und miteinander multipliziert. Die Grundannahme hierbei ist 
 die so genannte \textbf{conditional independence}, nach welcher die
 Werte von Attributen nur durch ihre Eltern-Attribute beeinflusst werden,
-d.h. dass alle anderen Attribute maximal indirekt Einfluss nehmen können
+d.h. dass alle anderen Attribute maximal indirekt Einfluss nehmen können,
 über die Eltern-Attribute. Semi-formal ergibt sich
-\[P[node\ |\ parents + any other nondescendants] = P[node\ |\ parents].\]
+\[
+P[node \mid parents\ and\ any\ other\ nondescendants] = P[node \mid parents].
+\]
 Die Berechnung der neuen Vorhersage ergibt sich aus
-\[P[x_1,x_2,\dots,x_n] = \prod_{i=1}^n P[x_i\ |\ x_{i-1},\dots,x_1]
-= \prod_{i=1}^n P[x_i\ |\ x_i 's parents].\]
+\[
+P[x_1,x_2,\dots,x_n] = \prod_{i=1}^n P[x_i \mid x_{i-1},\dots,x_1]
+= \prod_{i=1}^n P[x_i \mid x_i\text{'s}\ parents].
+\]
 Der Vorgänger hat also in dieser Darstellung immer einen kleineren Index.
 
 
 Nun zur \textbf{Konstruktion} eines Bayesian Networks. Dabei gilt 
-es vor allem 2 Askpekte zu beachten. Zum einen das Finden der
+es vor allem 2 Aspekte zu beachten. Zum einen das Finden der
 Netzstruktur und zum anderen die Berechnung der Tabelleneinträge.
 Die Netzstruktur ließe sich zwar algorithmisch bestimmen, das ist
 aber sehr komplex. Wir beschränken uns auf die Annahme, dass wir
@@ -106,7 +110,7 @@ Datensatzes einfach: Man zählt einfach die Vorkommen. Easy.
 
 Falls es aber missing values gibt, so gibt es verschiedene Möglichkeiten,
 dies zu beheben. Die einfachste wäre wohl \textit{Smoothing}: Man
-fügt, änhlich wie beim Laplace Estimator, neue "'Phantom Werte"' hinzu,
+fügt, ähnlich wie beim Laplace Estimator, neue "'Phantom Werte"' hinzu,
 von denen ein Anteil \(p\) dem erwarteten Beobachtungswert
 entsprechen, also unserem Prior für den nicht aufgetretenen Wert.
 Damit lassen sich dann prinzipiell die Werte wieder durch abzählen
@@ -119,7 +123,7 @@ Werte gibt, ist es, diese mittel EM zu schätzen.
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.75\textwidth]{Figures/BNEM}
-	\caption[BN EM Beispiel]{Beispiel für ein Bayesian Network mit EM Lerner \footnotemark}
+	\caption[BN EM Beispiel]{Beispiel für ein Bayesian Network mit EM Lerner.\footnotemark}
 	\label{fig:bnem}
 \end{figure}
 \footnotetext{11. Foliensatz, S.47, Analysetechniken für große Datenbestände, Prof. Dr.-Ing. Klemens Böhm}
@@ -144,7 +148,7 @@ Duplikat ist, oder nicht.
 
 Dies ist auch schon die Transformation für unsere Daten: Wir 
 betrachten die Daten nämlich nun im Folgenden nicht mehr
-einzaln, sondern Paarweise und unsere Klassen sind nun 
+einzeln, sondern Paarweise und unsere Klassen sind nun 
 Duplikat: ja oder nein.
 
 Betrachten wir ein einzelnes Attribut: Es gibt zig mögliche Varianten,
@@ -160,6 +164,6 @@ Leben deutlich erleichtern. Diese sind binäre Variablen, die zwischen
 die Abhängigkeiten geschaltet werden und lediglich angeben,
 ob ein Paar fast übereinstimmt oder gar nicht ähnlich ist. Sie stellen eine
 Abstraktion vom Kontinuierlichen in das Binäre dar, während die
-Äbhängigkeiten zwischen den Attributen in gewisser Weise erhalten
+Abhängigkeiten zwischen den Attributen in gewisser Weise erhalten
 bleiben (nicht in der Qualität, wie ohne diese Hidden Variables, aber
 immerhin lässt sich das Problem jetzt noch berechnen).

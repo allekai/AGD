@@ -31,7 +31,7 @@ Wahrscheinlichkeiten wieder brauchbar werden.
 Wenn wir nicht nur die Wahrscheinlichkeiten wollen, sondern uns eher
 die Kosten interessieren, dann können wir wie bereits in früheren Abschnitten
 die Conditional Risk Function
-\[ R(i\ |\ x) = \sum_j P[j\ |\ x] * Cost(i,j)\]
+\[ R(i \mid x) = \sum_j P[j \mid x] \cdot Cost(i,j)\]
 benutzen. Hierbei ist \(i\) die vorhergesagte Klasse und \(j\) die tatsächliche
 Klasse. Betrachten wir unseren Trainingsdatenbestand: Es ist nun egal,
 ob wir die echte Klassenzugehörigkeit explizit gegeben haben, was wir brauchen
@@ -128,7 +128,7 @@ Stacking aufgrund ihrer Diversität schwer zu durchblicken. Für den User
 ist das Ensemble also sowas wie eine Black-Box, die er nicht verstehen kann.
 Man kann dies in gewisser Weise umgehen, indem man das Prinzip von 
 Relabeling nutzt: Wir werden unser Ensemble auf unseren Datenbestand an
-und relabeln die Daten mit den Verhersagen des Ensembles. Auf den gerelabelten
+und relabeln die Daten mit den Vorhersagen des Ensembles. Auf den gerelabelten
 Daten wenden wir dann einen einfach Lern-Algorithmus an, z.B. einen
 Entscheidungsbaum, der dann implizit das Ensemble "'verinnerlicht"' hat. Nun
 hängen die Entscheidungen nur noch von einem Classifier ab und die

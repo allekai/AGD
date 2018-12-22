@@ -24,7 +24,7 @@ verschiedenen Partitionen. Diese sollte in etwa gleich sein über alle Partition
 hinweg. Dieser Vorgang der Homogenisierung nennt sich \textbf{Stratification}.
 Der Sinn dahinter ist, Fehler möglichst zuverlässig abschätzen zu können. 
 Es könnte nämlich bei einer randomisierten Partitionierung der Fall 
-auftreten, dass die Trainingsdaten krass von den Testdaten abweichen (Außreißer) 
+auftreten, dass die Trainingsdaten krass von den Testdaten abweichen (Ausreißer) 
 und dadurch der Classifier falsche Vorhersagen liefert.
 
 Oft ist unsere Ausgangssituation die, dass uns nur wenig Daten zur Verfügung
@@ -37,7 +37,7 @@ Bei der Crossvalidation wird eine fixe Anzahl an Partitionen generiert, sogenann
 \textit{Folds}. Einer dieser Folds wird für das Testen verwendet, der Rest als
 Trainingsdaten. Bei jeder Iteration wird nun die Testpartition gewechselt.
 Auch bei der Crossvalidierung kann eine Stratification sinnvoll sein, um die
-Varianz und die Verzerrung des Ermittelten Fehlers zu veringern. Der Standard
+Varianz und die Verzerrung des Ermittelten Fehlers zu verringern. Der Standard
 ist eine \textit{10-fold Crossvalidation}.
 
 \subsection{Wahrscheinlichkeiten als Vorhersageergebnis}
@@ -81,7 +81,7 @@ Ein weiteres Maß ist der \textbf{Informational Loss}, der sich mit
 \[
 	LogLoss = -\log_2 (p_i)
 \]
-berechnen lässt, wobei hier \(i\) die korrekte Klasse ist..
+berechnen lässt, wobei hier \(i\) die korrekte Klasse ist.
 Da der Logarithmus nicht für \(0\) definiert ist, sollte damit
 unser Schätzer auch nie eine Klasse mit der Wahrscheinlichkeit von \(0\%\) vorhersagen,
 da sonst unser Loss unendlich groß würde.\footnote{Auch als \textit{zero-frequency-problem}
@@ -120,7 +120,7 @@ Im Wesentlichen lässt sich zwischen 2 Fehlerarten unterscheiden, den
 Die Ergebnisse eines Klassifikators lassen sich durch eine so genannte
 \textit{Konfusionsmatrix} darstellen. So repräsentieren die Zeilen die tatsächlichen
 Klassen, und die Spalten stellen die vorhergesagten Klassen dar. In der ersten Diagonalen
-steht die Anzahl der jeweils korrekt vorgegesagten Klasse.
+steht die Anzahl der jeweils korrekt vorhergesagten Klasse.
 
 Um 2 Klassifikatoren miteinander zu vergleichen, kann man den \textbf{Kappa-Koeffizienten}
 zu Rate ziehen. 
@@ -155,10 +155,10 @@ Fußnote.
 \subsection{Lift Charts}
 Als Beispiel betrachten wir das Verschicken von Werbeflyern an viele Haushalte. Im Allgemeinen
 gibt es nur wenige Antworten, in etwa \(0.1\%\). Es kann aber der Fall sein, dass
-einen Landkreis gibt, aus dem besonders viele Antworten stammen. Würde man nun
+es einen Landkreis gibt, aus dem besonders viele Antworten stammen. Würde man nun
 nur noch dieses Landkreis anschreiben, so könnte sich die Antwortrate auf etwa
 \(0.5\%\) erhöhen. Es wäre wohl also sinnvoll, sich bei seinem Marketing vor allem
-auf dieses Gebiet zu konzentrieren. Diese Erhöhungfaktor nennt sich
+auf dieses Gebiet zu konzentrieren. Diese Erhöhungsfaktor nennt sich
 \textbf{Lift} und hat in diesem Beispiel den Wert 5. 
 \begin{figure}[ht]
 	\subfigure{\includegraphics[width=0.49\textwidth]{Figures/gain_chart}}
@@ -179,11 +179,11 @@ Eine weitere Bewertungsgrundlage sind die \textbf{ROC-Kurven} (receiver operatin
 characteristics). Diese basieren auf ein paar Grundlegenden Kennzahlen beruhen,
 nämlich
 \begin{align*}
-	&\text{False Positive Rate } &100 * \frac{FP}{FP+TN}\\
-	&\text{True Positive Rate (Recall) } &100 * \frac{TP}{TP+FN}\\
+	&\text{False Positive Rate } &100\% \cdot \frac{FP}{FP+TN}\\
+	&\text{True Positive Rate (Recall) } &100\% \cdot \frac{TP}{TP+FN}\\
 \end{align*}
 Wählt man die False Positive Rate als x-Achse und trägt auf die y-Achse den Recall
-ein, so kann man die beiden im Verhältnis zu einandern in einem Graphen darstellen
+ein, so kann man die beiden im Verhältnis zu einander in einem Graphen darstellen
 wie in Abb.~\ref{fig:roc}.
 
 \begin{figure}[ht]
@@ -196,9 +196,9 @@ wie in Abb.~\ref{fig:roc}.
 
 Anstelle des Recalls kann man auch die \textbf{Precision} als y-Achse verwenden,
 die sich aus 
-\[
-	\text{Precision } 100 * \frac{TP}{TP+FP}
-\]
+\begin{align*}
+&\text{Precision } &100\% \cdot \frac{TP}{TP+FP}\\
+\end{align*}
 ergibt.
 
 Im Graphen ist es, wie bei einem Gain Chart, besser, wenn der Graph möglichst weit
@@ -214,28 +214,28 @@ der Durchschnitt berechnet.
 
 Weitere Kennzahlen, die beide Fehlerarten berücksichtigen, sind das 
 \textbf{f-Measure} (F1-score) und die \textbf{Erfolgsquote}. Die 
-Erfolgsquote ist einfach die Anzahl aller richtigen Verhersagen geteilt durch die
-Anzahl aller Verhersagen, also
+Erfolgsquote ist einfach die Anzahl aller richtigen Vorhersagen geteilt durch die
+Anzahl aller Vorhersagen, also
 \[
 	\frac{TP+TN}{TP+FP+TN+FN}.
 \]
 Das f-Measure ist das harmonische Mittel der Precision und des Recalls:
 \[
-	2 * \frac{recall * precision}{recall + precision}
+	2 \cdot \frac{recall \cdot precision}{recall + precision}
 \]
 Die Multiplikation mit 2 sorgt dafür, dass das f-Measure den Wert 1 annimmt,
 wenn sowohl Precision als auch Recall den Wert 1 haben. Die Allgemeine Form
 lautet:
 
 \[
-	F_\beta = (1 + \beta ^2) * \frac{precision * recall}{(\beta^2 * precision) + recall}
+	F_\beta = (1 + \beta ^2) \cdot \frac{precision \cdot recall}{(\beta^2 \cdot precision) + recall}
 \]
 
 \begin{quote}
 	\glqq The F-measure was derived, so that \(F_\beta\) 
 	measures the effectiveness of retrieval
 	with respect to a user who attaches \(\beta\) times as much impartance to recall as 
-	precision. \grqq
+	precision.\grqq
 	\footnote{\href{https://en.wikipedia.org/wiki/F1_score}{wikipedia.com}}
 \end{quote}
 
@@ -248,7 +248,7 @@ der x-Achse, da ja der erwartete Fehler gleich 0 ist. Rät der Classifier jedoch
 falsch, so ist der Graph \(\epsilon = 1\). Die beiden Diagonalen repräsentieren 
 jeweils einen Classifier, der für alle Objekte angibt, dass diese Teil (oder nicht Teil)
 der Klasse \([+]\) sind. Gerade \textit{A} stellt einen moderateren Classifier dar. 
-Die Formel für ihn lautet \(A = f_p * (1-p) + f_n * p\). \(f_p\) ist genau die 
+Die Formel für ihn lautet \(A = f_p \cdot (1-p) + f_n \cdot p\). \(f_p\) ist genau die 
 False Positive Rate, da für \(p[+]=0\) keine Objekte zu der Klasse \([+]\) gehören
 können. Entsprechend ist \(f_n\) die False Negative Rate. In diese Grafik können
 auch ganz leicht die Kosten für die jeweiligen Fehlerarten eingeführt werden,
@@ -324,31 +324,29 @@ mithilfe eines \textbf{Modells}.
 \end{figure}
 \footnotetext{Foliensatz 5, S. 74,75}
 
-Das \textbf{MDL}-Principle
-\footnote{In der Vorlesung auch MML-Principle.}
+Das \textbf{MDL}-Principle\footnote{In der Vorlesung auch MML-Principle.}
 besagt, dass das Modell, welches die Größe des Modells zusammen mit den
 zusätzlichen Informationen, die nötig sind, um die Ausnahmen vom Modell
 zu beschreiben, minimiert, das geeignetste ist.
 Das MDL-Principle ist eine 
-Umformulierung von \textit{Ockhams Rassiermesser}
-\footnote{Es "'rassiert"' unnötige Teile weg. Das ganze ist mehr eine Leitlinie
-mit philosophischem Charakter, als eine echtes Theorem.}
+Umformulierung von \textit{Ockhams Rasiermesser}\footnote{Es "'rasiert"'
+unnötige Teile weg. Das ganze ist mehr eine Leitlinie mit philosophischem
+Charakter, als eine echtes Theorem.}
 unter Anwendung von \textit{Shannons Theorem}
 \[
 	length(E) = -\log_2 P(E),
 \]
 wobei E ein Event ist, und dem \textit{Theorem von Bayes} 
 \[
-	P(T\wedge E) = \frac{P(E|T)P(T)}{P(E)},
+	P(T\wedge E) = \frac{P(E \mid T)P(T)}{P(E)},
 \]
-wobei E eine feste Evidence
-\footnote{In der Vorlesung Examples genannt, da man sich auf einen vorliegenden 
-Datenbestand bezieht.}
+wobei E eine feste Evidence\footnote{In der Vorlesung Examples genannt,
+da man sich auf einen vorliegenden Datenbestand bezieht.}
 ist und T eine Theorie beschreibt.
 Wir können unser Modell und den realen Datenbestand in einer gemeinsamen
 Message codieren, womit sich die Länge zu
 \[
-	length(T\wedge E) = -\log_2 P(T\wedge E) = -\log_2P(T) -\log_2 P(E|T) + \log_2P(E)
+	length(T\wedge E) = -\log_2 P(T\wedge E) = -\log_2P(T) -\log_2 P(E \mid T) + \log_2P(E)
 \]
 ergibt. Der erste Teil steht für unser Modell, der zweite Teil codiert die 
 zusätzlichen Informationen (Fehler bzw. Abweichungen),
@@ -403,7 +401,7 @@ k Cluster. Nach MDL sollte ein gutes Clustering E kompakt darstellen können. Ma
 kann nun für jeden Cluster den Mittelpunkt wählen und dann für jedes Element von
 E die Clusterzugehörigkeit und den Abstand zum entsprechenden Mittelpunkt codieren.
 Liegt in den Daten ein natürliches Clustering vor, so wird sich das in einem 
-kurzen Code wiederspiegeln.
+kurzen Code widerspiegeln.
 
 Sollten hingegen nicht numerische sonder nominale Attributwerte vorliegen, so
 kann man in jeden Cluster eine Wahrscheinlichkeitsverteilung für jedes Attribut
@@ -411,5 +409,5 @@ feststellen, welche auch für jeden Cluster unterschiedlich ist. Für die Elemen
 E gilt laut \citet{Witten11} nun:
 \begin{quote}
 	\glqq Attribute values are coded with respect to the relevant probability
-	distribution, a standard operation in data compression. \grqq
+	distribution, a standard operation in data compression.\grqq
 \end{quote}

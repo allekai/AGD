@@ -6,7 +6,7 @@ verschiedenen Schwächen von Apriori an und verbessern diese signifikant.
 \subsection{Direct Hashing and Pruning}
 Es konnte gezeigt werden, dass Apriori vor allem für kleine \(k\) einen
 hohen Rechenaufwand benötigt, da in diesem Schritt viele (unnötige) Candidate
-Itemsets erzeugt werden. \textbf{DHP} ermöglich es, diesen \textit{bottleneck}
+Itemsets erzeugt werden. \textbf{DHP} ermöglicht es, diesen \textit{bottleneck}
 zu umgehen, indem zum einen für kleine \(k\) die Candidate Itemsets verringert
 werden, und zum anderen in den weiteren Schritten die Datenbank verkleinert wird.
 
@@ -84,7 +84,7 @@ Datenbank Zugriffen, die bei der Ausführung entstehen. Algorithmen, die auf
 Apriori beruhen, arbeiten \textit{level-weise}, es werden also für jede Größe
 an Frequent Itemsets erst deren Kandidaten erzeugt, die dann mit der Datenbank
 geprüft werden. Gibt es also Candidate Itemsets der Größe \textit{(k+1)}, so 
-sind \textit{(K+1)} "'\textit{Database Passes}"' notwendig.
+sind \textit{(k+1)} "'\textit{Database Passes}"' notwendig.
 
 Es wäre effizienter, wenn man die Anzahl der Database Passes reduzieren könnte.
 Eine Möglichkeit hierfür ist es, eine viel kleinere Teilmenge (\textbf{Sample})
@@ -121,7 +121,7 @@ die im Sample gefundenen Frequent Itemsets mit großer Wahrscheinlichkeit die
 eigentlichen Frequent Itemsets unserer Datenbank umfassen. Ist \(S\) bestimmt,
 müssen die gefundenen Frequent Itemsets anhand der Datenbank verifiziert werden.
 Hier kommt unsere Negative Border ins Spiel. Für die Verifizierung berechnen wir
-\[\mathcal{F}:=\ \{X\in S\cup \mathcal{B}d^{-}(S)\ |\ sup(X,\ r) \geq\ minsup\}.\]
+\[\mathcal{F}:=\ \{X\in S\cup \mathcal{B}d^{-}(S) \mid sup(X,\ r) \geq\ minsup\}.\]
 Sind alle gefundenen Frequent Itemsets in \(S\) enthalten, also \(\mathcal{F}(r,\ 
 minsup) \in S\), dann gibt es kein Problem und mit unserem Sample haben wir alle
 Frequent Itemsets gefunden.
@@ -139,7 +139,7 @@ sind sicherlich alle Frequent Itemsets der eigentlichen Datenbank abgedeckt; es 
 potentiell jedoch auch Itemsets in \(S\) enthalten, die eigentlich keine Frequent
 Itemsets sind. Dies ist dem geringeren Schwellenwert geschuldet. Um diese nun zu 
 entfernen berechnen wir 
-\[\mathcal{F}:=\ \{X\in S\ |\ sup(X,\ r)\geq minsup\}.\]
+\[\mathcal{F}:=\ \{X\in S \mid sup(X,\ r)\geq minsup\}.\]
 Insgesamt wurde die Datenbank also zweimal durchlaufen; dies ist jedoch nur im
 unwahrscheinlichen worst case der Fall. Meistens reicht bereits bei einer vernünftigen
 Wahl von Samplesize und \textit{lowsup} ein einziger Durchlauf aus. In \citet{Toi96}
@@ -155,7 +155,7 @@ So können aus den \textit{large 1-Itemsets} direkt die Kandidaten für \(C_3\) 
 \(C_4\) erzeugt werden. Durch diese größere Schrittweite kann es passieren, dass man
 über die Negative Border hinaus Kandidaten erzeugt. Stellt man eine solche Überschreitung
 fest, so nutzt man aus, dass Apriori auch für das Komplement nutzbar ist, und geht
-"'rückwarts"' levelweise wieder zurück, bis man wieder "'unter"' der Negative Border ist.
+"'rückwärts"' levelweise wieder zurück, bis man wieder "'unter"' der Negative Border ist.
 
 Durch ein solches Vorgehen ist es möglich, approximativ lineare Laufzeiten zu erreichen, 
 was eine deutliche Verbesserung gegenüber der exponentiellen Anzahl an generierten Kandidaten

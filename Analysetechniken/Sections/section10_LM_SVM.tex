@@ -12,7 +12,7 @@ den Offset.
 Wir wollen nun mit unseren Gewichten möglichst die Abweichungen
 unserer Vorhersage von den tatsächlichen Daten minimieren, also
 \[ \min \sum_{i=1}^{n}\left( x^{(i)} - 
-\sum_{j=0}^k w_j * a_j^{(i)}\right)^2 .\]
+\sum_{j=0}^k w_j \cdot a_j^{(i)}\right)^2 .\]
 Dabei sei \(x^{(i)}\) das i-te Objekt.
 
 Im Folgenden wollen wir uns mit Regression im Kontext von
@@ -51,7 +51,7 @@ ermitteln. Hierauf lässt sich ein iteratives Verfahren anwenden, dass die Gewic
 in die richtige Richtung verschiebt. Diese Formel soll maximiert werden.
 Es lässt sich auch stattdessen die robustere log-Variante berechnen. 
 Generell funktioniert das Verfahren nur dann wirklich gut, wenn die 
-Daten sich auch halbwegs gut sepparieren lassen.
+Daten sich auch halbwegs gut separieren lassen.
 
 Da der Teil mit den Perzeptoren in der Vorlesung ausgelassen wurde, geht 
 es mit den SVMs weiter.
@@ -84,7 +84,7 @@ wenigen Vektoren abhängt, ist dieses Verfahren recht robust, da
 ein Hinzufügen von neuen Datenobjekten nur selten eine Anpassung
 der Hyperplane nach sich zieht. Die Maximum Margin Hyperplane lässt
 sich auch in Abhängigkeit der Support Vectoren darstellen:
-\[x = b + \sum _{i \in SV} \alpha_i y_i <a(i),a>\]
+\[x = b + \sum _{i \in SV} \alpha_i y_i \cdot \langle a(i),a \rangle\]
 Hierbei ist \(b\) eine Konstante, \(i\) ist aus der Menge der Indizes 
 der Support Vectors, \(\alpha_i\) sein ein Gewicht, \(y_i\) ist die 
 Klasse des i-ten Objektes, \(a(i)\) ist der Vektor des i-ten Support 
@@ -103,7 +103,7 @@ Skalarprodukten kommt.
 
 Dieses Problem lässt sich jedoch umgehen: Mit den so genannten
 \textbf{Kernel-Functions} lässt sich die Performance von SVMs
-sigifikant verbessern, bzw. überhaupt erst ermöglichen. Wählt man
+signifikant verbessern, bzw. überhaupt erst ermöglichen. Wählt man
 für seine Berechnungen obige alternative Darstellung von Hyperplanes,
 so hat man durch das Skalarprodukt einen enormen Rechenaufwand 
 aufgrund der hohen Dimensionalität nach Transformation seiner Daten.
@@ -112,18 +112,22 @@ Transformation unseres Datenraumes, die es uns erlaubt, Skalarprodukte
 für den höherdimensionalen Raum im ursprünglichen Raum zu berechnen.
 
 In unserer beispielhaften Transformation oben haben wir unseren
-2D-Raum in einen 4D-Raum verändernt, wobei jede Dimension nun
+2D-Raum in einen 4D-Raum verändert, wobei jede Dimension nun
 ein Produkt aus 3 Faktoren war. Betrachten wir:
-\[x = b + \sum _{i \in SV} \alpha_i y_i (<a(i),a>)^n\]
+\[
+x = b + \sum _{i \in SV} \alpha_i y_i \cdot \langle a(i),a\rangle^n
+\]
 Das hat, ausmultipliziert für \(n=3\), die selbe Struktur wie 
 unsere Transformation,
 also eine Linearkombination aus Produkten mit 3 Faktoren (und ein
 paar Gewichten, die jedoch nur die Skalierung ändern und deswegen
 im Prinzip egal sind). 
-Generall ist jede Funktion eine Kernel Function, wenn sie sich als
-\[K(x,y) = <\phi(x), \phi(y)>\]
+Generell ist jede Funktion eine Kernel Function, wenn sie sich als
+\[
+K(x,y) = \langle \phi(x), \phi(y)\rangle
+\]
 darstellen lässt, wobei \(\phi\) eine Abbildung in einen höherdimensionalen
-Raum darstellt. Dieses Beispiel einer Kernel Function heißt Polynomieller
+Raum darstellt. Dieses Beispiel einer Kernel Function heißt Polynomial
 Kernel, es gibt auch weitere, z.B. Radial, Sigmoid, etc.
 
 \subsection{Support Vector Regression}
@@ -153,5 +157,5 @@ Overfittings. Die Gerade wird durch die jenigen Punkte bestimmt, die
 in die Fehlerberechnung miteinfließen, d.h. Support Vectors sind alle
 Punkte, die genau auf dem Schlauch oder außerhalb lieben.
 Damit lässt sich die Gerade als
-\[x = b + \sum _{i \in SV} \alpha_i <a(i),a>\]\
+\[x = b + \sum _{i \in SV} \alpha_i \langle a(i),a\rangle\]\
 darstellen.
