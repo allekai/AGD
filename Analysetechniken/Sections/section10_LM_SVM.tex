@@ -40,13 +40,17 @@ den Parametern ab. Aber lassen wir das auf sich beruhen.
 Durch einfache Umformungen kann man die logistische Funktion in eine
 Form bringen, in der  die gewichtete Linearkombination auf einer Seite
 alleine steht, also 
-\[w_o + w_1 x_1 + \dots = \log \left(
-\frac{P[Klasse\ |\ x]}{1 - P[Klasse\ |\ x]}\right).\]
+\[
+w_o + w_1 x_1 + \dots =
+\log \left(\frac{P[Klasse \mid x]}{1 - P[Klasse \mid x]}\right).
+\]
 Das nennt man die Logit Transformation. Hierauf lässt sich wieder die
 normale Lineare Regression anwenden. Der Fehler lässt sich ähnlich
 dem Bernoulli-Experiment mittels
-\[\sum_i^n (1-x^{(i)})\log(1-P[K|x^{(i)}) + 
-x^{(i)}\log(P[K|x^{(i)}])\]
+\[
+\sum_{i=1}^n (1-x^{(i)})\log(1-P[K \mid x^{(i)}]) + 
+x^{(i)}\log(P[K \mid x^{(i)}])
+\]
 ermitteln. Hierauf lässt sich ein iteratives Verfahren anwenden, dass die Gewichte
 in die richtige Richtung verschiebt. Diese Formel soll maximiert werden.
 Es lässt sich auch stattdessen die robustere log-Variante berechnen. 
@@ -84,7 +88,9 @@ wenigen Vektoren abhängt, ist dieses Verfahren recht robust, da
 ein Hinzufügen von neuen Datenobjekten nur selten eine Anpassung
 der Hyperplane nach sich zieht. Die Maximum Margin Hyperplane lässt
 sich auch in Abhängigkeit der Support Vectoren darstellen:
-\[x = b + \sum _{i \in SV} \alpha_i y_i \cdot \langle a(i),a \rangle\]
+\[
+x = b + \sum _{i \in SV} \alpha_i y_i \cdot \langle a(i),a \rangle
+\]
 Hierbei ist \(b\) eine Konstante, \(i\) ist aus der Menge der Indizes 
 der Support Vectors, \(\alpha_i\) sein ein Gewicht, \(y_i\) ist die 
 Klasse des i-ten Objektes, \(a(i)\) ist der Vektor des i-ten Support 
@@ -157,5 +163,7 @@ Overfittings. Die Gerade wird durch die jenigen Punkte bestimmt, die
 in die Fehlerberechnung miteinfließen, d.h. Support Vectors sind alle
 Punkte, die genau auf dem Schlauch oder außerhalb lieben.
 Damit lässt sich die Gerade als
-\[x = b + \sum _{i \in SV} \alpha_i \langle a(i),a\rangle\]\
+\[
+x = b + \sum _{i \in SV} \alpha_i \langle a(i),a\rangle
+\]
 darstellen.
