@@ -26,16 +26,16 @@ das beste Clustering fällt dann die Wahl.
 Aber was heißt hier das "'beste"'? Wie kann man die Güte eines
 Clusterings qualifizieren? Abhilfe verschafft uns hier der 
 \textbf{Silhouette-Koeffizient}. Dieser nutzt zum einen die
-Eigenschaften von Intra- \/ Inter-Cluster Similarity aus und 
-wächst zum anderne nicht monoton mit \(k\), was bei der
+Eigenschaften von Intra-/ Inter-Cluster Similarity aus und 
+wächst zum anderen nicht monoton mit \(k\), was bei der
 Criterion Function nicht gegeben ist. Die Silhouette eines Objekte
 soll ausdrücken, wie sehr das Objekt tatsächlich zum
 theoretisch angenommenen Cluster und nicht zu nächst gelegenen
 gehört. Hierbei seien nun
 \begin{align*}
-a(o)&=\frac{1}{\left| C(o) \right|}\sum_{p\in C(o)}dist(o,\ p),\\
-b(o)&=\min_{C_i \neq C(o)} \left(\frac{1}{\left| C(o) \right|}
-\sum_{p\in C(o)}dist(o,\ p)\right)
+a(o)&=\frac{1}{\left| C(o) \right|}\sum_{p \in C(o)}dist(o,\ p),\\
+b(o)&=\min_{C_i \neq C(o)} \left(\frac{1}{\left| C_i \right|}
+\sum_{p \in C_i}dist(o,\ p)\right)
 \end{align*}
 die mittleren Distanzen von Objekt \(o\) zu den Objekten des
 eigenen Clusters (\(a(o)\)) und den Objekten des nächstgelegenen
@@ -46,8 +46,8 @@ beliebiger Repräsentant (z.B. der Centroid, dazu später mehr).
 Die Silhouette von \(o\) ist nun
 definiert als
 \[ s(o) = \begin{cases}
-		0 & \text{if } a(o)=0\text{, d.h. } \left| C_i \right| = 1,\\
-		\frac{b(o)-a(o)}{\max\{a(o),\ b(o)\}} & sonst.
+		0 & \text{falls } a(o)=0\text{, d.h. } \lvert C_i \rvert = 1,\\
+		\frac{b(o)-a(o)}{\max\{a(o),\ b(o)\}} & \text{sonst.}
 		\end{cases}\]
 Der Wertebereich von \(s(o)\) erstreckt sich auf \([-1,\ 1]\) .
 Werte nahe 1 bedeuten, dass unser Clustering relativ gut ist,
@@ -57,8 +57,8 @@ dann wird \(b(o)\) sehr klein, \(a(o)\) jedoch sehr groß, womit
 \(s(o)\) negativ wird. Es sind also Werte nahe bei 1 für \(s(o)\)
 wünschenswerte. Möchte man nun ein Clustering \(\mathcal{C}=
 \{C_1,\ \dots ,\ C_k\}\) als Ganzes bewerten, so kann man
-\[ silh(\mathcal{C}) = \frac{1}{\left| \mathcal{C}\right|}
-\sum_{C_i \in \mathcal{C}}\frac{1}{\left| C_i\right|}
+\[ silh(\mathcal{C}) = \frac{1}{\lvert \mathcal{C}\rvert}
+\sum_{C_i \in \mathcal{C}}\frac{1}{\lvert C_i\rvert}
 \sum_{o\in C_i} s(o)\]
 berechnen. Durch die Normalisierungen erstreckt sich der
 Wertebereich von silh(\(\mathcal{C}\)) wieder auf  \([-1,\ 1]\).
@@ -77,11 +77,11 @@ Methoden verwenden, die im Wesentlichen gleich funktionieren,
 nämlich
 \begin{align*}
 \text{Single Link: }& dist_{sl}(X,\ Y) &= \min_{x\in X,\ y\in Y} 
-dist(x,\ y,),\\
+dist(x,\ y),\\
 \text{Complete Link: }& dist_{cl}(X,\ Y) &= \max_{x\in X,\ y\in Y} 
-dist(x,\ y,),\\
+dist(x,\ y),\\
 \text{Average Link: }& dist_{al}(X,\ Y) &= 
-\frac{1}{\left|X\right|\left|Y\right|}\sum_{x\in X,\ y\in Y} 
+\frac{1}{\lvert X\rvert \lvert Y\rvert}\sum_{x\in X,\ y\in Y} 
 dist(x,\ y).
 \end{align*}
 Der Single Link ist der Abstand zwischen den nächsten beiden Objekten
@@ -110,7 +110,7 @@ Lage, sphärische Cluster in kleinen bis mittleren Datenbeständen zu
 finden. Für große Datenmengen oder komplex Clusterformen werden
 Erweiterungen der vorgestellten Algorithmen benötigt.
 \item \textbf{Hierarchisch:} Hierbei geht es darum, eine Hierarchie
-aufzubauen, die unseren Datenbestand wiederspiegelt. Im Wesentlichen
+aufzubauen, die unseren Datenbestand widerspiegelt. Im Wesentlichen
 unterscheidet man hier \textbf{agglomerative} (bottom-up) und
 \textbf{divisive} (top-down) Methoden. Das Problem bei diesen 
 Verfahren ist, dass man einen \textit{split} oder \textit{merge} 
@@ -150,12 +150,12 @@ Cluster. Da man nicht davon ausgehen kann, dass man beim ersten
 Mal bereits die optimalen Mittelpunkte der Cluster gefunden hat,
 geht man iterativ wie folgt vor: Man bestimmt den Mittelpunkt eines
 jeden Clusters und wählt im nächsten Schritt diese Mittelpunkte als
-Surrogate für die Neuzuweisung der Datenojekte. Dieses Vorgehen
+Surrogate für die Neuzuweisung der Datenobjekte. Dieses Vorgehen
 verschiebt in jedem Schritt den Mittelpunkt des aktuellen Clusters
 in Richtung des Mittelpunktes des (lokal) optimalen Clusters, so lange,
 bis für eine bestimmte Anzahl an Iterationen keine signifikante 
 Verbesserung mehr möglich ist (z.B. 4 Iterationen lang keine
-Verbesserung \(> \epsilon = 10^{-4}\)). Das Gütemaß kann
+Verbesserung \(> \varepsilon = 10^{-4}\)). Das Gütemaß kann
 hierbei sowohl die Criterion Function als auch der Silhouette Koeffizient
 sein, da unser \(k\) in jeder Iteration gleich bleibt. Die Wahl des
 Mittelpunktes kann auch auf zwei mögliche Methoden geschehen.
@@ -193,7 +193,7 @@ stark beeinflusst werden können.
 Eine Variation des Verfahrens, die sich nicht mit den Parametern
 von k-Means beschäftigt, ist das Ersetzen von womöglich schlechten
 Medoiden. Ein Medoid kann als schlecht angenommen werden, wenn er
-weniger als \(\frac{N}{k}* minDev\) Datenobjekte zugewiesen
+weniger als \(\frac{N}{k} \cdot minDev\) Datenobjekte zugewiesen
 bekommen hat. Hierbei ist \(N\) die Anzahl der Datenobjekte
 insgesamt, \(k\) die Anzahl der Cluster und \(minDev\) eine 
 Konstante, die der Tatsache Rechnung trägt, dass es wohl kaum eine
@@ -265,8 +265,8 @@ Datenobjekte im Cluster, \(\vec{LF} = \sum\nolimits_{i=1}^N
 \(SS=\sum\nolimits_{i=1}^N
 \vec{o_{i}^2}\) die Summe der Quadrate der Clusterobjekte ist.
 Mit diesen Werten lassen sich weitere Eigenschaften von Clustern
-berechnen, z.B. der Centroid und der Radius.
-\footnote{Sollte sich der Verfasser dieser Zeilen nicht irren, dann gilt
+berechnen, z.B. der Centroid und der Radius.\footnote{Sollte sich der
+Verfasser dieser Zeilen nicht irren, dann gilt
 für den Radius \(R = \left(\frac{SS}{N}-\frac{LS^2}{N^2}\right)^{\frac{1}{2}}\).}
 Diese kompakte 
 Darstellung von Clustern macht den CF-Tree zu einem sparsamen
@@ -277,13 +277,13 @@ Der Vollständigkeit halber hier noch die Definitionen von
 &\text{Centroid:} &\vec{x_0} = \frac{\sum_{i=1}^N \vec{x_i}}{N},\\
 &\text{Radius:} &R =\left( \frac{\sum_{i=1}^N \left(\vec{x_i}-\vec{x_0}
 \right)^2}{N}\right)^{\frac{1}{2}},\\
-&\text{Durchmesser:} &D = \left( \frac{\sum_{i=1}^N \sum_{j=1}{N} \left(\vec{x_i}-\vec{x_j}
+&\text{Durchmesser:} &D = \left( \frac{\sum_{i=1}^N \sum_{j=1}^{N} \left(\vec{x_i}-\vec{x_j}
 \right)^2}{N(N-1)}\right)^{\frac{1}{2}}\\
 \end{align*}
 \begin{align*}
 &\text{und der Durchschnittlichen Inter Cluster Distanz:} &\quad\\
- &D_2 = \left( \frac{\sum_{i=1}^{N_1} \sum_{j=N_1 +1}{N_1 + N_2} \left(\vec{x_i}-\vec{x_j}
-\right)^2}{N_1 N_2)}\right)^{\frac{1}{2}}. &
+ &D_2 = \left( \frac{\sum_{i=1}^{N_1} \sum_{j=N_1 +1}^{N_1 + N_2} \left(\vec{x_i}-\vec{x_j}
+\right)^2}{N_1 N_2}\right)^{\frac{1}{2}}. &
 \end{align*}
 
 Kommen wir nun aber endlich zum tatsächlichen CF-Tree. Der CF-Tree ist
@@ -324,7 +324,7 @@ dieser gesplittet werden, wodurch sich für dessen Eltern das gleiche Problem
 ergeben kann.
 
 Damit der CF-Tree nicht komplett wild wächst und Elementarcluster, die
-eigentlich nahe beieinander liegen durch ungeünstiges Splitting im Baum weit
+eigentlich nahe beieinander liegen durch ungünstiges Splitting im Baum weit
 voneinander entfernt stehen, können ähnliche Cluster auch gemergt werden.
 Ein \textit{Merge} kann sich insbesondere nach einem Splitting anbieten.
 Führt man die eben genannte "'Splitting-Kette"' ganz bis zum Schluss durch,
@@ -383,26 +383,26 @@ gewählt. Danach wird iterativ jedes übrige Objekte aus dem Rest (also Cluster
 ohne SplinterGroup) auf seine Clusterzugehörigkeit geprüft. Dafür wird die
 durchschnittliche Unterschiedlichkeit zu jedem Cluster berechnet und daraus
 die Differenz gebildet. Formal ergibt sich
-\[D(o') = \sum_{o_j \in \text{Rest}} \frac{d(o',o_j)}{\left| \text{Rest}
-\right|} - \sum_{o_j \in \text{SplinterGroup}} \frac{d(o',o_j)}{\left|
-\text{SplinterGroup} \right|}.\]
+\[D(o') = \sum_{o_j \in\, \text{Rest}} \frac{d(o',o_j)}{\lvert \text{Rest}
+\rvert} - \sum_{o_j \in\, \text{SplinterGroup}} \frac{d(o',o_j)}{\vert
+\text{SplinterGroup} \rvert}.\]
 Man beachte die Ähnlichkeit zur Silhouette eines Objektes. Prinzipiell wird bei
 beiden ja das Gleiche geprüft, hier findet lediglich keine Normierung statt.
-Hat man nun für alle übrigen Objkete \(D(o)\) berechnet, so wählt das Objekt
+Hat man nun für alle übrigen Objekte \(D(o)\) berechnet, so wählt das Objekt
 mit dem größten positiven Wert aus, und fügt dieses der SplinterGroup hinzu. 
 Danach wird das Spiel so lange wiederholt, bis kein Objekt mehr ein positives 
-\(D(o)\) beseitzt. Danach ist man mit diesem Cluster fertig. Als nächstes wählt
+\(D(o)\) besitzt. Danach ist man mit diesem Cluster fertig. Als nächstes wählt
 man den Cluster, der den größten Durchmesser hat und verfährt genauso mit 
 diesem. Man kann den Algorithmus entweder so lange laufen lassen, bis man
 tatsächlich alle Datenobjekte in eigene Cluster unterteilt hat, oder man legt
 stattdessen einen unteren Grenzwert fest, der Cluster ab einer gewissen Dichte
-und Größe als fest annimt und diese nicht mehr splittet (d.h. findet man durch
+und Größe als fest annimmt und diese nicht mehr splittet (d.h. findet man durch
 Splitting ein kleines, sehr dichtes Cluster, dann macht es wohl keinen Sinn, 
 dieses weiter aufzuteilen). DIANA war einer der ersten (vielleicht sogar 
 \textbf{der} erste) Ansatz eines divisiven Verfahrens, der nicht an der
 exponentiellen Anzahl an Splittmöglichkeiten am Anfang des Algorithmus
 gescheitert ist. Hat man nämlich am Anfang nur sein Mega Cluster gegeben, ist
-es nicht trivial ersichtlicht, wie man dieses nun splittet. Würde man nun alle
+es nicht trivial ersichtlich, wie man dieses nun splittet. Würde man nun alle
 Möglichkeiten miteinander vergleichen wollen, dann müsst man insgesamt
 \(2^{n-1}-2\) Möglichkeiten betrachten. DIANA umgeht dieses Problem durch
 sein iteratives Vorgehen. Ein Vorteil von Hierarchischen Verfahren insgesamt ist,
@@ -415,7 +415,7 @@ Wie bereits in früheren Kapiteln erwähnt ist die Anzahl der Dimensionen unsere
 Merkmalraumes ein gravierendes Problem. Haben wir Datensätze mit vielen 
 hundert Dimensionen, dann kann wohl kaum der Fall eintreten, dass sich die
 Daten gut in Cluster einteilen lassen. Stattdessen hat man mehr einen Raum
-voller Noise. Dichte-basierte Verfahren kan man in den Wind schießen und
+voller Noise. Dichte-basierte Verfahren kann man in den Wind schießen und
 Hierarchien in so vielen Dimensionen sind auch wenig sinnvoll.
 
 Es kann jedoch der Fall sein, dass es Datensätze gibt, die nur in einer kleinen
@@ -461,7 +461,7 @@ insgesamt groß. Das heißt, wenn die Daten in vielen Dimensionen ähnlich um
 \(m_i\) verteilt sind, scheint unser Medoid ein brauchbarer Mittelpunkt für
 seine Locality und damit potentiell auch für sein Cluster zu sein. Deswegen 
 werden die \(Z_{i,j}\) zunächst einmal der Größe nach sortiert. Danach wählt
-man die ersten \(k*l\) \(Z_{i,j}\) aus und ordnet diese ihren Medoiden zu.
+man die ersten \(k \cdot l\) \(Z_{i,j}\) aus und ordnet diese ihren Medoiden zu.
 Der Sinn dahinter ist, dass man die Dimensionen jeweils für jeden Medoiden 
 anhand ihrer Signifikanz für die Beschreibung der Locality des Medoiden sortiert.
 Und das sogar Locality- und damit auch Cluster-übergreifend. Damit kann man 
@@ -548,8 +548,8 @@ dürfte gerade für hochdimensionale Lösungen wenig intuitiv sein.
 ist ein Verfahren, dass sich die \textbf{Dichte} von Clustern und
 von unseren Datenobjekten zu Nutze macht. Dabei ist ein Objekt genau
 dann dicht, wenn es mehr als \(minPts\) andere Datenobjekte innerhalb einer
-\(\epsilon\)- Umgebung besitzt. Punkte, die selbst in einer solchen
-\(\epsilon\)- Umgebung liegen, aber selbst nicht dicht sind, heißen
+\(\varepsilon\)-Umgebung besitzt. Punkte, die selbst in einer solchen
+\(\varepsilon\)-Umgebung liegen, aber selbst nicht dicht sind, heißen
 \textbf{dichte-erreichbar}.
 
 Die Idee des Algorithmus ist nun Folgende: Wähle einen Punkte aus
@@ -557,7 +557,7 @@ dem Datenbestand. Prüfe, ob es dicht ist. Falls ja, dann ist der Punkt
 ein potentieller Kandidat für ein Cluster und wir fügen alle seine Nachbarn
 dem Cluster hinzu. Betrachte nun alle seine Nachbarn und prüfe, ob diese
 dicht sind. Falls ja, wiederhole das Spiel von eben (d.h. expandiere die
-Nachbarn um ihre \(\epsilon\)- Umgebung und prüfe Dichte der neuen
+Nachbarn um ihre \(\varepsilon\)-Umgebung und prüfe Dichte der neuen
 Punkte). Wiederhole dies, bis alle Punkte erreicht wurden. Wähle dann
 einen anderen, noch nicht besuchten Punkt aus. Wiederhole, bis alle Punkte
 besucht wurden.
@@ -575,7 +575,7 @@ entsprechende Implementierung, so belaufen sich die Kosten etwa auf
 \(O(n \log n)\). Im schlimmsten Fall hätten wir es stattdessen mit
 \(O(n^2)\) zu tun.
 
-Die \textit{Parameter} von DBSCAN sind zum einen \(\epsilon\) und
+Die \textit{Parameter} von DBSCAN sind zum einen \(\varepsilon\) und
 zum anderen \(minPts\). Generell lässt sich sagen, dass eine Veränderung
 der Parameter eine Auswirkung auf die \textit{Dichte} und
 \textit{Größe} der gefundenen Cluster hat. Die Zahl der gefundenen Cluster
@@ -590,44 +590,43 @@ der Parameterwahl nicht vor einem Trial \& Error Prozess drücken können.
 
 \subsubsection{OPTICS}
 \textbf{Ordering Points To Identify the Clustering Structure} (OPTICS) 
-soll bei der Wahl des \(\epsilon\) für unser DBSCAN helfen, indem es
+soll bei der Wahl des \(\varepsilon\) für unser DBSCAN helfen, indem es
 die Auswirkungen auf das Clustering visualisiert für verschiedene Werte für
-\(\epsilon\). \(minPts\) muss jedoch noch weiterhin vom User selbst
+\(\varepsilon\). \(minPts\) muss jedoch noch weiterhin vom User selbst
 gewählt werden.
 
 Hierfür werden wir weitere Distanzkonzepte brauchen. Zum einen haben wir die
-\textbf{core-distance}, die dem minimalen \(\epsilon\) entspricht,
+\textbf{core-distance}, die dem minimalen \(\varepsilon\) entspricht,
 für das das Objekt noch \textbf{dicht} ist. Die andere Distanz ist die
-\textbf{reachability-distance}
-\footnote{Auf Wikipedia wird's anders definiert. Dort ist das "'undefined"'
-Kriterium, ob der aktuell betrachtete Punkt dicht ist, oder nicht.}
+\textbf{reachability-distance}\footnote{Auf Wikipedia wird's anders definiert.
+Dort ist das "'undefined"' Kriterium, ob der aktuell betrachtete Punkt dicht ist,
+oder nicht.}
 von \(o\) zu Punkt \(p\)
 \begin{align*}
- reach_{\bar{\epsilon , minPts}}(o,p) = 
+ reach_{\bar{\varepsilon} , minPts}(o,p) = 
  \begin{cases}
- undefined & \text{wenn } dist(o,p) >\bar{\epsilon},\\
-\max \{dist(p,o), coreDist_{minPts}(p)\} & sonst.\\
+ undefined & \text{wenn } dist(o,p) >\bar{\varepsilon},\\
+\max \{dist(p,o), coreDist_{minPts}(o)\} & \text{sonst.}\\ % Mit großer Wahrscheinlichkeit ist coreDist_{minPts}(o) statt coreDist_{minPts}(p) korrekt. Siehe Vorlesung 2018-12-18 46:00 (https://opencast.informatik.kit.edu/engage/theodul/ui/core.html?id=50160409-5c46-4e75-b618-d7e9d7831bff)
 \end{cases}
 \end{align*}
 Die Idee dahinter ist, dass wir uns zunächst nur für Objekte interessieren,
-die überhaupt in der \(\bar{\epsilon}\)-Umgebung unseres betrachteten
-Objekte liegen. Dabei ist \(\bar{\epsilon}\) der maximale Wert für
-unser \(\epsilon\). Indem wir also die nicht direkt erreichbaren Objekte
+die überhaupt in der \(\bar{\varepsilon}\)-Umgebung unseres betrachteten
+Objekte liegen. Dabei ist \(\bar{\varepsilon}\) der maximale Wert für
+unser \(\varepsilon\). Indem wir also die nicht direkt erreichbaren Objekte
 ersteinmal außer Acht lassen, haben wir die Hoffnung, dass wir nahe Objekte
 auch möglichst zeitnah betrachten. Für die betrachteten Objekte gilt, dass,
 wenn sie innerhalb des cores liegen, die Reihenfolge ihrer Betrachtung egal ist.
-Das kommt daher, dass das Objekt für ein \(\epsilon\) kleiner als seine
+Das kommt daher, dass das Objekt für ein \(\varepsilon\) kleiner als seine
 \(coreDist\) nicht mehr dicht wäre. Dann aber würde das Objekt auch nicht
 mehr zu einem Cluster gehören. Insofern beschränken wir uns auf den
 Fall, dass das Objekt doch dicht ist, also die Nachbarn des Objektes in
-jedem Fall (unabhängig vom aktuellen \(\epsilon\) betrachtet werden.
+jedem Fall (unabhängig vom aktuellen \(\varepsilon\) betrachtet werden.
 Dies gilt in der Form nicht für die Objekte, die außerhalb des cores liegen.
 Diese sind nämlich nur dann vom aktuellen Objekt aus direkt erreichbar, wenn
-das \(\epsilon\) entsprechend gewählt wird. Der Unterschied zu den Punkten,
-die außerhalb der \(\bar{\epsilon}\)-Umgebung liegen, ist, dass die Punkte
-\textit{überhaupt} erreicht werden können.
-\footnote{Irgendwie erscheint der Ansatz von Wikipedia, Punkte auszuschließen,
-die nicht dicht sind, sinnvoller...}
+das \(\varepsilon\) entsprechend gewählt wird. Der Unterschied zu den Punkten,
+die außerhalb der \(\bar{\varepsilon}\)-Umgebung liegen, ist, dass die Punkte
+\textit{überhaupt} erreicht werden können.\footnote{Irgendwie erscheint der
+Ansatz von Wikipedia, Punkte auszuschließen, die nicht dicht sind, sinnvoller...}
 
 Der Algorithmus geht wie folgt vor. Man wählt sich einen beliebigen Punkt
 als Start. Von diesem berechnet man dann die core-distance. Seine 
@@ -637,7 +636,7 @@ nächsten Punkt zu den bisher ausgegebenen zu finden. Da es aber noch keine
 Punkte in der Ausgabe gibt, wird der Wert einfach auf undefined gesetzt.
 Als neuer Punkt wird dann einer der Punkte gewählt, die vom Startpunkt
 aus erreichbar sind. Von diesen wird die reachability-distance berechnet und die
-Punkte werden anahnd derer in einer PriorityQueue gespeichert. Aus dieser
+Punkte werden anhand derer in einer PriorityQueue gespeichert. Aus dieser
 Queue werden dann die Objekte nacheinander ausgelesen, d.h. es wird immer
 der nächste Punkte zur Ausgabeliste gewählt. Hat man einen neuen Punkt
 gewählt, und besucht diesen (man fügt ihn also der Ausgabeliste hinzu), so
@@ -646,28 +645,28 @@ als Ausgabe also die Datenpunkte sortiert nach ihrer reachability-distance.
 
 Plottet man dieses Ausgabe als Säulendiagramm, so dass man an der
 Höhe die Größe der reachability-distance ablesen kann. Man stellt fest, dass
-es immer wieder zu Tälern kommt, d.h. es gibt Mengen an Daten, die zueinandern 
+es immer wieder zu Tälern kommt, d.h. es gibt Mengen an Daten, die zueinander 
 eine kleine reachability-distance haben. Das sind die Cluster. Unser variables
-\(\epsilon\) kann man sich nun als horizontale Linie vorstellen, die man
+\(\varepsilon\) kann man sich nun als horizontale Linie vorstellen, die man
 über den Plot legen und vertikal verschieben könnte. Alle Täler, die für ein
-bestimmtes \(\epsilon\) noch unter der Horizontalen liegen, sind für dieses
-\(\epsilon\) dicht, d.h. sie sind Kandidaten für Cluster. Im Allgemeinen muss
+bestimmtes \(\varepsilon\) noch unter der Horizontalen liegen, sind für dieses
+\(\varepsilon\) dicht, d.h. sie sind Kandidaten für Cluster. Im Allgemeinen muss
 der User die im Plot dargestellten Cluster noch von Hand untersuchen, um
 festzustellen, welche dieser sich tatsächlich als tauglich erweisen.
 
 Die Laufzeit ist im Grunde ähnlich wie bei DBSCAN; da jedoch unser
-\(\bar{\epsilon}\) fast immer größer ist als das \(\epsilon\) aus
+\(\bar{\varepsilon}\) fast immer größer ist als das \(\varepsilon\) aus
 DBSCAN, sind die Nachbarschaftsanfragen bei OPTICS aufwändiger.
 
-Die Parameter sind dieses Mal das \(\bar{\epsilon}\) und \(minPts\).
+Die Parameter sind dieses Mal das \(\bar{\varepsilon}\) und \(minPts\).
 Veränderungen von ersterem führen nur zu relativ kleinen Veränderungen.
 Man wählt diesen Parameter sowieso etwas größer, damit man später
-Variationsmöglichkeiten bei der Wahl des \(\epsilon\)-Wertes hat. Für
-genügund große Werte von \(\bar{\epsilon}\) gibt es also kaum Probleme.
+Variationsmöglichkeiten bei der Wahl des \(\varepsilon\)-Wertes hat. Für
+genügend große Werte von \(\bar{\varepsilon}\) gibt es also kaum Probleme.
 Wählt man den Wert aber zu klein, dann ergeben sich daraus kleinere Cluster
-mit höherer Dichte. Große Cluster, die jedoch eine gringere Dichte besitzen
-bleiben außen vor. Warum würde man dann nicht einfach das \(\bar{\epsilon}\)
-rießig wählen, sodass immer alle Objekte in der \(\bar{\epsilon}\)-Umgebung 
+mit höherer Dichte. Große Cluster, die jedoch eine geringere Dichte besitzen
+bleiben außen vor. Warum würde man dann nicht einfach das \(\bar{\varepsilon}\)
+riesig wählen, sodass immer alle Objekte in der \(\bar{\varepsilon}\)-Umgebung 
 liegen? So würde man das "'Full-Picture"' bekommen. Das Problem ist hierbei
 die Performance. Die Laufzeit würde unweigerlich quadratisch werden, selbst
 bei geeigneten Implementierungen, da nun in jedem Durchlauf alle Datenobjekte
@@ -684,14 +683,14 @@ Wie bereits bei der Klassifikation angesprochen ist es meistens nicht wirklich
 sinnvoll (und evtl. auch gar nicht möglich) Objekte zu 100\% einem
 bestimmten Cluster zuzuweisen. Stattdessen will man die Objekte
 mit einer bestimmten Wahrscheinlichkeit einem Cluster zuordnen. Die setzte 
-aber Voraus, dass wir Annahmen über die Verteilungen innerhalb der Cluster
-treffen und auch über die Aufftrittswahrscheinlichkeit eines Clusters.
+aber voraus, dass wir Annahmen über die Verteilungen innerhalb der Cluster
+und auch über die Auftrittswahrscheinlichkeit eines Clusters treffen.
 Dieses Problem wird auch \textit{Finite Mixture Problem} genannt.
 
 \subsubsection{Expectation Maximization}
 Ein Algorithmus, der uns hierbei hilft, ist der \textbf{EM-Algorithmus}.
-Die Idee ist es, einen Art ML-Schätzer auf unsere angenommenen
-Verteilungen anzuwenden und die Parameter dahingehen zu verändern,
+Die Idee ist es, einen Art ML-Schätzer (Maximum-Likelihood-Schätzer) auf unsere angenommenen
+Verteilungen anzuwenden und die Parameter dahingehen anzupassen,
 dass sich die angenommenen Verteilungen möglichst gut mit den echten
 decken.
 
@@ -701,13 +700,15 @@ für die Cluster als solche raten wir die jeweilige Wahrscheinlichkeit für
 ihren auftritt \(p_k\). Was wir nun berechnen
 wollen, ist die Wahrscheinlichkeit, dass ein gegebenes Objekt zu einem
 bestimmten Cluster gehört, also
-\[ P[Cluster_k\ |\ x] = \frac{P[x\ |\ Cluster_k] * P[Cluster_k]}{P[x]}
-=\frac{f(\mu_k,\sigma_k,x) * p_k}{P[x]}\],
+\[
+P[Cluster_k \mid x] = \frac{P[x \mid Cluster_k] \cdot P[Cluster_k]}{P[x]}
+=\frac{f(x, \mu_k,\sigma_k) \cdot p_k}{P[x]}\text{,}
+\]
 wobei \(x\) ein konkretes Datenobjekt sei und \(f(\mu,\sigma,x)\) die
 Wahrscheinlichkeitsdichtefunktion des Clusters \(k\) sei. Auf der rechten Seite
 fehlt eigentlich nur noch das \(P[x]\) zur Berechnung des Quotienten. Es gilt
-jedoch auch \(P[x] )= \sum_k P[x\ |\ Cluster]*p_k\). Das ist genau der
-Teil, der im Zähler unserer obgien Gleichung steht. Und da wir über alle Cluster
+jedoch auch \(P[x] = \sum_k P[x \mid Cluster_k] \cdot p_k\). Das ist genau der
+Teil, der im Zähler unserer obigen Gleichung steht. Und da wir über alle Cluster
 aufsummieren, bedeutet das effektiv eine Normalisierung unserer errechneten
 Werte. Die Bestimmung dieser Wahrscheinlichkeiten ist der \textbf{Expectation
 Schritt}, als nächstes kommt der \textbf{Maximization Schritt}. Hierbei wollen
@@ -718,7 +719,7 @@ berechnen wir für jedes Cluster
 \sigma_k = \frac{\sum_{i=1}^{|DB|} w_i(x_i - \mu)^2}{\sum_{i=1}^{|DB|} w_i}.
 \end{align*}
 Dabei sei \(|DB|\) die Mächtigkeit unseres Datenbestandes und \(w_i\) entspricht
-unserem im Expectation Schritt errechneten \(P[A\ |\ x]\). Damit haben wir
+unserem im Expectation Schritt errechneten \(P[A \mid x]\). Damit haben wir
 unsere neuen Werte für den nächsten Durchlauf, d.h. die vorhin geratenen
 Werte werden nun für den kommenden Expectation Schritt durch die eben
 errechneten Werte ersetzt.\footnote{Tatsächlich wurde in der Vorlesung
@@ -735,7 +736,7 @@ im Rest der Literatur verwendet wird, dürfte ein genauso gutes Ergebnis liefern
 ohne Voraussetzung von Domänenwissens.}
 und lautet
 \[ \prod_{i=1}^{|DB|}\left( \sum_{k=1}^{|Cluster|} 
-f(\mu_k,\sigma_k,x_i)*p_k \right). \]
+f(x_i,\mu_k,\sigma_k) \cdot p_k \right). \]
 Diese Funktion soll maximiert werden. Es lässt sich beweisen, dass sie auch immer
 konvergiert, weswegen unsere Iterationen dann abgebrochen werden sollten, 
 wenn für eine bestimmte Zahl an Durchläufen sich der Wert unserer
@@ -760,8 +761,8 @@ Vorlesung wurde alles nur anhand von 2 Klassen präsentiert. Wir machen das hier
 aus Leidenschaft natürlich gleich explizit für den allgemeinen Fall.
 \item \textbf{Mehr als ein Attribut:} Hier kommt es darauf an, ob wir von
 Unabhängigkeit der Attribute ausgehen, oder nicht. Falls sie unabhängig sind,
-ist der Fall eigentlich ganz einfach: Aus unseren \(P[x\|\ A]\) wird 
-\(\prod_{i=1}^{|I|} P[x_i\ |\ A]\), wobei \(I\) die Anzahl der
+ist der Fall eigentlich ganz einfach: Aus unseren \(P[x \mid A]\) wird 
+\(\prod_{i=1}^{|I|} P[x_i \mid A]\), wobei \(I\) die Anzahl der
 Attribute ist. Das Problem hierbei ist jedoch die
 Anzahl an Parametern. Wir müssten jetzt für jedes Cluster \(I\) Mittelwerte
 und \(I\) Varianzen berechnen. Das ist ein bisschen viel.\\
@@ -787,26 +788,26 @@ Daten beschäftigen. Hier ist das Vorgehen auf den ersten Blick nicht ganz klar,
 wir nicht von einer Normalverteilungsannahme ausgehen können. Betrachten wir
 den Fall für \textbf{ein} Attribut, das \(\nu\) Ausprägungen annehmen kann
 (z.B. Ausprägung des Attributs Marke einer Kamera wäre Nikon, Canon, Sony,
- \(\dots\). Dann haben wir bei \(k\) Clustern insgesamt \(k *\mu\) Parameter.
+ \(\dots\). Dann haben wir bei \(k\) Clustern insgesamt \(k \cdot \mu\) Parameter.
  Wir müssen nämlich pro Cluster die Wahrscheinlichkeit für das Auftreten der
  Merkmale schätzen (der Verfasser stellt sich dies als Tortendiagramm pro Cluster
  vor). Die Wahrscheinlichkeit der Clusterzugehörigkeit bei einem gegebenen 
  Datenobjekt ist dann
- \[ P[Cluster\ |\ x] = \frac{P[x\ |\ Cluster]*P[Cluster]}{P[x]}.\]
+ \[ P[Cluster \mid x] = \frac{P[x \mid Cluster] \cdot P[Cluster]}{P[x]}.\]
  Die ist unser Expectation Schritt. Im ersten Schritt raten wir dafür 
- \(P[x\ |\ Cluster]\) und \(P[Cluster]\). Im Maximization Schritt wollen
+ \(P[x \mid Cluster]\) und \(P[Cluster]\). Im Maximization Schritt wollen
  wir diese Parameter berechnen. Hierfür berechnen wir erst
- \[ P[Cluster] = \sum_i P[Cluster\ |\ x_i]*P[x_i].\]
+ \[ P[Cluster] = \sum_i P[Cluster \mid x_i] \cdot P[x_i].\]
  Hierbei nutzen wir die eben berechneten Wahrscheinlichkeiten und die 
  Werte für \(P[x_i]\) lassen sich direkt durch Abzählen bestimmen, sind
  also die relativen Häufigkeiten. Mit diesem Wert lässt sich nun noch das 
  fehlende
- \[P[x\ |\ Cluster] = \frac{P[Cluster\ |\ x]*P[x]}{P[Cluster]}\]
+ \[P[x \mid Cluster] = \frac{P[Cluster \mid x] \cdot P[x]}{P[Cluster]}\]
  berechnen. Diese Werte werden nun für die nächsten Iterationen verwendet.
  
  Als Terminierungsfunktion dient nun wieder eine Art ML-Schätzer:
  \[\prod_{i=1}^{|I|}\left( \sum_{k=1}^{|K|}
- P[x\ |\ Cluster] * P[Cluster] \right)\]
+ P[x \mid Cluster] \cdot P[Cluster] \right)\]
  Es kann jedoch aber auch vorkommen, dass ein Attributwert gar nicht
  angenommen wird. Dann wird \(P[x] = 0\) und wir hätten an einigen
  Stellen in unserer Berechnung ein Problem. Deswegen wird mithilfe des
@@ -817,7 +818,7 @@ den Fall für \textbf{ein} Attribut, das \(\nu\) Ausprägungen annehmen kann
  Auch hier wird nur ein lokales Optimum gefunden, d.h. mehrere Runs sind nötig.
 
  Im Falle von mehreren Attributen ist das Vorgehen sowohl im korrelierten als auch
- im unabhängigen Fall gleich: Man konstruiert aus den \(\i\) Attributen mit
+ im unabhängigen Fall gleich: Man konstruiert aus den \(\i\) Attributen mit % Möglicherweise \(I\) gemeint
  jeweils \(\nu_i\) Ausprägungen ein neues Attribut, welches \(\prod_i \nu_i\) 
  Ausprägungen hat. Dabei dürfen die selbst Attribute jedoch nur überschaubar
  in ihrer Anzahl sein und sie dürfen jeweils nicht zu viele Ausprägungen besitzen.

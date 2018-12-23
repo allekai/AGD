@@ -16,7 +16,8 @@ werden.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.75\textwidth]{Figures/index_example}
-	\caption[Indizierung Beispiel]{Beispiel für Indizierung eines Seitenweise angeordneten Datenbestandes \footnotemark}
+	\caption[Indizierung Beispiel]{Beispiel für Indizierung eines Seitenweise angeordneten
+		Datenbestandes\footnotemark}
 	\label{fig:index_example}
 \end{figure}
 \footnotetext{3. Foliensatz, S.3, Analysetechniken für große Datenbestände, Prof. Dr.-Ing.
@@ -74,7 +75,7 @@ Würde man nun einfach den Abstand der Punkte berechnen, ergäbe sich mit
 die sogenannte \textit{Manhatten Distance}. Mit dieser Formel ist die Abhängigkeit
 des Abstands von den Dimensionen schnell ersichtlich.
 Eine höhere Dimensionenzahl führt zu einer größeren Summe. Da die Summanden als
-Beträge definiert sind, ergibt sich eine monoton wachsende Folge in Abhänigkeit der
+Beträge definiert sind, ergibt sich eine monoton wachsende Folge in Abhängigkeit der
 Dimensionalität der Daten. Um diese nun auch sinnvoll zu normieren, gibt
 es die \textbf{Manhatten Segmental Distance} mit
 \[
@@ -149,7 +150,7 @@ dargestellt werden, sondern auch durch höher-dimensionale Objekte. Diese Objekt
 können z.T. nicht regelmäßig sein, was die Arbeit mit diesen Objekten deutlich
 erschweren kann. 
 Nicht regelmäßige Objekte sind in diesem Kontext diejenige Formen, die komplexer sind,
-als z.B. ein einfaches Rechteck oder eine Elipse.
+als z.B. ein einfaches Rechteck oder eine Ellipse.
 Deswegen werden diese durch die so genannten \textit{Minimum
 Bounding Rectangles} approximiert, welche man sich als Box kleinster
 Ausdehnung vorstellen kann, die das Objekt noch umfasst. Mit solchen Objekten
@@ -187,14 +188,14 @@ zu einem sehr unbalancierten Baum kommen. Effizienter wären die Anfragen dann,
 wenn der Abstand der einzelnen Datenpunkte zur Wurzel immer gleich wäre, der 
 Baum also balanciert ist. Hierfür nutzen wir aus, dass ein physischer Knoten
 auch mehrere logische Knoten enthalten kann, und damit in Folge auch mehrere 
-logische Regionen enthalten kann. Logische Regionen sind bestimmmte Wertebereiche
+logische Regionen enthalten kann. Logische Regionen sind bestimmte Wertebereiche
 der Datenpunkte.
 
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.75\textwidth]{Figures/kdB_Tree}
-	\caption[kdB-Baum]{Optimierung eines kd-Baumes durch Kombination mit einem B*-Baum}
+	\caption[kdB-Baum]{Optimierung eines kd-Baumes durch Kombination mit einem B*-Baum.\footnotemark}
 	\label{fig:kdB_Tree}
 \end{figure}
 \footnotetext{3. Foliensatz, S.24, Analysetechniken für große Datenbestände, Prof. Dr.-Ing.
@@ -261,14 +262,14 @@ Der Vorteil eines R-Baums besteht darin, dass bereichsspezifische Anfragen effiz
 beantwortet werden können, ob z.B. der Anfragebereich in einem bestimmten Rechteck
 enthalten ist, oder welche Rechtecke im Anfragebereich liegen. Auch die NN-Anfrage
 kann effizient bearbeitet werden,
-sofern die Distanzen in Rechecke umgewandelt werden können.
+sofern die Distanzen in Rechtecke umgewandelt werden können.
 Außerdem ist ein R-Baum \textit{dynamisch}, er 	kann also laufend
 aktualisiert und erweitert werden. Beim \textit{Einfügen} kann im Wesentlichen
 zwischen 3 Fällen unterschieden werden. 
 
 \begin{itemize}
 	\item Punkt fällt in Zone \textbf{genau eines Kind-Knotens}: Es wird einfach naiv
-		in den entpsrechenden Knoten eingefügt.
+		in den entsprechenden Knoten eingefügt.
 	\item Punkt fällt in \textbf{Überlappung} von 2 Kindknoten: Optimale Entscheidung ist
 		sehr schwierig zu treffen bis unmöglich ohne weitere Hinweise.
 	\item Punkt fällt \textbf{außerhalb} jeder Zone: Es wird der Punkt in den Knoten
@@ -288,7 +289,7 @@ ist, kann es bei mehreren Durchläufen des selben Splits zu unterschiedlichen
 Ergebnissen kommen.  Es sei angemerkt, dass es noch weitere Ansätze für den
 Split gibt, die jedoch aufgrund ihrer quadratischen bzw. exponentiellen Laufzeit
 in der Mächtigkeit der Menge der Datenobjekte und dem nur geringen Qualitätszuwachs
-des Ergebnises in der Realität fast nie Anwendung finden. 
+des Ergebnisses in der Realität fast nie Anwendung finden. 
 Im Übrigen sind auch R-Bäume nicht vom Fluch der Dimensionalität befreit. Durch
 zu viele Dimensionen kommt es zu immer häufigeren Überlappungen der Objekte,
 wodurch die Effizienz der Suche stark leidet, da nun nicht mehr eindeutig ist,
@@ -326,18 +327,18 @@ gut mit sich ändernden Datenbeständen umgegangen werden, indem einfach schnell
 Trainingsdatenbestand angepasst wird. Außerdem hat jedes Attribut den gleichen Einfluss
 auf das Resultat. Bei Modellbasiertem Lernen können die Attribute unter Zunahme
 von Domänenwissen priorisiert werden. Ganz pragmatisch sei hier die Kostenabschätzung
-für ein zu bauendes Haus gennant: Faktoren wie die Anzahl der Stockwerke und 
+für ein zu bauendes Haus genannt: Faktoren wie die Anzahl der Stockwerke und 
 Unterkellerung haben offensichtlich einen größeren Einfluss auf die Kosten als
 die Lage und Größe des Grundstücks.
 
 Die Anwendung eines Suchbaumes als Indizierung für den Trainingsdatenbestand ist
 hierbei unumgänglich. Auch hier kann es jedoch zu den üblichen Problemen bei zu
-hoher Dimmensionalität kommen. So kann es bei Indexstrukturen über hochdimensionierte
+hoher Dimensionalität kommen. So kann es bei Indexstrukturen über hochdimensionale
 Daten zu Problemen mit der Aussagekraft der Distanzwerte kommen oder es kann aufgrund
 der Anzahl der Dimensionen zu viele Partitionsmöglichkeiten geben.
 
 Aus diesem Kapitel sollte man mitnehmen, dass Indexstrukturen für effektive
-Suchanfragen unerlässlich sind, diese jeodch nicht vom Fluch der Dimensionalität
+Suchanfragen unerlässlich sind, diese jedoch nicht vom Fluch der Dimensionalität
 befreit sind. Lernziel sollte es sein, den Ablauf einer NN-Anfrage verstanden zu
 haben und die Baumstrukturen mit ihren Vor- und Nachteilen sowie deren Unterschiede
 zu kennen.

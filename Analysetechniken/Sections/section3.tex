@@ -15,15 +15,15 @@ vorhergesagt werden, wie der Status des Motors in 5 Minuten sein wird.
 Dabei sind die einzelnen Temperaturen an sich jedoch nicht sonderlich aussagekräftig.
 Es wäre z.B. viel interessanter zu wissen, ob baugleiche Zylinder zum selben
 Zeitpunkt sehr unterschiedliche Temperaturen aufweisen, was auf eine Fehlfunktion
-hinweisen kann. Auch der Temperaturanstieg innherhalb der letzten 5 Minuten wäre
+hinweisen kann. Auch der Temperaturanstieg innerhalb der letzten 5 Minuten wäre
 interessant zu wissen. Abstrakt handelt es sich hierbei um Funktionen, die 
 die Attribute auf andere Werte abbilden. Diese Werte sind die sogenannten
 \textit{Features} (Merkmale). Es sind also diese Features, die für die Klassifikation
 neuer Messungen wichtig sind.
-Angenommen \(|A| = 2\) o.B.d.A.; damit ergibt sich unser neuer Trainingsdatenbestand
+Angenommen \(\lvert A\rvert = 2\) o.B.d.A.; damit ergibt sich unser neuer Trainingsdatenbestand
 \(T'\) zu
 \[
-	T' = \{ (f_1(x_1,y_1), f_2(x_1,y_2), \dots , f_1(x_2,y_2),f_2(x_2,y_2), \dots),\}
+	T' = \{ (f_1(x_1,y_1), \dots, f_m(x_1,y_1)), (f_1(x_2,y_2), \dots, f_m(x_2,y_2)), \dots\}
 \]
 wobei \(f_i\) das \(i\)-te Feature ist.
 
@@ -57,7 +57,7 @@ erstellen kann. Hierfür sei
 die \textbf{Entropie des Splits}. Hierbei werden also die Entropien der beiden
 Teile gewichtet aufsummiert; \(n\) ist die Anzahl der Datenobjekte.
 
-Ein grundlegendes Problem beim algorithmmischen Erstellen eines Entscheidungsbaums
+Ein grundlegendes Problem beim algorithmischen Erstellen eines Entscheidungsbaums
 ist das so genannte \textbf{Overfitting}. Hierbei werden so lange neue
 Entscheidungsregeln erstellt, bis der Fehler bei der Klassifikation des
 Trainingsdatenbestandes minimal wird, was jedoch zu einer Erhöhung der Fehlerrate
@@ -75,10 +75,10 @@ Bei der gängigeren Variante, dem \textbf{Post-Pruning} wird zunächst der gesam
 Entscheidungsbaum aufgebaut, und danach "'zurückgeschnitten"'. Hierfür ist es
 zunächst notwendig, den verfügbaren Datenbestand in einen Trainingsteil und einen
 Testteil zu unterteilen. Mit dem Trainingsteil wird zunächst der Baum komplett
-aufgebaut, danach wird die Fehlerrate anahnd des Testbestandes gemessen. Nun wird
+aufgebaut, danach wird die Fehlerrate anhand des Testbestandes gemessen. Nun wird
 sukzessiv ein Knoten nach dem anderen entfernt und jeweils die neue Fehlerrate mit den
 Testdaten bestimmt. Die Knoten, deren Entfernung zu einem Sinken der Fehlerrate führen,
-werden damit entgültig ausgeschlossen. Dies wird so lange durchgeführt, bis keine
+werden damit endgültig ausgeschlossen. Dies wird so lange durchgeführt, bis keine
 Verbesserung der Fehlerrate mehr feststellbar ist. Dieses Verfahren erzeugt im
 Allgemeinen die kleinste Version des Entscheidungsbaumes, benötigt jedoch immer
 einen Testdatenbestand.
@@ -121,7 +121,7 @@ die beste Wahl für die Klassifikation ist.
 	\includegraphics[width=0.75\textwidth]{Figures/classifier}
 	\caption[Beispiel Classifier]{Beispiel für  den Fall, dass
 	die wahrscheinlichste Vorhersage nicht auch die geringsten Kosten
-	mit sich bringt. \footnotemark}
+	mit sich bringt.\footnotemark}
 	\label{fig:classifier_ex}
 \end{figure}
 \footnotetext{4. Foliensatz, S. 27, Analysetechniken für große Datenbestände, Prof. Dr.-Ing. Klemens Böhm}
@@ -130,7 +130,7 @@ In Abb.~\ref{fig:classifier_ex} lässt sich dies gut nachvollziehen. Damit kann
 man die Kosten und Wahrscheinlichkeiten in einer Formel miteinander verbinden
 zu dem \textit{Conditional Risk}
 \[
-	R(i|x) = \sum_j P(j|x) * Cost(i,j),
+	R(i \mid x) = \sum_j P(j \mid x) \cdot Cost(i,j),
 \]
 wobei \(j\) die tatsächliche Klasse und \(i\) die vorhergesagt Klasse beschreibt.
 

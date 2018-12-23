@@ -51,21 +51,21 @@ für die Bereiche Statistik, Physik, etc.). Manche dieser Aggregate haben den
 Vorteil, dass sie sich in ihrer Ausführung parallelisieren lassen, z.B. kann
 für die MIN()-Funktion der Datenbestand in kleinere Bestände aufgeteilt werden,
 aus denen jeweils das Minimum berechnet wird, woraufhin in einem zweiten
-Schritt das Minumim der Hilfsminima berechnet wird.
+Schritt das Minimum der Hilfsminima berechnet wird.
 Aufgrund dieser Eigenschaften lassen sich die Aggregate klassifizieren (\(F\)
 bezeichne die Aggregatsfunktion):
 \begin{itemize}
-	\item \textbf{distributiv}: Formal gibt es eine Funktion \(G\), sodass \(F(\{X_{i,j}\}) = G(\{F(\{X_{i,j}| i = 1, ..., I\}) | j = 1, ..., J\})\) gilt. Auf Deutsch: F wird erst auf Teilmengen ausgeführt, dann G auf der Ergebnismenge. Hierbei ist \(I \in \mathbb{N}\) die Mächtigkeit der Teilmengen und \(J\in\mathbb{N}\) ihre Anzahl (es ist nicht zwingend notwendig, dass alle Teilmengen auch tatsächlich die gleiche Mächtigkeit haben).
-	\item \textbf{algebraisch}: Formal gibt es eine Funktion \(G\), die \(M\)-Tupel liefert und \(H\), sodass \(F(\{X_{i,j}\}) = H(\{G(\{X_{i,j}| i = 1, ..., I\}) | j = 1, ..., J\})\) gilt. Auf Deutsch: Die Definition entspricht der distributiver Aggregate, jedoch hat man hier die Freiheit, in der inneren Klammer eine Funktion anzuwenden, die nicht die Ausgangsaggregatfunktion \(F\) ist. So könnte man z.B. AVG() folgendermaßen formalisieren:
+	\item \textbf{distributiv}: Formal gibt es eine Funktion \(G\), sodass \(F(\{X_{i,j}\}) = G(\{F(\{X_{i,j} \mid i = 1, ..., I\}) \mid j = 1, ..., J\})\) gilt. Auf Deutsch: F wird erst auf Teilmengen ausgeführt, dann G auf der Ergebnismenge. Hierbei ist \(I \in \mathbb{N}\) die Mächtigkeit der Teilmengen und \(J\in\mathbb{N}\) ihre Anzahl (es ist nicht zwingend notwendig, dass alle Teilmengen auch tatsächlich die gleiche Mächtigkeit haben).
+	\item \textbf{algebraisch}: Formal gibt es eine Funktion \(G\), die \(M\)-Tupel liefert und \(H\), sodass \(F(\{X_{i,j}\}) = H(\{G(\{X_{i,j} \mid i = 1, ..., I\}) \mid j = 1, ..., J\})\) gilt. Auf Deutsch: Die Definition entspricht der distributiver Aggregate, jedoch hat man hier die Freiheit, in der inneren Klammer eine Funktion anzuwenden, die nicht die Ausgangsaggregatsfunktion \(F\) ist. So könnte man z.B. AVG() folgendermaßen formalisieren:
 	\begin{align*}
-		G &: \text{Menge von } \mathbb{R} \rightarrow (\mathbb{R},\mathbb{N}),\ S \mapsto a:= (\sum_{x\in S} x, |S|) \\
+		G &: \text{Menge von } \mathbb{R} \rightarrow (\mathbb{R},\mathbb{N}),\ S \mapsto a:= (\sum\nolimits_{x\in S} x, \lvert S\rvert) \\
 		H &: \text{Menge von } (\mathbb{R},\mathbb{N}) \rightarrow \mathbb{R},\ A \mapsto \frac{\sum\nolimits_{a\in A} a.first}{\sum\nolimits_{a\in A}a.second}
 	\end{align*}
-        Hier werden zunächst alle Teilmengen der Ausgangsmenge auf Tupel,
-        bestehend aus der Summe ihrer Elemente und ihrer Mächtigkeit,
-        abgebildet. Damit erhält man die Menge aller dieser Tupel \(A\). Diese
-        Menge wird daraufhin wieder gemäß der zweiten Zeile auf \(\mathbb{R}\)
-        abgebildet.
+    Hier werden zunächst alle Teilmengen der Ausgangsmenge auf Tupel,
+    bestehend aus der Summe ihrer Elemente und ihrer Mächtigkeit,
+    abgebildet. Damit erhält man die Menge aller dieser Tupel \(A\). Diese
+    Menge wird daraufhin wieder gemäß der zweiten Zeile auf \(\mathbb{R}\)
+    abgebildet.
 	\item \textbf{holistisch}: Holistische Aggregate sind all jene, die weder distributiv noch algebraisch sind. Man kann das Problem also nicht in Teilprobleme zerlegen, z.B. bei median() oder häufigsterWert(). \textbf{Definition aus der Vorlesung}: Man kann keine Beschränkung des Speicherbedarfs für Sub-Aggregate angeben.
 \end{itemize}
 Offensichtlich sind distributive bzw. algebraische Aggregate aufgrund ihrer Parallelisierungsmöglichkeiten effizienter in ihrer Berechnung.
@@ -124,7 +124,7 @@ mit Vorsicht interpretiert werden.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.625\textwidth]{Figures/boxplot}
-	\caption[Boxplot Beispiel]{Beispiel eines Boxplots \footnotemark}
+	\caption[Boxplot Beispiel]{Beispiel eines Boxplots.\footnotemark}
 	\label{fig:boxplot}
 \end{figure}
 \footnotetext{2. Foliensatz, S.17, Analysetechniken für große Datenbestände, Prof. Dr.-Ing. Klemens Böhm}
@@ -141,7 +141,7 @@ Abb.~\ref{fig:equiWidth}.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.625\textwidth]{Figures/equiWidth}
-	\caption[Equi-Width Beispiel]{Beispiel eines Equi-Width-Histogramms \footnotemark}
+	\caption[Equi-Width Beispiel]{Beispiel eines Equi-Width-Histogramms.\footnotemark}
 	\label{fig:equiWidth}
 \end{figure}
 \footnotetext{2. Foliensatz, S.20, Analysetechniken für große Datenbestände, Prof. Dr.-Ing. Klemens Böhm}
@@ -151,7 +151,7 @@ Abb.~\ref{fig:equiWidth}.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.625\textwidth]{Figures/equiDepth}
-	\caption[Equi-Width Beispiel]{Beispiel eines Equi-Depth-Histogramms \footnotemark}
+	\caption[Equi-Width Beispiel]{Beispiel eines Equi-Depth-Histogramms.\footnotemark}
 	\label{fig:equiDepth}
 \end{figure}
 \footnotetext{2. Foliensatz, S.21, Analysetechniken für große Datenbestände, Prof. Dr.-Ing. Klemens Böhm}
@@ -184,12 +184,12 @@ Wahrscheinlichkeitsmaß \(P\) erfüllt die \textit{Axiome von Kolmogorow}:
 	&\text{(K3) Additivität}	&\quad \text{Für } a\cap b = \emptyset: P(a\cup b) = P(a) + P(b)\\
 \end{align*}
 
-\noindent Variablen, deren Wert vom Zufall abhängt, nennen wir ganz kreativ \textbf{Zufallsvariable}. Diese Zufallsvariablen können auch als Abbildung aufgefasst werden. Dabei wird jedem \(\omega \in \Omega\) ein reeller Wert \(x = X(\omega)\) zugewiesen, was auch als \textit{Realisierung} von \(X\) bezeichnet wird. Mit \(X\) können aber auch \textbf{Ereignisse} beschrieben werden, z.B. \(\{X = x\} \text{ oder } \{X \leq x\}\). Man denke anschaulich an das Werfen mit 2 Würfeln, wobei \(X = \text{ Summe der Augen}\).
+\noindent Variablen, deren Wert vom Zufall abhängt, nennen wir ganz kreativ \textbf{Zufallsvariable}. Diese Zufallsvariablen können auch als Abbildung aufgefasst werden. Dabei wird jedem \(\omega \in \Omega\) ein reeller Wert \(x = X(\omega)\) zugewiesen, was auch als \textit{Realisierung} von \(X\) bezeichnet wird. Mit \(X\) können aber auch \textbf{Ereignisse} beschrieben werden, z.B. \(\{X = x\}\) oder \(\{X \leq x\}\). Man denke anschaulich an das Werfen mit 2 Würfeln, wobei \(X = \text{ Summe der Augen}\).
 
 \begin{figure}[hb]
 	\centering
 	\input{Figures/contingency_table}
-	\caption[Schema Kontingenztabelle]{Schema einer Kontingenztabelle}
+	\caption[Schema Kontingenztabelle]{Schema einer Kontingenztabelle.}
 	\label{fig:contingency_ex}
 \end{figure}
 
@@ -199,20 +199,20 @@ Die Zufallsvariablen können aber auch voneinander abhängen. Die Verteilung
 einer Zufallsvariable, gegeben den Wert der anderen, nennt man \textbf{bedingte
 Verteilung} und wird durch
 \[
-	P(X=a\ |\ Y=b)=\frac{P(X=a,Y=b)}{P(Y=b)}
+	P(X=a \mid Y=b)=\frac{P(X=a,Y=b)}{P(Y=b)}
 \]
-beschrieben. Mithilfe der Kontingenztablle lassen sich die Werte des Bruchs direkt ablesen. Falls die Variablen \textbf{unabhängig} voneinander sind, gilt \(P(X) = P(X|Y)\) und \(P(X,Y) = P(X)P(Y)\).
+beschrieben. Mithilfe der Kontingenztabelle lassen sich die Werte des Bruchs direkt ablesen. Falls die Variablen \textbf{unabhängig} voneinander sind, gilt \(P(X) = P(X \mid Y)\) und \(P(X,Y) = P(X)P(Y)\).
 
-Sei im Folgenden \(X\) eine diskrete Zufallsvariable. Dann bezeichnet \(f(x)=P(X=x)\) für alle \(x\in\mathbb{R}\) die Wahrscheinlichkeitsfunktion von \(X\). Für \(f(x)\) gilt \textit{Nichtnegativität} und es muss \(\sum f(x) = 1\) sein. Würde man diese Funktion plotten, so hätte man im Prinzip ein Stabdiagramm.
+Sei im Folgenden \(X\) eine diskrete Zufallsvariable. Dann bezeichnet \(f(x)=P(X=x)\) für alle \(x\in\mathbb{R}\) die Wahrscheinlichkeitsfunktion von \(X\). Für \(f(x)\) gilt \textit{Nichtnegativität} und es muss \(\sum_x f(x) = 1\) sein. Würde man diese Funktion plotten, so hätte man im Prinzip ein Stabdiagramm.
 Sei \(X\) nun kontinuierlich. Damit ergibt sich die \textit{Wahrscheinlichkeitsdichtefunktion} zu \(P(X\in[a,b])=\int_{a}^{b} f(x)dx\) und auch hier gilt \textit{Nichtnegativität}. Weiter muss \(\int_{-\infty}^{\infty} f(x)dx = 1\) sein.
 
 Der \textbf{Erwartungswert} \(E(X)\) für den diskreten bzw. kontinuierlichen Fall lautet
 \begin{align*}
-	&E(X)=\sum_{i\geq 1} x_i f(x_i) &E(X) = \int_{-\infty}^{\infty}xf(x)dx.
+	&E(X)=\sum\nolimits_{i} x_i f(x_i) &E(X) = \int_{-\infty}^{\infty}xf(x)dx.
 \end{align*}
 Durch den Verschiebungssatz erhalten wir für die \textbf{Varianz} \(Var(X)=E(X^2)-E(X)^2\). Somit ergeben sich für diskrete bzw. kontinuierliche Zufallsvariablen
 \begin{align*}
-	&Var(X)=\sum_i f(x_i) x_i^2 - (\sum_i f(x_i) \bar{x})^2&Var(X)=\int_{-\infty}^{\infty} x^2f(x)dx - E(X)^2.
+	&Var(X)=\sum\nolimits_i x_i^2 f(x_i) - (\sum\nolimits_i x_i f(x_i))^2&Var(X)=\int_{-\infty}^{\infty} x^2f(x)dx - E(X)^2.
 \end{align*}
 
 Um Zusammenhänge zwischen den Zufallsvariablen anschaulich darzustellen, gibt es bestimmte Kennzahlen. Zum einen die \textbf{Kovarianz}, die als
@@ -238,7 +238,7 @@ Eine gängige Normierung ergibt sich mittels der Standardabweichung und man erh�
 \] 
 Dieser ist auf \([-1,1]\) normiert, womit sich nun auch die Stärke der Korrelation bewerten lassen kann. Des Weiteren gilt \(Cov(X,X)=Var(X)\).
 
-Für den Fall, dass wir es mit einem Vektor an Zufallsvariablen zu tun haben, kommt die \textbf{Kovarianzmatrix} \(\Sigma\) ins Spiel. Die Kovarianzmatrix als Matrix aller paarweisen Kovarianzen der Elemente des Zufallsvektors enthält Informationen über seine Streuung und über Korrelationen ziwschen seinen Komponenten.
+Für den Fall, dass wir es mit einem Vektor an Zufallsvariablen zu tun haben, kommt die \textbf{Kovarianzmatrix} \(\Sigma\) ins Spiel. Die Kovarianzmatrix als Matrix aller paarweisen Kovarianzen der Elemente des Zufallsvektors enthält Informationen über seine Streuung und über Korrelationen zwischen seinen Komponenten.
 Formal ergibt sich:
 \[
 	\resizebox{\textwidth}{!}{
@@ -270,19 +270,19 @@ vor. Damit lässt sich der gesamte Test kurz zusammenfassen:
 				\end{align*}
 	\item \textbf{Teststatistik:} \(\chi^2 =\sum\limits_{i=1}^{k}\sum\limits_{j=1}^{m}
 					\frac{(h_{ij}-\tilde{h}_{ij})^2}{\tilde{h}_{ij}}\) mit \(\tilde{h}_{ij} = \frac{ h_{i\bullet} h_{\bullet j}}{ n } \)
-	\item \textbf{Verteilung unter } \(H_0\): approximativ \(\chi^2((k-1)(m-1))\)
-	\item \textbf{Ablehnungsbereich:} \(\chi^2 > \chi_{1-\alpha}^2((k-1)(m-1))\)
+	\item \textbf{Verteilung unter } \(H_0\): approximativ \(\chi^2(k-1,m-1)\)
+	\item \textbf{Ablehnungsbereich:} \(\chi^2 > \chi_{1-\alpha}^2(k-1,m-1)\)
 \end{itemize}
 Der Verlust der Freiheitsgrade tritt durch die Schätzung \(\tilde{h}_{ij}\) auf.
 Mit anderen Worten: Ist ein \(\chi^2\)-Wert besonders groß, so kann der
 entsprechenden Tabelle die Wahrscheinlichkeit für so einen Wert entnommen werden. Ist dieser sehr
 klein, so wird die Nullhypothese verworfen. Bei diesem Test ist zu beachten,
-dass der \(\chi^2\)-Wert in hohem Maße von dem Stichprobemumfang \(n\) abhängig ist.
+dass der \(\chi^2\)-Wert in hohem Maße von dem Stichprobenumfang \(n\) abhängig ist.
 
 \subsubsection{Kolmogorov-Smirnov-Test}
 Dieser Test eignet sich, um Verteilungsannahmen zu prüfen. Es wird angenommen, 
 dass die beobachteten Ereignisse bereits sortiert vorliegen. Aus diesen Werten
-wird nun die Summenhäufigkeitsfunktion (empirische Verteilungfunktion) \(S\) berechnet,
+wird nun die Summenhäufigkeitsfunktion (empirische Verteilungsfunktion) \(S\) berechnet,
 die nun mit der angenommenen Verteilungsfunktion \(F_0\) verglichen wird. Hierfür werden
 an den Stellen \(x_i\) die Differenzen der beiden Funktionen berechnet, also
 \(S(x_{i-1})-F(x_i)\) und \(S(x_i)-F(x_i)\). Hierbei ist \(S(x_0):=0\). Man prüft also
@@ -296,7 +296,7 @@ Obwohl nur für eine Zufallsvariable formuliert, lässt sich der Test auch für 
 Zufallsvariablen durchführen. Dabei gilt nun: \(H_0:\ F(y) = F(x)\).
 
 \subsubsection{Wilcoxon-Mann-Whitney Test}
-Auch bekant als Wilcoxon-Rangsummen-Test. Wir fassen kurz zusammen:
+Auch bekannt als Wilcoxon-Rangsummen-Test. Wir fassen kurz zusammen:
 \begin{itemize}
 	\item \textbf{Annahmen:} \(X_1,\dots,X_n\) unabhängige Wiederholungen von \(X\),\\
 				\(Y_1,\dots,Y_m\) unabhängige Wiederholungen von \(Y\),\\
@@ -321,7 +321,7 @@ Die genauen kritischen Werte lassen sich aus kombinatorischen Überlegungen
 berechnen. Diese werden jedoch schnell sehr mühselig zu berechnen, wodurch 
 die Nutzung der Approximation durch
 \[
-	W_{n,m} \approx N \left( \frac{n(m+n+1)}{2}, \frac{nm(n+m+1)}{12} \right)
+	W_{n,m} \approx \mathcal{N} \left( \frac{n(m+n+1)}{2}, \frac{nm(n+m+1)}{12} \right)
 \]
 ratsam ist. Die Idee, die hinter diesem Test steckt, ist, dass bei Gültigkeit
 der Nullhypothese die Werte der \(X\)- und \(Y\)-Stichproben gut durchmischt
@@ -345,7 +345,7 @@ müssen, sodass
 gilt. Normiert man \(f\), so kann man die Werte für \(z\) aus der Tabelle
 der Standardnormalverteilung ablesen. Es ergibt sich
 \[
-	P(-z < \frac{f-p}{\sqrt{p(1-p)n}} < z) = c ,
+	P(-z < \frac{f-p}{\sqrt{p(1-p)/n}} < z) = c ,
 \]
 was nun nach Umformung nach \(p\) die Grenzen für dieses liefert. Hierbei
 muss man beachten, dass \(n\) groß sein muss. Wie groß, da scheiden sich
@@ -365,7 +365,7 @@ stattdessen \(E(p) = \frac{\sum y_i}{n}\) verwenden, was im Prinzip ein
 wenn man \(p\) maximieren möchte, den obigen Ausdruck selbst, oder den Logarithmus
 davon berechnet, ergibt sich stattdessen die \textbf{Log-Likelihood-Funktion}
 \[
-    \sum\limits_{i_1}^n (y_i \log{p} + (1-y_i)\log(1-p)).
+    \sum\limits_{i=1}^n (y_i \log{p} + (1-y_i)\log(1-p)).
 \]
 Auch hier gilt, dass pro Summand vom inneren Term nur ein Summand übrig bleibt.
 Die Log-Likelihood-Funktion bietet den Vorteil, dass man nicht so viele Produkte
@@ -403,18 +403,18 @@ Komplexität mancher Analysealgorithmen erheblich reduzieren. \textbf{Clustering
 ist relativ selbsterklärend, setzt jedoch voraus, dass sich die Daten in Cluster
 aufteilen lassen. So kann man jedes Cluster am Ende für sich betrachten und muss
 nur die relevanten Clustereigenschaften, z.B. Anzahl der enthaltenen Datenobjekte,
-lienare Summe, square sum, etc., speichern, aus denen man dann Werte wie die
+lineare Summe, quadratische Summe, etc., speichern, aus denen man dann Werte wie die
 Clustermitte oder -radius berechnen kann. Auf diese Methode wird in einem späteren
 Kapitel näher eingegangen.
 
 \subsubsection{Dimensionality Reduction}
 \textbf{Feature Selection:} Man kann Attribute, die unnötig sind, auch einfach
-weglassen. Dies setzt jedoch ein Wissen über die spzifische Domäne voraus. Hat
+weglassen. Dies setzt jedoch ein Wissen über die spezifische Domäne voraus. Hat
 man dieses Wissen nicht, müssen andere Maßstäbe angesetzt werden, z.B. welche 
-Attribute lassen sich relativ gut mit anderen Anttriubutwerten vorhersagen,
+Attribute lassen sich relativ gut mit anderen Attributwerten vorhersagen,
 sprich wo liegt eine Abhängigkeit vor? Da es insgesamt \(2^d\) mögliche
 Teilmengen von Attributen gibt (\(d\) ist die Mächtigkeit der Domäne), 
-können wir die Lösung oft nicht direkt explizit ausrechenen. Hier
+können wir die Lösung oft nicht direkt explizit ausrechnen. Hier
 müssen Heuristiken zur Auswahl der Dimensionen angewandt werden, z.B. wird zuerst die
 \textit{Vorhersagekraft} jedes Attributs ermittelt und nur die besten Attribute
 werden behalten, oder es erfolgt eine schrittweise Auswahl der miteinander am vorhersagekräftigsten
@@ -447,7 +447,7 @@ einem extensiveren Beispiel arbeiten, als es in der Vorlesung gegeben ist.
 
 \input{Tab_Matrix/original_data}
 
-Betrachten wir also zunächst Tablle~\ref{tab:svd_example}. Man kann durchaus vermuten,
+Betrachten wir also zunächst Tabelle~\ref{tab:svd_example}. Man kann durchaus vermuten,
 dass die jeweiligen Superhelden die Filme aus ihrem eigenen Universum besser bewerten.
 Diese Werte lassen sich auch in Form einer Matrix \(A\) aufschreiben
 
@@ -461,8 +461,8 @@ Zerlegen lässt in
 \]
 wobei \(U\) eine \textbf{unitäre} \(m\times m\)-Matrix\footnote{\textbf{Unitär} bedeutet,
 dass \(U^{H}*U = I\), wobei \(U^{H}\) die Adjungierte ist.}, \(\Sigma\) eine 
-reelle \(m\times n\)-Matrix und \(V^*\) die \textbf{Adjungierte}\footnote{
-\textbf{Adjungiert} ist die komplex-kunjugierte Transponierte einer Matrix (die Reihenfolge der
+reelle \(m\times n\)-Matrix und \(V^*\) die \textbf{Adjungierte}\footnote{\textbf{Adjungiert}
+ist die komplex-konjugierte Transponierte einer Matrix (die Reihenfolge der
 Operationen ist hierbei unerheblich).} einer
 \textbf{unitären} \(n\times n\) Matrix \(V\) ist. \(\Sigma\) hat die spezielle Form, dass
 sich auf den ersten \(r\) Diagonaleneinträgen die \textbf{Singulärwerte}\footnote{Singulärwerte
@@ -503,7 +503,7 @@ Werte \(\sigma_1\) und \(\sigma_2\) sind und wir die übrigen vernachlässigen
 können. Dies geschieht, indem alle anderen \(\sigma\) gleich \(0\) gesetzt werden,
 wodurch bei der Multiplikation \(U\Sigma V^*\) die rechten Spalten von \(U\) und die
 unteren Zeilen von \(V^*\) effektiv wegfallen.
-Am Ende kommt eine Art Approxmination \(\tilde{A}\) von \(A\) heraus mit
+Am Ende kommt eine Art Approximation \(\tilde{A}\) von \(A\) heraus mit
 \[
 	\tilde{A} = \input{Tab_Matrix/reduced_data_mat}
 \]
@@ -526,7 +526,7 @@ wie z.B. die Gottheiten aus Lovecrafts Geschichten, die weder an Marvel noch an 
 besonderen Gefallen finden, so wird die Interpretation der erhaltenen Matrizen
 sehr schnell schwierig und die Werte für die Singulärwerte sind auch weitaus weniger
 eindeutig. Es ist also im Allgemeinen nicht so einfach, passende Werte zu finden,
-die die Struktur des Datenbestanden treffend wiedergeben.
+die die Struktur des Datenbestandes treffend wiedergeben.
 
 \textbf{Nachreichung:} Dieser Abschnitt über SVD ist vor allem als
 Visualisierung zu verstehen. Die Darstellung ist schwer an

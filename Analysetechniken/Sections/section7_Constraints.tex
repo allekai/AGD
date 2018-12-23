@@ -1,7 +1,7 @@
 \section{Pattern Mining unter Constraints}
 \subsection{Constrained Association Rules}
 Die bisher vorgestellten Verfahren von Pattern Mining
-haben das gemeinsame Problem, dass sich nicht fokusierbar
+haben das gemeinsame Problem, dass sich nicht fokussierbar
 sind. Es werden immer alle Rules gemined, ganz gleich, ob
 diese auch wirklich interessant für den User sind. Besser
 wäre es, wenn man stattdessen dem User ein Interface gibt,
@@ -23,7 +23,7 @@ die Laufzeit eines solchen Vergehens offensichtlich mehr
 Zeit in Anspruch nimmt, als nötig. Es wäre doch viel besser,
 wenn man schon während der Association Rule Erzeugung
 die irrelevanten Rules prunen könnte. Das ist in der Tat
-möglch, dafür müssen die Constraints jedoch bestimmte
+möglich, dafür müssen die Constraints jedoch bestimmte
 Eigenschaften erfüllen, auf die wir gleich eingehen werden.
 
 Zunächst klassifizieren wir jedoch die möglichen Constraints.
@@ -37,7 +37,7 @@ zusammen gekauft wurden."', oder Einschränkungen auf
 bestimmte Attribute, z.B. (region, price, brand, customer).
 Das Problem ist, dass hierbei die Mining Ergebnisse nicht
 nur besonders stark eingegrenzt werden; es setzt auch voraus,
-dass der User ein sehr gutes Verständis der Daten hat und
+dass der User ein sehr gutes Verständnis der Daten hat und
 schon eine Vorstellung hat, wie das Ergebnis aussehen sollte.
 
 \textit{Rule Constraints} hingegen wirken nicht so
@@ -157,12 +157,12 @@ Eine Anfrage unter gegebenen Constraints an die Datenbank
 unter Zuhilfenahme der eben vorgestellten 1-var und 2-var 
 Constraints ist mit der \textit{constrained association
 query} (CAQ) möglich. Diese hat die Form \(\{S_1,S_2
-\ |\ \mathcal{C}\}\)	, wobei \(\mathcal{C}\) eine
+\ |\ \mathcal{C}\}\), wobei \(\mathcal{C}\) eine
 Menge an Constraints auf \(S_1,\ S_2\) ist. Ein Beispiel
 wäre 
 \begin{align*}
-\{(S_1,S_2)\ |\ &S_1\subset \text{Item }\&\ 
-S_2\subset \text{Item }\ \&\\
+\{(S_1,S_2) \mid\
+&S_1\subset \text{Item }\&\ S_2\subset \text{Item }\ \&\\
 &count(S_1) = 1\ \&\ count(S_2) = 1\ \&\\
 &freq(S_1)\ \&\ freq(S_2)\}.
 \end{align*}
@@ -216,7 +216,7 @@ Post-Pruning erheblich verringert oder sogar ganz entfällt.
 	\(sum(S)\geq v\) & nein & nein\\
 	\(sum(S) = v\) & teilweise & nein\\
 	\midrule
-	\(avg(S)\theta v\), \(\theta\in\{=, \leq, \geq\}\) & nein & nein\\
+	\(avg(S)\ \theta\ v\), \(\theta\in\{=, \leq, \geq\}\) & nein & nein\\
 	\midrule
 	(Frequency Constraint) & (ja) & (nein)\\
 	\bottomrule
@@ -233,8 +233,8 @@ Monotonizität} und \textbf{Succinctness}.
 Erstere lässt sich wie folgt definieren: \textit{Eine 1-var
 Constraint C ist anti-monoton genau dann, wenn für alle
 Mengen \(S,\ S'\) gilt:}
-\[ S \supseteq S' \& \text{ S erfüllt C} \Longrightarrow
-\text{ S'erfüllt C}. \]
+\[ S' \subseteq S\ \& \text{ S erfüllt C} \Longrightarrow
+S'\ \text{erfüllt}\ C. \]
 Das Ziel ist es nun, mithilfe der Anti-Monotonizität möglichst
 früh diejenigen Itemsets, die das Constraint nicht mehr
 erfüllen, zu prunen, da auch deren Obermengen die 

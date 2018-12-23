@@ -59,8 +59,8 @@ Frequent Itemsets und damit auch nur \textit{wenige Regeln}, die dafür jedoch
 \textit{oft} vorkommen. Für niedriges \(\sigma\) ist das Gegenteil der Fall.
 Wählt man \(\gamma\) hoch, so gibt es nur \textit{wenige} Regeln, die dafür
 aber alle "'logisch fast wahr"' sind. Für niedriges \(\gamma\) ergeben sich 
-\textit{viele} Regeln, von denen aber viele sehr \textit{unsicher} sind.
-\footnote{Typische Werte für \(\sigma\) sind 2-10\% und \(\gamma\) in etwa 70-90\%.}
+\textit{viele} Regeln, von denen aber viele sehr \textit{unsicher} sind.\footnote{
+Typische Werte für \(\sigma\) sind 2-10\% und \(\gamma\) in etwa 70-90\%.}
 
 
 \subsection{Apriori}
@@ -74,26 +74,25 @@ zu finden, braucht man ein strukturiertes Vorgehen. Das liefert und der
 	\BlankLine
 	\ {\(L_1\):= \{large 1-itemsets\}}\;
 	\For{k:=2; \(L_{k-1}\neq\emptyset\); k++}{
-		\(C_k\):= \(\{a\cup {b}\ |\ a \in L_{k-1} \land b \notin a\} \setminus
-		\{c\ |\ \{s\ |\ s \subseteq c \land \left|s\right| = k-1\} 
+		\(C_k\):= \(\{a\cup {b} \mid a \in L_{k-1} \land b \notin a\} \setminus
+		\{c \mid \{s \mid s \subseteq c \land \left|s\right| = k-1\} 
 		\not\subseteq L_{k-1}\}\)
 		\ForAll{transaction t \(\in\) T}{
-			\(C_t\):= subset(\(C_k\),t) //candidates contained in t\;
-			\ForAll{c\(\in C_t\)}{
+			\(C_t\):= subset(\(C_k\),t) \Comment*{candidates contained in t}
+			\ForAll{c \(\in C_t\)}{
 				c.count++\;
 			}
 		}
-		\(L_k\):= \{c \(\in C_k\ |\ c.count \geq minsup\)\}\;
+		\(L_k\):= \{c \(\in C_k \mid c.count \geq minsup\)\}\;
 	}
-	\ {return \(\bigcup_k L_k\)}\;
+	\Return{\(\bigcup_k L_k\)}\;
 	\caption{Apriori Algorithmus.}
 	\label{alg:apriori}
 \end{algorithm}
 
 In Algorithmus~\ref{alg:apriori} beschreibt die Hauptschleife die schrittweise 
-Generierung neuer Frequent Itemsets. Am Anfang wird in einem \textit{join\&prune-
-Schritt}
-\footnote{In Worten bedeutet die Candidate
+Generierung neuer Frequent Itemsets. Am Anfang wird in einem
+\textit{join\&prune-Schritt}\footnote{In Worten bedeutet die Candidate
 Itemset Erstellung: Nehme zwei \textit{(k-1)-Itemsets} aus \(L_{k-1}\), die \(k-2\) Items
 miteinander teilen und füge sie zu einem \textit{k-Itemset} zusammen. Enthält dieses
 nun ein \textit{(k-1)-Itemset}, das nicht in \(L_{k-1}\) enthalten ist, so füge es 
@@ -105,16 +104,16 @@ die Menge aller potentiellen Frequent Itemset Kandidaten \(C_k\) bestimmt.
 Danach wird in einem \textit{Support Counting Schritt} geprüft, ob der Support
 der neuen Itemsets noch ausreichend hoch ist.
 
-Im \textbf{join-Schritt} werden mögliche Kandidaten für k-elementige Frequent Itemsets
+Im \textbf{join-Schritt} werden mögliche Kandidaten für \(k\)-elementige Frequent Itemsets
 aus den \(k-1\)-elementigen Frequent Itemsets abgeleitet. Hierfür werden die
 Elemente der Itemsets topologisch sortiert miteinander verglichen. Gibt es 
 zwei \(k-1\)-Itemsets, die sich nur im letzten Element unterscheiden, so kann man 
 diese beiden Itemsets zu einem neuem \(k\)-Itemset zusammenfügen.
 
-Im \textbf{prune-Schritt} werden alle \(k-1\)-Teilmengen aller k-Itemsets betrachtet.
-\footnote{Für \(k=2\) ist trivialer Weise kein Pruning nötig.}
+Im \textbf{prune-Schritt} werden alle \(k-1\)-Teilmengen aller \(k\)-Itemsets
+betrachtet.\footnote{Für \(k=2\) ist trivialer Weise kein Pruning nötig.}
 Findet sich eine Teilmenge, die nicht in \(L_{k-1}\) vorhanden ist, so ist auch schon
-das entsprechende k-Itemset nicht mehr frequent. Auf diese Weise kann die Anzahl
+das entsprechende \(k\)-Itemset nicht mehr frequent. Auf diese Weise kann die Anzahl
 der noch zu untersuchenden Itemsets erheblich verringert werden; es besteht jedoch
 auch die Gefahr, dass der Mehraufwand durch das Pruning unverhältnismaßig hoch
 ist, z.B. bei vielen Möglichkeiten für \(k-1\)-Itemsets oder großem \(L_{k-1}\),
@@ -138,19 +137,19 @@ Mit Algorithmus~\ref{alg:apriori} haben wir nun die maximalen Frequent Itemsets
 gefunden. Aber eigentlich sind wir ja an den zugrunde liegenden Association Rules
 interessiert. Hierfür sei \(I\) ein Frequent Itemset und \(a \subset I\) eine
 Teilmenge von \(I\). Damit gilt für eine Association Rule 
-\(R_a := a \Longrightarrow I\setminus\{a\} \) mit 
+\(R_a := (a \Rightarrow I\setminus a) \) mit 
 Confidence \(conf(R_a)\):
 \[
 	R_a \text{ ist eine Association Rule} \Longleftrightarrow conf(R_a) = 
 	\frac{Support(I)}{Support(a)} \geq minconf.
 \]
-Da durch die eindeutige Wahl von \(a\) auch \(I\setminus\{a\}\) eindeutig bestimmt
+Da durch die eindeutige Wahl von \(a\) auch \(I\setminus a\) eindeutig bestimmt
 ist, wird jede untersuchte Association Rule auch nur einmal betrachtet, es kommt
 nicht zu Duplikaten. Wichtig ist, dass Algorithmus~\ref{alg:apriori} einem "'nur"'
 die maximalen Frequent Itemsets liefert; diese reichen jedoch für die Generierung
 von Association Rules nicht aus, denn auch für kleinere Itemsets können deren
 Association Rules interessant sein. Es müssen also \textbf{alle} Frequent Itemsets
-zur Regelerzeugnung berücksichtigt werden.
+zur Regelerzeugung berücksichtigt werden.
 
 \subsection{Multidimensional Association Rules}
 Natürlich lassen sich obige Aussagen auch auf Association Rules beziehen, die
@@ -166,8 +165,8 @@ Der Apriori Algorithmus lässt sich auch für die Erzeugung von Association Rule
 im Mehrdimensionalen verwenden. Dazu müssen die Datensätze jedoch erst in
 eindimensionale umgewandelt werden, also
 \begin{eqnarray*}
-	<ID,\ A_1=a_{1},\ A_2=a_{2},\ \dots\ ,\ A_n=a_{n}>\\
-	\longrightarrow <ID,\ \{A_1/a_1,\ A_2/a_2,\ \dots\,\ A_n/a_n\},>
+	\langle ID,\ A_1=a_{1},\ A_2=a_{2},\ \dots\ ,\ A_n=a_{n}\rangle \\
+	\longrightarrow \langle ID,\ \{A_1/a_1,\ A_2/a_2,\ \dots\,\ A_n/a_n\}\rangle
 \end{eqnarray*}
 was eine Umwandlung der Attribute und ihrer Werte in eine Menge ihrer Kombination darstellt.
 Hierbei ist \(a_x \in \mathcal{A}_x\), wobei \(\mathcal{A}_x\) die
@@ -177,22 +176,22 @@ Menge der Attributwerte von \(A_x\) ist.
 Bei der Kategorisierung von Items gibt es verschiedene Level an Abstraktion. So
 kann die Milch im Supermarkt durch Kriterien wie Fettgehalt, Bio-Zertifizierung,
 Herkunft etc. eingeteilt werden. Hierbei kann es nun von Interesse sein, diese 
-verschiedenen Ebenen der Abstraktion durch Association Rules miteinandern in 
-Beziehung zu setzen, z.B. \(Brot \longrightarrow Butter\).\footnote{Butter als
+verschiedenen Ebenen der Abstraktion durch Association Rules miteinander in 
+Beziehung zu setzen, z.B. \(Brot \Rightarrow Butter\).\footnote{Butter als
 Unterebene von Milchprodukten und Lebensmitteln.} Der Minimum Support eines
 \textit{Mixed-Level} Kandidaten kann als der des unteren Levels angenommen werden.
 
 Als Folge gibt es meist jedoch keinen hohen Support; dieser kann i.A. nur mit
-High-Level Concepts erreicht werden ("'\(Essware \longrightarrow Getränk\)"').
+High-Level Concepts erreicht werden (\(Essware \Rightarrow Getränk\)).
 Diese sind jedoch tendenziell uninteressant.
 
 Auch wenn die Idee von \textbf{Level-Crossing} Association Rules ein potentiell mächtiges
 Werkzeug ist, stellt
 in der Praxis die Wahl der Schwellenwerte und die ungeheure Menge an
 Möglichkeiten für Level-Crossing Association Rules jedoch ein so großes Problem
-dar, dass es i.A. nicht mehr möglich ist, die gewünschten Association Rules
+dar, dass es im Allgemeinen nicht mehr möglich ist, die gewünschten Association Rules
 effizient zu berechnen. Die Menge an Möglichkeiten für Rules ergibt sich nämlich
-exponentiell in der Tiefe der Hierachie. Für jede hinzukommende Ebene müsste jede
+exponentiell in der Tiefe der Hierarchie. Für jede hinzukommende Ebene müsste jede
 mögliche Kombination aus neuer Ebene und allen anderen Ebenen beachtet werden.
 Des Weiteren stellt die Ähnlichkeit mancher Ebenen ein Problem dar; es kann zu einer
 Vielzahl ähnlicher Rules kommen, die eigentlich redundant sind.
@@ -204,7 +203,7 @@ Rules erlaubt, soll im Folgenden vorgestellt werden.
 Zunächst müssen die Items derart codiert werden, dass jede Ziffer eine andere
 Abstraktionsebene beschreibt.\footnote{Milch = 1, Vollmilch = 2 \(\longrightarrow\) 12}
 Auf diese Weise lassen sich die Items in einer Transaktionstabelle (siehe 
-Tablle~\ref{tab:transaction}) zusammenfassen.
+Tabelle~\ref{tab:transaction}) zusammenfassen.
 
 \begin{table}[tbh]
 	\centering
@@ -288,7 +287,7 @@ In \(L[1,1]\) stehen nun die Frequent Itemsets der höchsten Abstraktionsebene. 
 Hilfe dieser lässt sich nun die Transaktionstabelle "'bereinigen"', indem alle
 Transaktionen entfernt werden, die nur \textit{kleine} Items enthalten, und aus
 allen Transaktionen die \textit{kleinen} Items entfernt werden. Man erhält damit
-die \textit{gefilterte Transaktiontablle} \(\mathcal{T}[2]\). Die Berechnung von
+die \textit{gefilterte Transaktionstabelle} \(\mathcal{T}[2]\). Die Berechnung von
 \(L[1,2]\) ergibt sich einfach aus der Kombination der Frequent Itemsets von 
 \(L[1,1]\) und des Support Countings anhand von \(\mathcal{T}[2]\).
 
@@ -298,8 +297,8 @@ man hierbei ausnutzt, dass in \(\mathcal{T}[2]\) schon die Items und Transaktion
 ausgeschlossen wurden, die gar nicht frequent sein können.
 
 Der originale Algorithmus (\texttt{ML\_T2L1}) von \citet{Han95} läuft naiv für
-alle Level und jedes \(k\)-Itemset alle Transaktionen \(t \in \mathcal{T}[2]\) ab.
-\footnote{Außer für \(l=1\), da hier stattdessen \(\mathcal{T}[1]\) verwendet wird.}
+alle Level und jedes \(k\)-Itemset alle Transaktionen \(t \in \mathcal{T}[2]\)
+ab.\footnote{Außer für \(l=1\), da hier stattdessen \(\mathcal{T}[1]\) verwendet wird.}
 Dieser Ablauf lässt sich potentiell  verbessern, indem man die Zusammenhänge der
 Daten auf verschiedenen Leveln ausnutzt und aus den Ergebnissen in jedem Schritt
 "'das Meiste herausholt"'.
@@ -314,21 +313,20 @@ inkrementiert werden kann, sofern er nicht schon durch \(t\) erhöht wurde.
 Nach diesem initialen Durchlauf werden diejenigen Items aus den \(L[l,1]\) entfernt,
 deren Parent im darüberliegenden Level nicht ein Frequent Item ist oder deren
 Support geringer als das geforderte Minimum für das entsprechende Level 
-[\textit{minsup(l)}] ist.
+\textit{minsup(l)} ist.
 
 Die folgenden Durchläufe erzeugen nun die übrigen \(k\)-Itemsets für {\(k>1\)}.
-Hierfür wird der Appriori Algorithmus verwendet, wobei das Support Counting 
+Hierfür wird der Apriori Algorithmus verwendet, wobei das Support Counting 
 wiederum parallel für alle \(L[k,l]\) des aktuellen Levels mit Hilfe von
 \(\mathcal{T}[1]\) geschieht.
 
 Insgesamt wird \(\mathcal{T}[1]\) also \(k\)-mal durchlaufen.
 
 Daneben gibt es noch weitere Variationen von Han's Algorithmus; deren Studium
-bleibt dem interessierten Leser selbst überlassen.
-\footnote{Die übrigen von Han vorgestellten Variationen laufen darauf hinaus,
-dass zum einen in jedem Durchlauf eine gefilterte Transaktionstabelle erstellt
-werden kann (\texttt{ML\_TML1}) und zum anderen, 
-dass man wie im Original eine Transaktionstabelle
+bleibt dem interessierten Leser selbst überlassen.\footnote{Die übrigen von Han
+vorgestellten Variationen laufen darauf hinaus, dass zum einen in jedem Durchlauf
+eine gefilterte Transaktionstabelle erstellt werden kann (\texttt{ML\_TML1}) und
+zum anderen, dass man wie im Original eine Transaktionstabelle
 \(\mathcal{T}[2]\) erstellt, diese jedoch für eine parallele Abarbeitung wie in
 der vorgestellten Variante benutzt (\texttt{ML\_T2LA}). Das Interessante hierbei ist,
 dass alle Algorithmen potentiell schnell sind und nur bedingt von der Eingabegröße
